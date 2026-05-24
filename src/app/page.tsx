@@ -155,21 +155,8 @@ function Navbar() {
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <div
-            className="flex h-7 w-7 items-center justify-center rounded-lg text-white"
-            style={{ background: 'linear-gradient(135deg, #3b82f6, #7c3aed)' }}
-          >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          </div>
-          <span className="text-sm font-bold tracking-tight text-white">ProofForge</span>
-          <span
-            className="hidden rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-widest sm:block"
-            style={{ background: 'rgba(59,130,246,0.15)', color: '#60a5fa', border: '1px solid rgba(59,130,246,0.25)' }}
-          >
-            BETA
-          </span>
+          <img src="/favicon.ico" alt="PortFort logo" className="h-7 w-7" />
+          <span className="text-sm font-bold tracking-tight text-white">PortFort</span>
         </Link>
 
         {/* Nav links */}
