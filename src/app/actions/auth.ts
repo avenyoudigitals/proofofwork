@@ -61,7 +61,7 @@ export async function signup(
 /**
  * Sign in with GitHub OAuth.
  */
-export async function loginWithGitHub() {
+export async function loginWithGitHub(_formData: FormData) {
   const supabase = await createClient()
 
   const { data, error } = await supabase.auth.signInWithOAuth({
@@ -72,19 +72,17 @@ export async function loginWithGitHub() {
     },
   })
 
-  if (error) {
-    return { error: error.message }
+  if (error || !data.url) {
+    redirect('/login?error=github_oauth_failed')
   }
 
-  if (data.url) {
-    redirect(data.url)
-  }
+  redirect(data.url)
 }
 
 /**
  * Sign in with Google OAuth.
  */
-export async function loginWithGoogle() {
+export async function loginWithGoogle(_formData: FormData) {
   const supabase = await createClient()
 
   const { data, error } = await supabase.auth.signInWithOAuth({
@@ -95,13 +93,11 @@ export async function loginWithGoogle() {
     },
   })
 
-  if (error) {
-    return { error: error.message }
+  if (error || !data.url) {
+    redirect('/login?error=google_oauth_failed')
   }
 
-  if (data.url) {
-    redirect(data.url)
-  }
+  redirect(data.url)
 }
 
 /**
