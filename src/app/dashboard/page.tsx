@@ -145,7 +145,7 @@ export default async function DashboardPage() {
               <span className="text-xs text-slate-500">{VERIFICATIONS.length} total</span>
             </div>
 
-            <div className="divide-y" style={{ divideColor: 'rgba(255,255,255,0.04)' }}>
+            <div className="divide-y" style={{ '--tw-divide-opacity': '1', borderColor: 'rgba(255,255,255,0.04)' } as React.CSSProperties}>
               {VERIFICATIONS.map((v, i) => (
                 <div key={i} className="flex items-center gap-4 px-6 py-4 transition hover:bg-white/[0.02]">
                   {/* Company dot */}
@@ -218,7 +218,7 @@ export default async function DashboardPage() {
             <div className="flex items-center gap-4 mb-5">
               {avatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={avatar} alt={displayName} className="h-14 w-14 rounded-full ring-2" style={{ ringColor: 'rgba(124,58,237,0.4)' }} />
+                <img src={avatar} alt={displayName} className="h-14 w-14 rounded-full" style={{ boxShadow: '0 0 0 2px rgba(124,58,237,0.4)' }} />
               ) : (
                 <div className="flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold text-white"
                   style={{ background: 'linear-gradient(135deg, #3b82f6, #7c3aed)' }}>

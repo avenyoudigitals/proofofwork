@@ -119,7 +119,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <div className="flex items-center gap-3 rounded-xl px-3 py-3 mt-3">
             {avatar ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={avatar} alt={displayName} className="h-7 w-7 rounded-full ring-1" style={{ ringColor: 'rgba(124,58,237,0.4)' }} />
+              <img src={avatar} alt={displayName} className="h-7 w-7 rounded-full" style={{ boxShadow: '0 0 0 1px rgba(124,58,237,0.4)' }} />
             ) : (
               <div className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
                 style={{ background: 'linear-gradient(135deg, #3b82f6, #7c3aed)' }}>
