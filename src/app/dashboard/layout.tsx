@@ -7,7 +7,10 @@ import { calculateReputation } from '@/lib/reputation'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
-  const { data: { user, session } } = await supabase.auth.getSession()
+  const [{ data: { user } }, { data: { session } }] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.auth.getSession(),
+  ])
   if (!user) redirect('/login')
 
   const displayName = user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'User'
