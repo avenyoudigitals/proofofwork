@@ -11,79 +11,34 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export type VerificationRequestState = {
   error?: string
   success?: boolean
+  successCount?: number
+  partialError?: string
 }
 
-export async function sendVerificationRequest(
-  _prev: VerificationRequestState | undefined,
-  formData: FormData
-): Promise<VerificationRequestState> {
-  const supabase = await createClient()
-  const { data: { user }, error: authError } = await supabase.auth.getUser()
-  if (authError || !user) redirect('/login')
+/* ── Shared email builder ──────────────────────────────────────── */
 
-  const workId       = formData.get('workId') as string
-  const companyEmail = (formData.get('companyEmail') as string)?.trim()
-  const contactName  = (formData.get('contactName') as string)?.trim() || 'there'
-
-  if (!companyEmail) return { error: 'Company contact email is required.' }
-  if (!companyEmail.includes('@')) return { error: 'Please enter a valid email address.' }
-
-  // Fetch the work (ensure it belongs to the current user)
-  const { data: work, error: workError } = await supabase
-    .from('works')
-    .select('*')
-    .eq('id', workId)
-    .eq('user_id', user.id)
-    .single()
-
-  if (workError || !work) return { error: 'Work not found.' }
-
-  // ── Generate a secure one-time token ──────────────────────────
-  const token     = randomBytes(32).toString('hex')   // 256-bit, unguessable
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
-
-  const service = createServiceClient()
-  // Use rpc to bypass PostgREST schema cache (avoids "not found in schema cache"
-  // errors immediately after table creation).
-  const { error: tokenError } = await service.rpc('insert_verification_request', {
-    p_work_id:       workId,
-    p_token:         token,
-    p_company_email: companyEmail,
-    p_expires_at:    expiresAt.toISOString(),
-  })
-
-  if (tokenError) {
-    console.error('Token insert error:', tokenError)
-    // Fallback: try direct insert (works once schema cache refreshes)
-    const { error: insertError } = await service
-      .from('verification_requests')
-      .insert({
-        work_id:       workId,
-        token,
-        company_email: companyEmail,
-        status:        'pending',
-        expires_at:    expiresAt.toISOString(),
-      })
-    if (insertError) {
-      console.error('Fallback insert error:', insertError)
-      return { error: `DB error: ${insertError.message}` }
-    }
-  }
-
-  // ── Build email ────────────────────────────────────────────────
-  const senderName = user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'A ProofForge member'
-  const appUrl     = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
-
-  const approveUrl = `${appUrl}/api/verify?token=${token}&action=approve`
-  const rejectUrl  = `${appUrl}/api/verify?token=${token}&action=reject`
-
+function buildVerificationEmail({
+  contactName,
+  senderName,
+  senderEmail,
+  work,
+  approveUrl,
+  rejectUrl,
+}: {
+  contactName: string
+  senderName: string
+  senderEmail: string
+  work: Record<string, unknown>
+  approveUrl: string
+  rejectUrl: string
+}): string {
   const links: string[] = []
-  if (work.github_url)     links.push(`<a href="${work.github_url}" style="color:#60a5fa;text-decoration:none;">GitHub Repository ↗</a>`)
-  if (work.figma_url)      links.push(`<a href="${work.figma_url}"  style="color:#60a5fa;text-decoration:none;">Figma File ↗</a>`)
-  if (work.live_url)       links.push(`<a href="${work.live_url}"   style="color:#60a5fa;text-decoration:none;">Live / Demo ↗</a>`)
-  if (work.case_study_url) links.push(`<a href="${work.case_study_url}" style="color:#60a5fa;text-decoration:none;">Case Study ↗</a>`)
+  if (work.github_url)      links.push(`<a href="${work.github_url}" style="color:#60a5fa;text-decoration:none;">GitHub Repository ↗</a>`)
+  if (work.figma_url)       links.push(`<a href="${work.figma_url}"  style="color:#60a5fa;text-decoration:none;">Figma File ↗</a>`)
+  if (work.live_url)        links.push(`<a href="${work.live_url}"   style="color:#60a5fa;text-decoration:none;">Live / Demo ↗</a>`)
+  if (work.case_study_url)  links.push(`<a href="${work.case_study_url}" style="color:#60a5fa;text-decoration:none;">Case Study ↗</a>`)
 
-  const html = `
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -107,10 +62,8 @@ export async function sendVerificationRequest(
 
   <!-- Main card -->
   <tr><td style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;overflow:hidden;">
-
     <!-- Top accent bar -->
     <tr><td style="height:3px;background:linear-gradient(90deg,#3b82f6,#7c3aed,#06b6d4);"></td></tr>
-
     <tr><td style="padding:40px;">
 
       <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;color:#f1f5f9;line-height:1.3;">
@@ -131,9 +84,9 @@ export async function sendVerificationRequest(
           <h2 style="margin:0 0 6px;font-size:19px;font-weight:700;color:#fff;">${work.title}</h2>
           <p style="margin:0 0 16px;font-size:12px;color:#64748b;">Role: <span style="color:#94a3b8;">${work.role}</span></p>
           <p style="margin:0 0 0;font-size:14px;line-height:1.7;color:#94a3b8;">${work.description}</p>
-          ${work.tags?.length ? `
+          ${Array.isArray(work.tags) && work.tags.length ? `
           <div style="margin-top:16px;">
-            ${work.tags.map((t: string) => `<span style="display:inline-block;margin:2px 3px 2px 0;padding:3px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-size:11px;color:#94a3b8;">${t}</span>`).join('')}
+            ${(work.tags as string[]).map(t => `<span style="display:inline-block;margin:2px 3px 2px 0;padding:3px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-size:11px;color:#94a3b8;">${t}</span>`).join('')}
           </div>` : ''}
           ${links.length ? `
           <div style="margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.08);">
@@ -180,7 +133,7 @@ export async function sendVerificationRequest(
 
   <!-- Footer -->
   <tr><td style="padding-top:28px;text-align:center;font-size:11px;color:#1e293b;">
-    Sent by ProofForge on behalf of ${senderName} (${user.email})<br>
+    Sent by ProofForge on behalf of ${senderName} (${senderEmail})<br>
     Reply-to is set to their email if you wish to respond directly.
   </td></tr>
 
@@ -189,51 +142,140 @@ export async function sendVerificationRequest(
 </table>
 </body>
 </html>`
+}
 
-  // ── Dev-mode override ─────────────────────────────────────────
-  // Resend sandbox keys only deliver to the account owner's address.
-  // Set RESEND_DEV_OVERRIDE_TO=aaronrthomas88@gmail.com in .env.local
-  // to redirect all emails there while still seeing the full template.
-  const devOverrideTo = process.env.RESEND_DEV_OVERRIDE_TO?.trim() || undefined
-  const actualTo      = devOverrideTo ?? companyEmail
-  const isDevOverride = !!devOverrideTo && devOverrideTo !== companyEmail
+/* ── Server Action ─────────────────────────────────────────────── */
 
-  const devBanner = isDevOverride
-    ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
-        <tr><td style="background:#7c3aed;border-radius:10px;padding:12px 20px;">
-          <p style="margin:0;font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px;">
-            ⚙ Dev Override Active
-          </p>
-          <p style="margin:4px 0 0;font-size:12px;color:rgba(255,255,255,0.8);">
-            Originally addressed to: <strong>${companyEmail}</strong>
-          </p>
-        </td></tr>
-      </table>`
-    : ''
+export async function sendVerificationRequest(
+  _prev: VerificationRequestState | undefined,
+  formData: FormData
+): Promise<VerificationRequestState> {
+  const supabase = await createClient()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) redirect('/login')
 
-  const finalHtml = html.replace(
-    '<h1 style="margin:0 0 16px',
-    `${devBanner}<h1 style="margin:0 0 16px`,
-  )
+  const workId   = formData.get('workId') as string
+  const rowCount = parseInt(formData.get('rowCount') as string || '1', 10)
 
-  const { error: emailError } = await resend.emails.send({
-    from: process.env.RESEND_FROM_EMAIL
-      ? `ProofForge <${process.env.RESEND_FROM_EMAIL}>`
-      : 'ProofForge <onboarding@resend.dev>',
-    to:      actualTo,
-    replyTo: user.email!,
-    subject: isDevOverride
-      ? `[DEV → ${companyEmail}] Verify ${senderName}'s contribution — ${work.title}`
-      : `[Action Required] Verify ${senderName}'s contribution — ${work.title}`,
-    html: finalHtml,
-  })
-
-  if (emailError) {
-    // Roll back the token if the email failed
-    await service.from('verification_requests').delete().eq('token', token)
-    console.error('Resend error:', emailError)
-    return { error: `Email error: ${emailError.message}` }
+  // Collect all company rows
+  const contacts: { contactName: string; companyEmail: string }[] = []
+  for (let i = 0; i < rowCount; i++) {
+    const email = (formData.get(`companyEmail_${i}`) as string)?.trim()
+    const name  = (formData.get(`contactName_${i}`) as string)?.trim() || 'there'
+    if (email && email.includes('@')) {
+      contacts.push({ contactName: name, companyEmail: email })
+    }
   }
 
-  return { success: true }
+  if (contacts.length === 0) {
+    return { error: 'Please provide at least one valid company contact email.' }
+  }
+
+  // Fetch the work (ensure it belongs to the current user)
+  const { data: work, error: workError } = await supabase
+    .from('works')
+    .select('*')
+    .eq('id', workId)
+    .eq('user_id', user.id)
+    .single()
+
+  if (workError || !work) return { error: 'Work not found.' }
+
+  const senderName = user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'A ProofForge member'
+  const appUrl     = (process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000').replace(/\/$/, '')
+  const devOverrideTo = process.env.RESEND_DEV_OVERRIDE_TO?.trim() || undefined
+  const service = createServiceClient()
+
+  let successCount = 0
+  const errors: string[] = []
+
+  for (const { contactName, companyEmail } of contacts) {
+    // Generate a secure one-time token per contact
+    const token     = randomBytes(32).toString('hex')
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+
+    // Insert token (try RPC first, fall back to direct insert)
+    const { error: tokenError } = await service.rpc('insert_verification_request', {
+      p_work_id:       workId,
+      p_token:         token,
+      p_company_email: companyEmail,
+      p_expires_at:    expiresAt.toISOString(),
+    })
+
+    if (tokenError) {
+      const { error: insertError } = await service
+        .from('verification_requests')
+        .insert({
+          work_id:       workId,
+          token,
+          company_email: companyEmail,
+          status:        'pending',
+          expires_at:    expiresAt.toISOString(),
+        })
+      if (insertError) {
+        errors.push(`DB error for ${companyEmail}: ${insertError.message}`)
+        continue
+      }
+    }
+
+    const approveUrl = `${appUrl}/api/verify?token=${token}&action=approve`
+    const rejectUrl  = `${appUrl}/api/verify?token=${token}&action=reject`
+
+    const html = buildVerificationEmail({
+      contactName,
+      senderName,
+      senderEmail: user.email!,
+      work,
+      approveUrl,
+      rejectUrl,
+    })
+
+    const isDevOverride = !!devOverrideTo && devOverrideTo !== companyEmail
+    const devBanner = isDevOverride
+      ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">
+          <tr><td style="background:#7c3aed;border-radius:10px;padding:12px 20px;">
+            <p style="margin:0;font-size:12px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:1px;">⚙ Dev Override Active</p>
+            <p style="margin:4px 0 0;font-size:12px;color:rgba(255,255,255,0.8);">Originally addressed to: <strong>${companyEmail}</strong></p>
+          </td></tr>
+        </table>`
+      : ''
+
+    const finalHtml = html.replace(
+      '<h1 style="margin:0 0 16px',
+      `${devBanner}<h1 style="margin:0 0 16px`,
+    )
+
+    const { error: emailError } = await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL
+        ? `ProofForge <${process.env.RESEND_FROM_EMAIL}>`
+        : 'ProofForge <onboarding@resend.dev>',
+      to:      devOverrideTo ?? companyEmail,
+      replyTo: user.email!,
+      subject: isDevOverride
+        ? `[DEV → ${companyEmail}] Verify ${senderName}'s contribution — ${work.title}`
+        : `[Action Required] Verify ${senderName}'s contribution — ${work.title}`,
+      html: finalHtml,
+    })
+
+    if (emailError) {
+      // Roll back the token if email failed
+      await service.from('verification_requests').delete().eq('token', token)
+      errors.push(`Email error for ${companyEmail}: ${emailError.message}`)
+      continue
+    }
+
+    successCount++
+  }
+
+  if (successCount === 0) {
+    return { error: errors[0] ?? 'Failed to send any verification requests.' }
+  }
+
+  return {
+    success: true,
+    successCount,
+    partialError: errors.length > 0
+      ? `${successCount} sent successfully. ${errors.length} failed: ${errors.join('; ')}`
+      : undefined,
+  }
 }
