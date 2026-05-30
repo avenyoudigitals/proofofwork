@@ -2,32 +2,14 @@ import Link from 'next/link'
 import { logout } from '@/app/actions/auth'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { getGitHubContributionStats } from '@/lib/github'
-import { calculateReputation } from '@/lib/reputation'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
-  const [{ data: { user } }, { data: { session } }] = await Promise.all([
-    supabase.auth.getUser(),
-    supabase.auth.getSession(),
-  ])
+  const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
   const displayName = user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'User'
   const avatar = user.user_metadata?.avatar_url as string | undefined
-
-  // Fetch real reputation score if GitHub is connected
-  const token = session?.provider_token
-  let repScore = 0
-  let repTierColor = '#3b82f6'
-  if (token) {
-    try {
-      const stats = await getGitHubContributionStats(token)
-      const rep   = calculateReputation(stats)
-      repScore     = rep.total
-      repTierColor = rep.tier.color
-    } catch { /* GitHub not reachable — leave at 0 */ }
-  }
 
   const navItems = [
     {
@@ -67,15 +49,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
       ),
     },
     {
-      href: '/dashboard/reputation',
-      label: 'Reputation',
-      icon: (
-        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-        </svg>
-      ),
-    },
-    {
       href: '/dashboard/figma',
       label: 'Figma',
       icon: (
@@ -111,7 +84,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-5 space-y-0.5">
-          {/* Section label */}
           <p className="px-3 pb-2 text-[9px] font-semibold uppercase tracking-widest text-slate-600">Workspace</p>
           {navItems.map((item) => (
             <Link
@@ -186,28 +158,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Notification dot */}
             <button className="relative rounded-lg p-2 text-slate-400 transition hover:bg-white/5 hover:text-white">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
               <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-blue-400" />
             </button>
-
-            <div className="h-4 w-px bg-white/10" />
-
-            <Link
-              href="/dashboard/reputation"
-              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs transition hover:bg-white/5"
-            >
-              <span className="text-slate-400">Rep:</span>
-              <span
-                className="font-bold text-sm"
-                style={{ color: repScore > 0 ? repTierColor : '#64748b' }}
-              >
-                {repScore > 0 ? repScore : (token ? '…' : '—')}
-              </span>
-            </Link>
           </div>
         </header>
 
