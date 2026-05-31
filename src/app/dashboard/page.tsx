@@ -4,95 +4,87 @@ import Link from 'next/link'
 
 export const metadata = { title: 'Dashboard — ProofForge' }
 
-/* ─────────────────────────────────────────────────────────────── */
-/*  MOCK DATA                                                       */
-/* ─────────────────────────────────────────────────────────────── */
+/* ── Seeded heatmap (no hydration mismatch) ── */
+function heatVal(seed: number) {
+  const x = Math.sin(seed + 1) * 10000
+  const r = x - Math.floor(x)
+  return r < 0.42 ? 0 : r < 0.62 ? 1 : r < 0.78 ? 2 : r < 0.91 ? 3 : 4
+}
+const HEATMAP = Array.from({ length: 52 }, (_, w) =>
+  Array.from({ length: 7 }, (_, d) => heatVal(w * 7 + d))
+)
+const HEAT_COLORS = [
+  'rgba(124,58,237,0.05)',
+  'rgba(124,58,237,0.18)',
+  'rgba(124,58,237,0.38)',
+  'rgba(124,58,237,0.6)',
+  'rgba(124,58,237,0.88)',
+]
 
+/* ── Mock data ── */
 const VERIFICATIONS = [
-  { project: 'Stripe Checkout Redesign', company: 'Stripe', status: 'approved', time: '2h ago', rep: +48, accent: '#10b981' },
-  { project: 'Real-time Sync Engine', company: 'Linear', status: 'pending', time: '1d ago', rep: null, accent: '#3b82f6' },
-  { project: 'ML Pipeline Architecture', company: 'OpenAI', status: 'approved', time: '3d ago', rep: +92, accent: '#10b981' },
-  { project: 'Zero-Trust Auth Overhaul', company: 'GitHub', status: 'review', time: '5d ago', rep: null, accent: '#f97316' },
-  { project: 'Design System v4.0', company: 'Figma', status: 'peer', time: '7d ago', rep: +31, accent: '#60a5fa' },
+  { project: 'Stripe Checkout Redesign', company: 'Stripe',  status: 'approved', time: '2h ago',  rep: +48,  color: '#10b981' },
+  { project: 'Real-time Sync Engine',     company: 'Linear',  status: 'pending',  time: '1d ago',  rep: null, color: '#f59e0b' },
+  { project: 'ML Pipeline Architecture',  company: 'OpenAI',  status: 'approved', time: '3d ago',  rep: +92,  color: '#10b981' },
+  { project: 'Zero-Trust Auth Overhaul',  company: 'GitHub',  status: 'review',   time: '5d ago',  rep: null, color: '#7c3aed' },
+  { project: 'Design System v4.0',        company: 'Figma',   status: 'peer',     time: '7d ago',  rep: +31,  color: '#818cf8' },
 ]
 
 const ACTIVITY = [
-  { type: 'verification', text: 'Stripe verified your Checkout Redesign contribution', time: '2 hours ago', icon: '✦', color: '#10b981', bg: 'rgba(16,185,129,0.15)' },
-  { type: 'peer', text: '3 peers co-signed Auth Overhaul on GitHub', time: '1 day ago', icon: '🔗', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)' },
-  { type: 'upload', text: 'ML Pipeline Architecture submitted for review', time: '3 days ago', icon: '⬆', color: '#7c3aed', bg: 'rgba(124,58,237,0.15)' },
-  { type: 'rep', text: 'Reputation milestone reached: Top 5% globally', time: '4 days ago', icon: '★', color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
-  { type: 'company', text: 'OpenAI joined ProofForge — you\'re an early verifier', time: '1 week ago', icon: '◆', color: '#06b6d4', bg: 'rgba(6,182,212,0.15)' },
+  { text: 'Stripe officially verified your Checkout Redesign', time: '2h ago', icon: '✦', color: '#10b981', bg: 'rgba(16,185,129,0.1)'  },
+  { text: '3 peers co-signed Zero-Trust Auth Overhaul', time: '1d ago', icon: '◈', color: '#7c3aed', bg: 'rgba(124,58,237,0.1)' },
+  { text: 'ML Pipeline Architecture submitted to OpenAI', time: '3d ago', icon: '⬆', color: '#818cf8', bg: 'rgba(79,70,229,0.1)'  },
+  { text: 'Reputation milestone — Top 4% globally', time: '4d ago', icon: '★', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)'  },
+  { text: 'OpenAI joined ProofForge. You verified early.', time: '1w ago', icon: '◆', color: '#38bdf8', bg: 'rgba(56,189,248,0.1)' },
 ]
 
-// Generate heatmap data (52 weeks × 7 days)
-function generateHeatmap() {
-  return Array.from({ length: 52 }, (_, week) =>
-    Array.from({ length: 7 }, (_, day) => {
-      const rand = Math.random()
-      if (rand < 0.45) return 0
-      if (rand < 0.65) return 1
-      if (rand < 0.80) return 2
-      if (rand < 0.92) return 3
-      return 4
-    })
-  )
-}
+/* ── Sub-components ── */
 
-const HEATMAP = generateHeatmap()
-const HEAT_COLORS = [
-  'rgba(255,255,255,0.05)',
-  'rgba(59,130,246,0.2)',
-  'rgba(59,130,246,0.45)',
-  'rgba(124,58,237,0.55)',
-  'rgba(124,58,237,0.9)',
-]
-
-/* ─────────────────────────────────────────────────────────────── */
-/*  SUB-COMPONENTS                                                  */
-/* ─────────────────────────────────────────────────────────────── */
-
-function StatCard({
-  label, value, delta, sub, color,
-}: { label: string; value: string; delta?: string; sub?: string; color: string }) {
+function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
     <div
-      className="relative overflow-hidden rounded-2xl p-6 transition-all hover:-translate-y-0.5"
-      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 4px 24px rgba(0,0,0,0.3)' }}
+      className={`rounded-2xl ${className}`}
+      style={{
+        background: 'rgba(255,255,255,0.025)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        boxShadow: '0 1px 0 rgba(255,255,255,0.04) inset',
+      }}
     >
-      {/* Corner glow */}
-      <div className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 rounded-full"
-        style={{ background: `radial-gradient(circle, ${color}25 0%, transparent 70%)` }}
-      />
-      <div className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-3">{label}</div>
-      <div className="text-4xl font-bold text-white mb-1">{value}</div>
-      {delta && <div className="text-xs font-semibold" style={{ color }}>{delta}</div>}
-      {sub && <div className="text-xs text-slate-500 mt-1">{sub}</div>}
+      {children}
     </div>
   )
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; color: string; bg: string }> = {
-    approved: { label: 'Company Verified', color: '#10b981', bg: 'rgba(16,185,129,0.15)' },
-    pending:  { label: 'Pending Review', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-    review:   { label: 'In Review', color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
-    peer:     { label: 'Peer Verified', color: '#60a5fa', bg: 'rgba(96,165,250,0.12)' },
-  }
-  const s = map[status] ?? { label: status, color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' }
+function StatCard({ label, value, delta, color }: { label: string; value: string; delta?: string; color: string }) {
   return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-wide"
-      style={{ color: s.color, background: s.bg, border: `1px solid ${s.color}25` }}
-    >
-      <span className="h-1.5 w-1.5 rounded-full" style={{ background: s.color }} />
+    <Card className="relative overflow-hidden p-6">
+      <div className="pointer-events-none absolute -right-4 -top-4 h-20 w-20 rounded-full"
+        style={{ background: `radial-gradient(circle, ${color}12 0%, transparent 70%)` }} />
+      <div className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: '#1e293b' }}>{label}</div>
+      <div className="text-4xl font-black text-white mb-1">{value}</div>
+      {delta && <div className="text-xs font-semibold" style={{ color }}>{delta}</div>}
+    </Card>
+  )
+}
+
+function StatusPill({ status }: { status: string }) {
+  const map: Record<string, { label: string; color: string; bg: string }> = {
+    approved: { label: 'Verified',   color: '#10b981', bg: 'rgba(16,185,129,0.1)'  },
+    pending:  { label: 'Pending',    color: '#f59e0b', bg: 'rgba(245,158,11,0.1)'  },
+    review:   { label: 'In Review',  color: '#7c3aed', bg: 'rgba(124,58,237,0.1)'  },
+    peer:     { label: 'Peer Verif', color: '#818cf8', bg: 'rgba(79,70,229,0.1)'   },
+  }
+  const s = map[status] ?? { label: status, color: '#475569', bg: 'rgba(255,255,255,0.04)' }
+  return (
+    <span className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold"
+      style={{ color: s.color, background: s.bg, border: `1px solid ${s.color}20` }}>
+      <span className="h-1 w-1 rounded-full" style={{ background: s.color }} />
       {s.label}
     </span>
   )
 }
 
-/* ─────────────────────────────────────────────────────────────── */
-/*  PAGE                                                            */
-/* ─────────────────────────────────────────────────────────────── */
+/* ── Page ── */
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -102,203 +94,173 @@ export default async function DashboardPage() {
   const displayName = user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'there'
   const avatar = user.user_metadata?.avatar_url as string | undefined
 
+  const hour = new Date().getUTCHours()
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
+
   return (
-    <div className="max-w-5xl space-y-8">
+    <div className="max-w-5xl space-y-6">
 
-      {/* ── Page header ── */}
+      {/* Header */}
       <div>
-        <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-1">Overview</p>
-        <h1 className="text-2xl font-bold text-white">
-          Good {getTimeOfDay()},{' '}
-          <span
-            style={{
-              background: 'linear-gradient(135deg, #60a5fa, #a78bfa)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            {displayName}
-          </span>{' '}
-          👋
+        <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#1e293b' }}>Overview</p>
+        <h1 className="text-2xl font-black text-white" style={{ letterSpacing: '-0.02em' }}>
+          {greeting}, <span style={{ background: 'linear-gradient(135deg, #c4b5fd, #a78bfa, #818cf8)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{displayName}</span> 👋
         </h1>
-        <p className="mt-1 text-sm text-slate-400">Your verified professional identity at a glance.</p>
+        <p className="mt-1 text-sm" style={{ color: '#334155' }}>Your verified professional identity at a glance.</p>
       </div>
 
-      {/* ── Stat cards ── */}
+      {/* Stats */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Reputation Score" value="847" delta="↑ +12 this month" sub="Top 4% globally" color="#3b82f6" />
+        <StatCard label="Reputation" value="847" delta="↑ +12 this month" color="#7c3aed" />
         <StatCard label="Verified Works" value="23" delta="↑ +3 this month" color="#10b981" />
-        <StatCard label="Companies" value="7" delta="↑ +1 this month" color="#7c3aed" />
-        <StatCard label="Collaborators" value="34" sub="across all projects" color="#f97316" />
+        <StatCard label="Company Seals" value="7" delta="↑ +1 this month" color="#38bdf8" />
+        <StatCard label="Collaborators" value="34" color="#f59e0b" />
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-5">
+      {/* Main grid */}
+      <div className="grid gap-5 lg:grid-cols-5">
 
-        {/* ── Left column (3/5) ── */}
-        <div className="space-y-6 lg:col-span-3">
+        {/* Left 3 cols */}
+        <div className="space-y-5 lg:col-span-3">
 
-          {/* Verification requests */}
-          <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-              <h2 className="text-sm font-semibold text-white">Verification Requests</h2>
-              <span className="text-xs text-slate-500">{VERIFICATIONS.length} total</span>
+          {/* Verifications table */}
+          <Card className="overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4"
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <h2 className="text-sm font-bold text-white">Verification Requests</h2>
+              <span className="rounded-md px-2 py-0.5 text-[10px] font-bold"
+                style={{ color: '#7c3aed', background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.18)' }}>
+                {VERIFICATIONS.length} total
+              </span>
             </div>
-
-            <div className="divide-y" style={{ '--tw-divide-opacity': '1', borderColor: 'rgba(255,255,255,0.04)' } as React.CSSProperties}>
+            <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.04)' } as React.CSSProperties}>
               {VERIFICATIONS.map((v, i) => (
-                <div key={i} className="flex items-center gap-4 px-6 py-4 transition hover:bg-white/[0.02]">
-                  {/* Company dot */}
-                  <div className="h-8 w-8 shrink-0 rounded-lg flex items-center justify-center text-xs font-bold text-white"
-                    style={{ background: v.accent + '25', border: `1px solid ${v.accent}30` }}>
+                <div key={i} className="flex items-center gap-4 px-6 py-3.5 transition hover:bg-white/[0.02]">
+                  <div className="h-8 w-8 shrink-0 flex items-center justify-center rounded-lg text-xs font-bold"
+                    style={{ background: `${v.color}12`, color: v.color, border: `1px solid ${v.color}20` }}>
                     {v.company[0]}
                   </div>
-
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">{v.project}</p>
-                    <p className="text-xs text-slate-500">{v.company} · {v.time}</p>
+                    <p className="truncate text-sm font-medium" style={{ color: '#cbd5e1' }}>{v.project}</p>
+                    <p className="text-xs" style={{ color: '#1e293b' }}>{v.company} · {v.time}</p>
                   </div>
-
                   <div className="flex items-center gap-3 shrink-0">
-                    {v.rep && (
-                      <span className="text-xs font-semibold text-emerald-400">+{v.rep} rep</span>
-                    )}
-                    <StatusBadge status={v.status} />
+                    {v.rep != null && <span className="text-xs font-bold" style={{ color: '#10b981' }}>+{v.rep}</span>}
+                    <StatusPill status={v.status} />
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
 
-          {/* Contribution heatmap */}
-          <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          {/* Heatmap */}
+          <Card className="p-6">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-sm font-semibold text-white">Contribution Activity</h2>
-              <span className="text-xs text-slate-500">Last 12 months · 180+ contributions</span>
+              <h2 className="text-sm font-bold text-white">Contribution Activity</h2>
+              <span className="text-xs" style={{ color: '#1e293b' }}>Last 12 months</span>
             </div>
-
-            {/* Month labels */}
-            <div className="mb-2 flex text-[9px] text-slate-600 gap-[11px] ml-3">
+            <div className="mb-1.5 flex text-[9px] gap-[11px] ml-4" style={{ color: '#1e293b' }}>
               {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].map((m) => (
                 <span key={m} className="w-4">{m}</span>
               ))}
             </div>
-
             <div className="flex gap-1 overflow-x-auto pb-2">
               {HEATMAP.map((week, wi) => (
                 <div key={wi} className="flex flex-col gap-1 shrink-0">
-                  {week.map((level, di) => (
-                    <div
-                      key={di}
-                      className="h-2.5 w-2.5 rounded-sm transition hover:scale-125"
-                      style={{ background: HEAT_COLORS[level] }}
-                      title={`Level ${level}`}
-                    />
+                  {week.map((lvl, di) => (
+                    <div key={di} className="h-2.5 w-2.5 rounded-sm transition hover:scale-110 cursor-default"
+                      style={{ background: HEAT_COLORS[lvl] }} />
                   ))}
                 </div>
               ))}
             </div>
-
-            {/* Legend */}
-            <div className="mt-3 flex items-center gap-1.5 text-[9px] text-slate-500">
-              <span>Less</span>
-              {HEAT_COLORS.map((c, i) => (
-                <div key={i} className="h-2.5 w-2.5 rounded-sm" style={{ background: c }} />
-              ))}
-              <span>More</span>
+            <div className="mt-3 flex items-center gap-1.5 text-[9px]" style={{ color: '#1e293b' }}>
+              Less
+              {HEAT_COLORS.map((c, i) => <div key={i} className="h-2.5 w-2.5 rounded-sm" style={{ background: c }} />)}
+              More
             </div>
-          </div>
+          </Card>
         </div>
 
-        {/* ── Right column (2/5) ── */}
-        <div className="space-y-6 lg:col-span-2">
+        {/* Right 2 cols */}
+        <div className="space-y-5 lg:col-span-2">
 
-          {/* Profile card */}
-          <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          {/* Profile */}
+          <Card className="p-6">
             <div className="flex items-center gap-4 mb-5">
               {avatar ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={avatar} alt={displayName} className="h-14 w-14 rounded-full" style={{ boxShadow: '0 0 0 2px rgba(124,58,237,0.4)' }} />
+                <img src={avatar} alt={displayName} className="h-14 w-14 rounded-full"
+                  style={{ boxShadow: '0 0 0 3px rgba(124,58,237,0.25)' }} />
               ) : (
-                <div className="flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold text-white"
-                  style={{ background: 'linear-gradient(135deg, #3b82f6, #7c3aed)' }}>
+                <div className="flex h-14 w-14 items-center justify-center rounded-full text-xl font-black text-white"
+                  style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 0 0 3px rgba(124,58,237,0.2)' }}>
                   {displayName[0]?.toUpperCase()}
                 </div>
               )}
               <div>
-                <p className="font-semibold text-white">{displayName}</p>
-                <p className="text-xs text-slate-500">{user.email}</p>
-                <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[9px] font-semibold text-emerald-300"
-                  style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                  <span className="h-1 w-1 rounded-full bg-emerald-400" />
+                <p className="font-bold text-white">{displayName}</p>
+                <p className="text-xs" style={{ color: '#334155' }}>{user.email}</p>
+                <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[9px] font-bold"
+                  style={{ color: '#10b981', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.18)' }}>
+                  <span className="h-1 w-1 rounded-full" style={{ background: '#10b981', animation: 'pulseDot 2s ease-in-out infinite' }} />
                   VERIFIED MEMBER
-                </div>
+                </span>
               </div>
             </div>
-
-            {/* Rep bar */}
-            <div className="mb-2 flex items-center justify-between text-xs">
-              <span className="text-slate-400">Reputation</span>
+            <div className="mb-2 flex justify-between text-xs">
+              <span style={{ color: '#334155' }}>Reputation Score</span>
               <span className="font-bold text-white">847 / 1000</span>
             </div>
-            <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
-              <div className="h-full rounded-full transition-all"
-                style={{ width: '84.7%', background: 'linear-gradient(90deg, #3b82f6, #7c3aed)' }}
-              />
+            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+              <div className="h-full rounded-full" style={{ width: '84.7%', background: 'linear-gradient(90deg, #7c3aed, #4f46e5)' }} />
             </div>
-            <p className="mt-1.5 text-[10px] text-slate-500">Top 4% · Need 153 more for Elite tier</p>
-          </div>
+            <p className="mt-2 text-[10px]" style={{ color: '#1e293b' }}>Top 4% · 153 more for Elite tier</p>
+          </Card>
 
-          {/* Activity feed */}
-          <div className="rounded-2xl p-6" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <h2 className="mb-5 text-sm font-semibold text-white">Activity Feed</h2>
+          {/* Activity */}
+          <Card className="p-6">
+            <h2 className="mb-5 text-sm font-bold text-white">Activity Feed</h2>
             <div className="space-y-4">
               {ACTIVITY.map((a, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-sm"
-                    style={{ background: a.bg, color: a.color }}>
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs"
+                    style={{ background: a.bg, color: a.color, border: `1px solid ${a.color}18` }}>
                     {a.icon}
                   </div>
                   <div>
-                    <p className="text-xs text-slate-300 leading-5">{a.text}</p>
-                    <p className="mt-0.5 text-[10px] text-slate-600">{a.time}</p>
+                    <p className="text-[11px] leading-5" style={{ color: '#475569' }}>{a.text}</p>
+                    <p className="mt-0.5 text-[10px]" style={{ color: '#1e293b' }}>{a.time}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </Card>
 
-          {/* Quick links */}
-          <div className="rounded-2xl p-5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            <h2 className="mb-4 text-sm font-semibold text-white">Quick Actions</h2>
-            <div className="space-y-2">
+          {/* Quick actions */}
+          <Card className="p-5">
+            <h2 className="mb-4 text-sm font-bold text-white">Quick Actions</h2>
+            <div className="space-y-1">
               {[
-                { label: 'Browse GitHub repos',    href: '/dashboard/github', icon: '⎇', color: '#3b82f6' },
-                { label: 'Upload proof of work',   href: '/dashboard/upload', icon: '⬆', color: '#7c3aed' },
-                { label: 'Invite a collaborator',  href: '#',                 icon: '🔗', color: '#10b981' },
-                { label: 'Request company review', href: '#',                 icon: '✦', color: '#f59e0b' },
-              ].map((action) => (
-                <Link key={action.label} href={action.href}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white"
-                >
-                  <span className="text-base" style={{ color: action.color }}>{action.icon}</span>
-                  {action.label}
-                  <svg className="ml-auto h-3.5 w-3.5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                { label: 'Browse GitHub repos',    href: '/dashboard/github', color: '#7c3aed', icon: '⎇' },
+                { label: 'Upload proof of work',   href: '/dashboard/upload', color: '#818cf8', icon: '⬆' },
+                { label: 'Request company review', href: '#',                 color: '#10b981', icon: '✦' },
+                { label: 'Invite a collaborator',  href: '#',                 color: '#f59e0b', icon: '◈' },
+              ].map((a) => (
+                <Link key={a.label} href={a.href}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition"
+                  style={{ color: '#334155' }}>
+                  <span className="text-sm" style={{ color: a.color }}>{a.icon}</span>
+                  {a.label}
+                  <svg className="ml-auto h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </Link>
               ))}
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </div>
   )
-}
-
-function getTimeOfDay() {
-  const h = new Date().getUTCHours()
-  if (h < 12) return 'morning'
-  if (h < 17) return 'afternoon'
-  return 'evening'
 }
