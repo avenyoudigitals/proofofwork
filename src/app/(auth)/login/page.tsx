@@ -13,210 +13,195 @@ export default function LoginPage() {
   const [googlePending, setGooglePending] = useState(false)
 
   return (
-    <div className="min-h-screen flex" style={{
-      background: '#05050f',
-      backgroundImage: 'radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)',
-      backgroundSize: '28px 28px',
-    }}>
-      {/* Background glow */}
-      <div className="pointer-events-none fixed inset-0 z-0"
-        style={{ background: 'radial-gradient(ellipse 60% 40% at 50% -5%, rgba(124,58,237,0.18) 0%, transparent 65%)' }} />
+    <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--bg)' }}>
 
-      {/* ── LEFT: Branding ── */}
+      {/* ── Left — branding ── */}
       <div
-        className="relative z-10 hidden lg:flex flex-col justify-between w-[420px] shrink-0 p-10"
+        className="hidden lg:flex"
         style={{
-          background: 'rgba(9,9,26,0.8)',
+          flex: '0 0 45%', flexDirection: 'column', justifyContent: 'space-between',
+          padding: '40px 56px',
+          background: 'var(--surface)',
           borderRight: '1px solid rgba(255,255,255,0.06)',
+          position: 'relative', overflow: 'hidden',
         }}
       >
-        {/* Brand */}
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full"
-            style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 0 16px rgba(124,58,237,0.4)' }}>
-            <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          </div>
-          <span className="text-sm font-bold text-white tracking-tight">ProofForge</span>
+        {/* Gradient orb */}
+        <div style={{ position: 'absolute', top: '30%', left: '20%', width: 400, height: 400, background: 'radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 65%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          {/* Logo */}
+          <Link href="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 10, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <span style={{ fontSize: 16, fontWeight: 600, color: '#f4f4f5', letterSpacing: '-0.02em' }}>ProofForge</span>
+          </Link>
         </div>
 
-        {/* Quote */}
-        <div>
-          <div
-            className="mb-8 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold"
-            style={{ background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.25)', color: '#a78bfa' }}
-          >
-            <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#a78bfa', animation: 'pulseDot 2s ease-in-out infinite' }} />
-            47,000+ verified professionals
-          </div>
-
-          <h2 className="text-3xl font-black leading-tight text-white mb-5" style={{ letterSpacing: '-0.02em' }}>
-            &ldquo;Professional evidence
-            <br />
-            over empty claims.
-            <br />
-            <span style={{ background: 'linear-gradient(135deg, #c4b5fd, #a78bfa, #818cf8)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Finally.</span>&rdquo;
+        {/* Center content */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <h2 style={{ fontSize: 32, fontWeight: 700, letterSpacing: '-0.04em', color: '#f4f4f5', lineHeight: 1.15, marginBottom: 16 }}>
+            Your work.<br />Verified.
           </h2>
-          <p className="text-sm leading-7" style={{ color: '#334155' }}>
-            Join engineers, designers, and builders at companies like Stripe, Linear, and Vercel who prove their impact with verified evidence — not LinkedIn bullet points.
+          <p style={{ fontSize: 15, color: '#71717a', lineHeight: 1.7, marginBottom: 40, maxWidth: 360 }}>
+            Join 47,000+ professionals who have built verifiable, company-backed work records on ProofForge.
           </p>
 
-          {/* Tier cards */}
-          <div className="mt-8 space-y-2.5">
+          {/* Verification tiers */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
-              { label: 'Self Claimed',     sub: 'You upload the evidence',   color: '#334155', bg: 'rgba(255,255,255,0.03)' },
-              { label: 'Peer Verified',    sub: 'Colleagues co-sign',        color: '#818cf8', bg: 'rgba(79,70,229,0.08)'   },
-              { label: 'Company Verified', sub: 'Employers officially seal', color: '#10b981', bg: 'rgba(16,185,129,0.08)'  },
-            ].map((tier) => (
-              <div key={tier.label}
-                className="flex items-center gap-3 rounded-xl px-4 py-3"
-                style={{ background: tier.bg, border: `1px solid ${tier.color}18` }}>
-                <div className="h-2 w-2 rounded-full shrink-0" style={{ background: tier.color }} />
+              { label: 'Self Claimed',     sub: 'You upload the evidence',       dot: '#52525b' },
+              { label: 'Peer Verified',    sub: 'Colleagues co-sign your work',  dot: '#818cf8' },
+              { label: 'Company Verified', sub: 'Employers officially endorse',  dot: '#22c55e' },
+            ].map((t) => (
+              <div key={t.label} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: t.dot, flexShrink: 0 }} />
                 <div>
-                  <p className="text-xs font-bold" style={{ color: tier.color }}>{tier.label}</p>
-                  <p className="text-[10px]" style={{ color: '#1e293b' }}>{tier.sub}</p>
+                  <p style={{ fontSize: 14, fontWeight: 500, color: '#d4d4d8' }}>{t.label}</p>
+                  <p style={{ fontSize: 12, color: '#71717a' }}>{t.sub}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Trust */}
-        <div>
-          <p className="mb-3 text-[9px] uppercase tracking-widest font-semibold" style={{ color: '#1e293b' }}>
-            Verified by teams at
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {['Stripe', 'Linear', 'Vercel', 'OpenAI', 'Figma', 'GitHub'].map((c) => (
-              <span key={c}
-                className="rounded-full px-3 py-1 text-[10px] font-semibold"
-                style={{ background: 'rgba(255,255,255,0.04)', color: '#334155', border: '1px solid rgba(255,255,255,0.07)' }}>
+        {/* Bottom */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+            {['stripe.com', 'linear.app', 'vercel.com', 'openai.com', 'figma.com', 'github.com'].map((c) => (
+              <span key={c} style={{ fontSize: 11, color: '#52525b', padding: '3px 10px', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, background: 'rgba(255,255,255,0.03)' }}>
                 {c}
               </span>
             ))}
           </div>
+          <p style={{ fontSize: 11, color: '#3f3f46', marginTop: 12 }}>
+            Verified by teams at these companies
+          </p>
         </div>
       </div>
 
-      {/* ── RIGHT: Auth form ── */}
-      <div className="relative z-10 flex flex-1 items-center justify-center px-6 py-16">
-        <div className="w-full max-w-sm">
+      {/* ── Right — auth form ── */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 24px' }}>
+        <div style={{ width: '100%', maxWidth: 380 }}>
 
-          {/* Mobile brand */}
-          <div className="mb-8 flex items-center gap-2 lg:hidden">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 0 16px rgba(124,58,237,0.4)' }}>
-              <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-            <span className="text-sm font-bold text-white">ProofForge</span>
+          {/* Mobile logo */}
+          <div className="lg:hidden" style={{ marginBottom: 36 }}>
+            <Link href="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 28, height: 28, borderRadius: 8, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </div>
+              <span style={{ fontSize: 15, fontWeight: 600, color: '#f4f4f5', letterSpacing: '-0.02em' }}>ProofForge</span>
+            </Link>
           </div>
 
-          <h1 className="mb-1 text-2xl font-bold text-white" style={{ letterSpacing: '-0.02em' }}>Welcome back</h1>
-          <p className="mb-8 text-sm" style={{ color: '#334155' }}>Sign in to your verified workspace</p>
+          <div style={{ marginBottom: 28 }}>
+            <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f4f4f5', letterSpacing: '-0.03em', marginBottom: 6 }}>
+              Sign in to ProofForge
+            </h1>
+            <p style={{ fontSize: 14, color: '#71717a' }}>
+              Don&apos;t have an account?{' '}
+              <Link href="/signup" style={{ color: '#818cf8', textDecoration: 'none', fontWeight: 500 }}>
+                Sign up for free
+              </Link>
+            </p>
+          </div>
 
-          {/* GitHub — PRIMARY */}
-          <form action={loginWithGitHub} onSubmit={() => setGithubPending(true)}>
-            <button id="github-login-btn" type="submit" disabled={githubPending}
-              className="w-full flex items-center gap-3 rounded-xl px-5 py-3.5 text-sm font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 4px 20px rgba(124,58,237,0.4), 0 1px 0 rgba(255,255,255,0.1) inset' }}>
-              <svg className="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+          {/* GitHub primary */}
+          <form action={loginWithGitHub} onSubmit={() => setGithubPending(true)} style={{ marginBottom: 10 }}>
+            <button
+              id="github-login-btn"
+              type="submit"
+              disabled={githubPending}
+              className="btn-secondary"
+              style={{ width: '100%', justifyContent: 'center', padding: '11px', fontSize: 14, opacity: githubPending ? 0.7 : 1 }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
                 <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
               </svg>
-              <span className="flex-1 text-left">{githubPending ? 'Redirecting…' : 'Continue with GitHub'}</span>
-              {!githubPending && (
-                <svg className="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              )}
+              {githubPending ? 'Redirecting…' : 'Continue with GitHub'}
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="my-4 flex items-center gap-3">
-            <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.06)' }} />
-            <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#1e293b' }}>or</span>
-            <div className="h-px flex-1" style={{ background: 'rgba(255,255,255,0.06)' }} />
-          </div>
-
           {/* Google */}
-          <form action={loginWithGoogle} onSubmit={() => setGooglePending(true)}>
-            <button id="google-login-btn" type="submit" disabled={googlePending}
-              className="w-full flex items-center gap-3 rounded-xl px-5 py-3.5 text-sm font-semibold transition-all active:scale-[0.98] disabled:opacity-50"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#cbd5e1', boxShadow: '0 1px 0 rgba(255,255,255,0.04) inset' }}>
-              <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
+          <form action={loginWithGoogle} onSubmit={() => setGooglePending(true)} style={{ marginBottom: 24 }}>
+            <button
+              id="google-login-btn"
+              type="submit"
+              disabled={googlePending}
+              className="btn-secondary"
+              style={{ width: '100%', justifyContent: 'center', padding: '11px', fontSize: 14, opacity: googlePending ? 0.7 : 1 }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              <span className="flex-1 text-left">{googlePending ? 'Redirecting…' : 'Continue with Google'}</span>
-              {!googlePending && (
-                <svg className="h-4 w-4 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              )}
+              {googlePending ? 'Redirecting…' : 'Continue with Google'}
             </button>
           </form>
 
-          {/* Benefits */}
-          <div className="mt-4 rounded-xl px-4 py-3.5 space-y-2"
-            style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            {['Access your verified contribution history', 'Browse and import GitHub repositories', 'One-click sign-in — no password needed'].map((t) => (
-              <div key={t} className="flex items-center gap-2.5">
-                <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded text-[9px] font-bold"
-                  style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981' }}>✓</span>
-                <span className="text-xs" style={{ color: '#334155' }}>{t}</span>
-              </div>
-            ))}
+          {/* Divider */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+            <div className="divider" style={{ flex: 1 }} />
+            <span style={{ fontSize: 12, color: '#52525b' }}>or</span>
+            <div className="divider" style={{ flex: 1 }} />
           </div>
 
           {/* Email toggle */}
-          <div className="mt-5 text-center">
-            <button type="button" onClick={() => setShowEmail((v) => !v)}
-              className="text-xs transition" style={{ color: '#334155' }}>
-              {showEmail ? '↑ Hide' : 'Sign in with email instead'}
+          <div style={{ textAlign: 'center', marginBottom: 20 }}>
+            <button
+              type="button"
+              onClick={() => setShowEmail((v) => !v)}
+              style={{ background: 'none', border: 'none', fontSize: 14, color: '#71717a', cursor: 'pointer', fontFamily: 'var(--font)', transition: 'color 0.15s' }}
+              className="hover-text"
+            >
+              {showEmail ? 'Hide email form' : 'Sign in with email →'}
             </button>
           </div>
 
           {showEmail && (
-            <div className="mt-4">
-              <div className="h-px mb-5" style={{ background: 'rgba(255,255,255,0.06)' }} />
-              <form action={formAction} className="space-y-4">
-                {state?.error && (
-                  <div className="rounded-xl border px-4 py-3 text-sm"
-                    style={{ borderColor: 'rgba(244,63,94,0.2)', background: 'rgba(244,63,94,0.06)', color: '#f43f5e' }}>
-                    {state.error}
-                  </div>
-                )}
-                {[
-                  { id: 'email', label: 'Email', type: 'email', autoComplete: 'email', placeholder: 'you@example.com' },
-                  { id: 'password', label: 'Password', type: 'password', autoComplete: 'current-password', placeholder: '••••••••' },
-                ].map((f) => (
-                  <div key={f.id}>
-                    <label htmlFor={f.id} className="block text-xs font-medium mb-1.5" style={{ color: '#475569' }}>{f.label}</label>
-                    <input id={f.id} name={f.id} type={f.type} autoComplete={f.autoComplete} required
-                      className="w-full rounded-xl px-4 py-3 text-sm transition"
-                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#f8fafc' }}
-                      placeholder={f.placeholder} />
-                  </div>
-                ))}
-                <button id="email-login-btn" type="submit" disabled={pending}
-                  className="w-full rounded-xl px-4 py-3 text-sm font-semibold transition disabled:opacity-50"
-                  style={{ background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(124,58,237,0.2)', color: '#a78bfa' }}>
-                  {pending ? 'Signing in…' : 'Sign in with email'}
-                </button>
-              </form>
-            </div>
+            <form action={formAction} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {state?.error && (
+                <div style={{ fontSize: 13, color: '#ef4444', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', padding: '10px 14px', borderRadius: 8 }}>
+                  {state.error}
+                </div>
+              )}
+              {[
+                { id: 'email',    label: 'Email',    type: 'email',    placeholder: 'you@company.com',  autoComplete: 'email'            },
+                { id: 'password', label: 'Password', type: 'password', placeholder: '••••••••',         autoComplete: 'current-password' },
+              ].map((f) => (
+                <div key={f.id}>
+                  <label htmlFor={f.id} style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#a1a1aa', marginBottom: 6 }}>
+                    {f.label}
+                  </label>
+                  <input
+                    id={f.id} name={f.id} type={f.type} autoComplete={f.autoComplete}
+                    required placeholder={f.placeholder}
+                    style={{ width: '100%', padding: '10px 14px' }}
+                  />
+                </div>
+              ))}
+              <button
+                id="email-login-btn"
+                type="submit"
+                disabled={pending}
+                className="btn-primary"
+                style={{ width: '100%', justifyContent: 'center', opacity: pending ? 0.7 : 1 }}
+              >
+                {pending ? 'Signing in…' : 'Sign in'}
+              </button>
+            </form>
           )}
 
-          <p className="mt-8 text-center text-xs" style={{ color: '#1e293b' }}>
-            No account?{' '}
-            <Link href="/signup" className="font-semibold transition hover:text-violet-400" style={{ color: '#7c3aed' }}>
-              Create one free →
-            </Link>
+          <p style={{ marginTop: 32, fontSize: 12, color: '#3f3f46', textAlign: 'center', lineHeight: 1.6 }}>
+            By continuing, you agree to our{' '}
+            <Link href="/terms" style={{ color: '#71717a', textDecoration: 'none' }}>Terms of Service</Link>{' '}
+            and{' '}
+            <Link href="/terms#privacy" style={{ color: '#71717a', textDecoration: 'none' }}>Privacy Policy</Link>.
           </p>
         </div>
       </div>

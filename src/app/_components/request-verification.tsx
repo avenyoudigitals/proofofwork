@@ -72,15 +72,27 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
       <button
         type="button"
         onClick={openModal}
-        className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-semibold transition hover:opacity-80"
         style={{
-          background: 'rgba(124,58,237,0.12)',
-          border: '1px solid rgba(124,58,237,0.25)',
-          color: '#a78bfa',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '5px 12px',
+          fontFamily: 'var(--font-mono)',
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          color: '#d97706',
+          border: '1px solid #d97706',
+          background: '#fef3c7',
+          cursor: 'pointer',
+          transition: 'background 0.1s',
         }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#fde68a' }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = '#fef3c7' }}
       >
-        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeLinecap="square" />
         </svg>
         Request Verification
       </button>
@@ -89,16 +101,17 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)' }}
+          style={{ background: 'rgba(14,13,11,0.7)' }}
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false) }}
         >
           <div
             ref={dialogRef}
-            className="w-full max-w-lg rounded-2xl p-6 max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-lg max-h-[90vh] overflow-y-auto"
             style={{
-              background: '#0a0a18',
-              border: '1px solid rgba(255,255,255,0.12)',
-              boxShadow: '0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(124,58,237,0.15)',
+              background: '#fff',
+              border: '2px solid #0e0d0b',
+              boxShadow: '8px 8px 0 #0e0d0b',
+              padding: 28,
             }}
           >
             {/* Header */}
@@ -124,7 +137,7 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="shrink-0 rounded-lg p-1.5 text-slate-500 transition hover:bg-white/5 hover:text-white"
+                className="shrink-0 rounded-lg p-1.5 text-stone-400 transition hover:bg-stone-200/50 hover:text-stone-900"
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -135,26 +148,24 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
             {/* Success state */}
             {isSuccess ? (
               <div
-                className="flex items-start gap-3 rounded-xl px-4 py-4"
-                style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)' }}
+                className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-emerald-400 text-sm font-bold"
-                  style={{ background: 'rgba(16,185,129,0.15)' }}>
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-sm font-bold">
                   ✓
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-emerald-300">
+                  <p className="text-sm font-semibold text-emerald-900">
                     {successCount === 1
                       ? 'Verification request sent!'
                       : `${successCount} verification requests sent!`}
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-emerald-700 mt-0.5">
                     {successCount === 1
                       ? 'The company contact will receive your request by email.'
                       : 'All company contacts have been emailed. You\'ll be notified when they respond.'}
                   </p>
                   {state?.partialError && (
-                    <p className="text-xs text-amber-400 mt-2">{state.partialError}</p>
+                    <p className="text-xs text-amber-700 mt-2">{state.partialError}</p>
                   )}
                 </div>
               </div>
@@ -164,10 +175,7 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                 <input type="hidden" name="rowCount" value={rows.length} />
 
                 {state?.error && (
-                  <div
-                    className="rounded-xl px-4 py-3 text-sm text-red-300"
-                    style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)' }}
-                  >
+                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
                     {state.error}
                   </div>
                 )}
@@ -177,19 +185,18 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                   {rows.map((row, idx) => (
                     <div
                       key={row.id}
-                      className="rounded-xl p-4 relative"
-                      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
+                      className="rounded-xl p-4 relative border border-stone-200 bg-white"
                     >
                       {/* Row number + remove */}
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
                           Contact {rows.length > 1 ? idx + 1 : ''}
                         </span>
                         {rows.length > 1 && (
                           <button
                             type="button"
                             onClick={() => removeRow(row.id)}
-                            className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] text-slate-600 transition hover:text-red-400 hover:bg-red-500/10"
+                            className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] text-stone-400 transition hover:text-red-600 hover:bg-red-50"
                           >
                             <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -201,8 +208,8 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
 
                       {/* Contact name */}
                       <div className="space-y-1.5 mb-3">
-                        <label className="block text-xs font-semibold text-slate-300">
-                          Contact name <span className="text-slate-600">(optional)</span>
+                        <label className="block text-xs font-semibold text-stone-700">
+                          Contact name <span className="text-stone-400">(optional)</span>
                         </label>
                         <input
                           name={`contactName_${idx}`}
@@ -211,15 +218,14 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                           onChange={e => updateRow(row.id, 'contactName', e.target.value)}
                           defaultValue={idx === 0 ? (company ?? '') : ''}
                           placeholder="e.g. Sarah Chen, Hiring Manager"
-                          className="w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none transition focus:ring-1 focus:ring-violet-500/50"
-                          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+                          className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-900 placeholder-stone-400 outline-none transition focus:border-amber-500"
                         />
                       </div>
 
                       {/* Company email */}
                       <div className="space-y-1.5">
-                        <label className="block text-xs font-semibold text-slate-300">
-                          Company contact email <span className="text-violet-400">*</span>
+                        <label className="block text-xs font-semibold text-stone-700">
+                          Company contact email <span className="text-amber-600">*</span>
                         </label>
                         <input
                           name={`companyEmail_${idx}`}
@@ -228,8 +234,7 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                           value={row.companyEmail}
                           onChange={e => updateRow(row.id, 'companyEmail', e.target.value)}
                           placeholder="hr@company.com or manager@company.com"
-                          className="w-full rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-600 outline-none transition focus:ring-1 focus:ring-violet-500/50"
-                          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+                          className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-900 placeholder-stone-400 outline-none transition focus:border-amber-500"
                         />
                       </div>
                     </div>
@@ -240,8 +245,7 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                 <button
                   type="button"
                   onClick={addRow}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-semibold text-slate-400 transition hover:text-violet-300 hover:border-violet-500/30"
-                  style={{ background: 'rgba(124,58,237,0.06)', border: '1px dashed rgba(124,58,237,0.25)' }}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-dashed border-stone-300 py-2.5 text-xs font-bold text-stone-500 transition hover:border-stone-400 hover:text-stone-700"
                 >
                   <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -250,14 +254,11 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                 </button>
 
                 {/* Info note */}
-                <div
-                  className="rounded-xl px-4 py-3 flex items-start gap-2.5"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
-                >
-                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="rounded-xl border border-stone-200 bg-stone-100 px-4 py-3 flex items-start gap-2.5">
+                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-[10px] leading-5 text-slate-500">
+                  <p className="text-[10px] leading-5 text-stone-600">
                     Each contact will receive an email with your work title, role, description, and proof links.
                     You&apos;ll get a return email when they approve or decline. Only one approval is needed to mark the work as Company Verified.
                   </p>
@@ -268,21 +269,19 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
-                    className="flex-1 rounded-xl py-2.5 text-sm text-slate-400 transition hover:text-white"
-                    style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                    className="flex-1 rounded-xl border border-stone-200 py-2.5 text-sm text-stone-600 transition hover:bg-stone-100"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={pending}
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #3b82f6, #7c3aed)' }}
+                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 py-2.5 text-sm font-bold text-white transition hover:bg-stone-800 disabled:opacity-50"
                   >
                     {pending ? (
                       <>
                         <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                        Sending{rows.length > 1 ? ` ${rows.length} requests` : ''}…
+                        Sending…
                       </>
                     ) : (
                       rows.length > 1

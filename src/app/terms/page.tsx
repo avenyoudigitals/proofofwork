@@ -114,10 +114,8 @@ export default function TermsPage() {
               {TOC.map((item) => (
                 <li key={item.id}>
                   <a href={`#${item.id}`}
-                    className="block rounded-lg px-2 py-1.5 text-[11px] font-medium transition"
+                    className="block rounded-lg px-2 py-1.5 text-[11px] font-medium transition hover:opacity-80"
                     style={{ color: '#334155' }}
-                    onMouseEnter={(e) => { e.currentTarget.style.color = '#a78bfa'; e.currentTarget.style.background = 'rgba(124,58,237,0.07)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = '#334155'; e.currentTarget.style.background = 'transparent' }}
                   >
                     {item.label}
                   </a>

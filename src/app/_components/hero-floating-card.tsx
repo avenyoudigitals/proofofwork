@@ -1,200 +1,116 @@
 'use client'
 
-// Seeded random — no hydration mismatch
-function sr(seed: number) {
-  const x = Math.sin(seed + 1) * 10000
-  return x - Math.floor(x)
-}
-
-const HEAT_LEVELS = Array.from({ length: 56 }, (_, i) => {
-  const r = sr(i)
-  return r < 0.38 ? 0 : r < 0.58 ? 1 : r < 0.76 ? 2 : r < 0.90 ? 3 : 4
-})
-
-const HEAT_COLORS = [
-  'rgba(124,58,237,0.06)',
-  'rgba(124,58,237,0.2)',
-  'rgba(124,58,237,0.42)',
-  'rgba(124,58,237,0.65)',
-  'rgba(124,58,237,0.9)',
-]
-
-const WORKS = [
-  { title: 'Stripe Checkout Redesign', company: 'Stripe', badge: '✓', color: '#7c3aed', rep: '+48' },
-  { title: 'Real-time Sync Engine', company: 'Linear', badge: '✓', color: '#10b981', rep: '+92' },
-  { title: 'Design System v4.0', company: 'Figma', badge: '◈', color: '#38bdf8', rep: '+31' },
-]
-
 export function HeroFloatingCard() {
   return (
-    <div className="relative w-full">
-      {/* Main browser mockup */}
-      <div
-        className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-2xl"
-        style={{
-          background: 'rgba(9,9,26,0.96)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          boxShadow: '0 40px 100px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.08) inset',
-        }}
-      >
-        {/* Browser chrome */}
-        <div
-          className="flex items-center gap-2 px-4 py-3"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.02)' }}
-        >
-          <div className="flex items-center gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-full" style={{ background: '#ff5f57' }} />
-            <div className="h-2.5 w-2.5 rounded-full" style={{ background: '#febc2e' }} />
-            <div className="h-2.5 w-2.5 rounded-full" style={{ background: '#28c840' }} />
+    <div style={{ position: 'relative', userSelect: 'none' }}>
+      {/* Ambient glow */}
+      <div style={{
+        position: 'absolute', top: '20%', left: '10%', right: '10%', bottom: '10%',
+        background: 'radial-gradient(ellipse, rgba(99,102,241,0.2) 0%, transparent 70%)',
+        filter: 'blur(32px)',
+        zIndex: 0,
+        pointerEvents: 'none',
+      }} />
+
+      {/* Main dashboard card */}
+      <div className="card-flat" style={{ position: 'relative', zIndex: 1, overflow: 'hidden' }}>
+
+        {/* Card header */}
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 600, color: '#f4f4f5', marginBottom: 2 }}>Verification Overview</p>
+            <p style={{ fontSize: 11, color: '#71717a' }}>Updated just now</p>
           </div>
-          <div className="mx-auto flex items-center gap-1.5 rounded-md px-3 py-1 text-[11px]"
-            style={{ background: 'rgba(255,255,255,0.05)', color: '#334155' }}>
-            <svg className="h-2.5 w-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: '#10b981' }}>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-            proofforge.app/dashboard
-          </div>
-          <div className="flex items-center gap-1">
-            {[1,2,3].map((i) => (
-              <div key={i} className="h-4 w-4 rounded" style={{ background: 'rgba(255,255,255,0.04)' }} />
-            ))}
-          </div>
+          <span className="badge badge-green">
+            <span className="dot-live" style={{ width: 5, height: 5 }} />
+            Active
+          </span>
         </div>
 
-        {/* Dashboard layout */}
-        <div className="flex" style={{ minHeight: 360 }}>
-          {/* Sidebar */}
-          <div className="hidden w-44 shrink-0 p-4 sm:block"
-            style={{ borderRight: '1px solid rgba(255,255,255,0.05)' }}>
-            {/* Logo */}
-            <div className="mb-5 flex items-center gap-2">
-              <div className="h-5 w-5 rounded-full"
-                style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }} />
-              <span className="text-xs font-bold" style={{ color: '#f8fafc' }}>ProofForge</span>
-            </div>
-            {/* Nav items */}
-            {['Overview', 'My Works', 'Upload', 'Reputation', 'GitHub', 'Figma'].map((item, i) => (
-              <div key={item}
-                className="mb-0.5 flex items-center gap-2 rounded-lg px-2 py-1.5 text-[11px] font-medium"
-                style={{
-                  background: i === 0 ? 'rgba(124,58,237,0.12)' : 'transparent',
-                  color: i === 0 ? '#c4b5fd' : '#334155',
-                }}>
-                <div className="h-1.5 w-1.5 rounded-full"
-                  style={{ background: i === 0 ? '#7c3aed' : '#1e293b' }} />
-                {item}
-              </div>
-            ))}
-          </div>
-
-          {/* Main content */}
-          <div className="flex-1 p-5">
-            {/* Header row */}
-            <div className="mb-5 flex items-center justify-between">
-              <div>
-                <div className="text-xs font-bold" style={{ color: '#f8fafc' }}>Overview</div>
-                <div className="text-[10px]" style={{ color: '#334155' }}>Alex Kim · #4872</div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-6 w-6 rounded-full"
-                  style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }} />
-                <span className="rounded-full px-2 py-0.5 text-[9px] font-bold"
-                  style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>
-                  VERIFIED
-                </span>
-              </div>
-            </div>
-
-            {/* Stat mini cards */}
-            <div className="mb-4 grid grid-cols-4 gap-2">
-              {[
-                { l: 'Rep Score', v: '847', c: '#7c3aed' },
-                { l: 'Works', v: '23', c: '#10b981' },
-                { l: 'Companies', v: '7', c: '#38bdf8' },
-                { l: 'Collabs', v: '34', c: '#f59e0b' },
-              ].map((s) => (
-                <div key={s.l} className="rounded-lg p-2"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${s.c}18` }}>
-                  <div className="text-lg font-black" style={{ color: '#f8fafc' }}>{s.v}</div>
-                  <div className="text-[9px]" style={{ color: s.c }}>{s.l}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Heatmap */}
-            <div className="mb-4 rounded-lg p-3"
-              style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div className="mb-2 text-[10px] font-medium" style={{ color: '#334155' }}>Contribution activity</div>
-              <div className="flex flex-wrap gap-0.5">
-                {HEAT_LEVELS.map((lvl, i) => (
-                  <div key={i} className="h-2 w-2 rounded-sm"
-                    style={{ background: HEAT_COLORS[lvl] }} />
-                ))}
-              </div>
-            </div>
-
-            {/* Works list */}
-            <div className="space-y-2">
-              {WORKS.map((w) => (
-                <div key={w.title}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div className="h-6 w-6 rounded-md flex items-center justify-center text-[9px] font-bold"
-                    style={{ background: `${w.color}18`, color: w.color }}>
-                    {w.badge}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="truncate text-[11px] font-semibold" style={{ color: '#f8fafc' }}>{w.title}</div>
-                    <div className="text-[9px]" style={{ color: '#334155' }}>{w.company} · Verified</div>
-                  </div>
-                  <span className="text-[10px] font-bold" style={{ color: '#10b981' }}>{w.rep}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Floating card — top left */}
-      <div
-        className="absolute -top-4 -left-4 hidden lg:block"
-        style={{ width: 180, animation: 'float 6s ease-in-out infinite', animationDelay: '0.5s' }}
-      >
-        <div style={{ background: 'rgba(9,9,26,0.92)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 20, boxShadow: '0 1px 0 rgba(255,255,255,0.08) inset, 0 20px 60px rgba(0,0,0,0.6)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 16 }}>
-          <div className="mb-2 flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full"
-              style={{ background: 'rgba(16,185,129,0.15)' }}>
-              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: '#10b981' }}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
+        {/* Reputation score */}
+        <div style={{ padding: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 12, marginBottom: 12 }}>
             <div>
-              <div className="text-[10px] font-bold" style={{ color: '#f8fafc' }}>Stripe Verified</div>
-              <div className="text-[9px]" style={{ color: '#334155' }}>+48 rep · just now</div>
+              <p className="label" style={{ marginBottom: 4 }}>Reputation Score</p>
+              <p style={{ fontSize: 36, fontWeight: 700, color: '#f4f4f5', letterSpacing: '-0.04em', lineHeight: 1 }}>847</p>
+            </div>
+            <div style={{ paddingBottom: 4 }}>
+              <span style={{ fontSize: 12, color: '#22c55e', fontWeight: 500 }}>↑ Top 4%</span>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 text-[10px]" style={{ color: '#475569' }}>
-            <div className="h-1.5 w-1.5 rounded-full" style={{ background: '#10b981', animation: 'pulseDot 2s ease-in-out infinite' }} />
-            Checkout Redesign confirmed
+          <div className="progress" style={{ marginBottom: 4 }}>
+            <div className="progress-fill" style={{ width: '84.7%' }} />
           </div>
+          <p style={{ fontSize: 11, color: '#71717a' }}>153 points to Elite tier</p>
+        </div>
+
+        {/* Divider */}
+        <div className="divider" />
+
+        {/* Stats row */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', padding: '16px 20px', gap: 12 }}>
+          {[
+            { label: 'Verified Works',  val: '23' },
+            { label: 'Company Seals',   val: '7'  },
+            { label: 'Collaborators',   val: '34' },
+          ].map((s) => (
+            <div key={s.label}>
+              <p style={{ fontSize: 20, fontWeight: 700, color: '#f4f4f5', letterSpacing: '-0.03em', marginBottom: 2 }}>{s.val}</p>
+              <p style={{ fontSize: 11, color: '#71717a' }}>{s.label}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Divider */}
+        <div className="divider" />
+
+        {/* Verification list */}
+        <div style={{ padding: '8px 0' }}>
+          {[
+            { name: 'Stripe Checkout Redesign', co: 'stripe.com',  status: 'Verified',   badge: 'badge-green'  },
+            { name: 'Real-time Sync Engine',    co: 'linear.app',  status: 'In Review',  badge: 'badge-amber'  },
+            { name: 'ML Pipeline',              co: 'openai.com',  status: 'Verified',   badge: 'badge-green'  },
+          ].map((item) => (
+            <div key={item.name} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 20px' }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 8, background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.07)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 12, fontWeight: 500, color: '#e4e4e7', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</p>
+                <p style={{ fontSize: 11, color: '#71717a' }}>{item.co}</p>
+              </div>
+              <span className={`badge ${item.badge}`} style={{ fontSize: 10 }}>{item.status}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Floating card — bottom right */}
-      <div
-        className="absolute -bottom-6 -right-4 hidden lg:block"
-        style={{ width: 196, animation: 'floatR 7s ease-in-out infinite', animationDelay: '1s' }}
-      >
-        <div style={{ background: 'rgba(9,9,26,0.92)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 20, boxShadow: '0 1px 0 rgba(255,255,255,0.08) inset, 0 20px 60px rgba(0,0,0,0.6)', backdropFilter: 'blur(24px)', WebkitBackdropFilter: 'blur(24px)', padding: 16 }}>
-          <div className="mb-2 text-[10px] font-semibold" style={{ color: '#94a3b8' }}>Reputation Milestone</div>
-          <div className="flex items-end gap-1">
-            <span className="text-2xl font-black" style={{ color: '#f8fafc' }}>847</span>
-            <span className="mb-1 text-xs font-bold" style={{ color: '#7c3aed' }}>/ 1000</span>
-          </div>
-          <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-            <div className="h-full rounded-full" style={{ width: '84.7%', background: 'linear-gradient(90deg, #7c3aed, #4f46e5)' }} />
-          </div>
-          <div className="mt-1.5 text-[9px]" style={{ color: '#334155' }}>Top 4% globally · Elite in 153 rep</div>
+      {/* Floating notification */}
+      <div style={{
+        position: 'absolute', bottom: -18, right: -12, zIndex: 2,
+        background: '#18181b',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: 10,
+        padding: '10px 14px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+        display: 'flex', alignItems: 'center', gap: 10,
+        minWidth: 220,
+      }}>
+        <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5">
+            <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <div>
+          <p style={{ fontSize: 12, fontWeight: 500, color: '#f4f4f5' }}>Stripe verified your work</p>
+          <p style={{ fontSize: 11, color: '#71717a' }}>+48 reputation · just now</p>
         </div>
       </div>
     </div>

@@ -1,71 +1,215 @@
 @import "tailwindcss";
 
-/* ── Keyframe animations ───────────────────────────────────────── */
-@keyframes float {
-  0%,100% { transform: translateY(0px); }
-  50%      { transform: translateY(-10px); }
-}
-@keyframes floatR {
-  0%,100% { transform: translateY(0px) rotate(2deg); }
-  50%      { transform: translateY(-8px) rotate(2deg); }
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0px); }
-}
-@keyframes pulseDot {
-  0%,100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.4; transform: scale(1.6); }
-}
-@keyframes shimmer {
-  0%   { background-position: -600px 0; }
-  100% { background-position:  600px 0; }
+/* ── Keyframes ─────────────────────────────────────────────────── */
+@keyframes fadeUp   { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+@keyframes shimmer  { from{background-position:200% 0} to{background-position:-200% 0} }
+@keyframes marqueeLTR { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.8)} }
+
+@utility animate-fade-up  { animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+@utility animate-fade-in  { animation: fadeIn 0.4s ease both; }
+@utility animate-marquee  { animation: marqueeLTR 32s linear infinite; }
+
+/* ── Design tokens ─────────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg:        #09090b;
+  --surface:   #111113;
+  --card:      #18181b;
+  --card-2:    #1c1c1f;
+  /* Borders */
+  --border:    rgba(255,255,255,0.07);
+  --border-2:  rgba(255,255,255,0.12);
+  /* Text */
+  --text:      #f4f4f5;
+  --text-2:    #a1a1aa;
+  --text-3:    #52525b;
+  /* Accent — indigo */
+  --indigo:    #6366f1;
+  --indigo-h:  #5254cc;
+  --indigo-dim: rgba(99,102,241,0.12);
+  --indigo-glow: rgba(99,102,241,0.25);
+  /* Status */
+  --green:     #22c55e;
+  --green-dim: rgba(34,197,94,0.1);
+  --amber:     #f59e0b;
+  --red:       #ef4444;
+
+  --font: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* ── Applied via @utility so Tailwind v4 recognises them ───────── */
-@utility animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-@utility animate-float-r {
-  animation: floatR 7s ease-in-out infinite;
-}
-@utility animate-fade-up {
-  animation: fadeUp 0.6s ease-out both;
-}
-@utility animate-pulse-dot {
-  animation: pulseDot 2s ease-in-out infinite;
-}
-
-/* ── Base reset ────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; }
+/* ── Reset ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #05050f;
-  color: #f8fafc;
-  font-family: var(--font-inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  /* Dot grid */
-  background-image: radial-gradient(rgba(255,255,255,0.032) 1px, transparent 1px);
-  background-size: 28px 28px;
+  line-height: 1.5;
 }
 
-/* Fixed glow blobs behind everything */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse 70% 50% at 50% -8%, rgba(124,58,237,0.16) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 30% at 80% 80%,  rgba(16,185,129,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 15% 70%,  rgba(79,70,229,0.06)  0%, transparent 60%);
+/* ── Scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+
+/* ── Selection ─────────────────────────────────────────────────── */
+::selection { background: var(--indigo); color: #fff; }
+
+/* ── Focus ─────────────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--indigo);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); border-radius: 4px; }
+/* ── Typography ────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font);
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+/* ── Input ─────────────────────────────────────────────────────── */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  background: var(--card);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  border-radius: 8px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+input:focus {
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px var(--indigo-dim);
+  outline: none;
+}
+input::placeholder { color: var(--text-3); }
+
+/* ── Cards ─────────────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  border-color: var(--border-2);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.card-flat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  background: var(--indigo);
+  color: #fff;
+  font-family: var(--font);
+  font-weight: 500;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.btn-primary:hover {
+  background: var(--indigo-h);
+  box-shadow: 0 4px 16px var(--indigo-glow);
+}
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+  font-family: var(--font);
+  font-weight: 500;
+  font-size: 14px;
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.18);
+}
+.btn-secondary:active { transform: scale(0.98); }
+
+/* ── Badges ────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 20px;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.badge-indigo { color: #a5b4fc; background: rgba(99,102,241,0.14); border: 1px solid rgba(99,102,241,0.25); }
+.badge-green  { color: #86efac; background: rgba(34,197,94,0.12);  border: 1px solid rgba(34,197,94,0.22);  }
+.badge-amber  { color: #fcd34d; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.22); }
+.badge-zinc   { color: var(--text-2); background: rgba(255,255,255,0.05); border: 1px solid var(--border-2); }
+
+/* ── Status dot ─────────────────────────────────────────────────── */
+.dot-live {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green);
+  display: inline-block;
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+
+/* ── Hover utilities (Server Component safe) ───────────────────── */
+.hover-text:hover { color: var(--text) !important; }
+.hover-border:hover { border-color: var(--border-2) !important; }
+.hover-bg:hover { background: rgba(255,255,255,0.05) !important; }
+.hover-row:hover { background: rgba(255,255,255,0.03) !important; }
+.hover-card:hover { border-color: var(--border-2) !important; box-shadow: 0 4px 24px rgba(0,0,0,0.3) !important; }
+.nav-link:hover { color: var(--text) !important; background: rgba(255,255,255,0.06) !important; }
+
+/* ── Divider ───────────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); }
+.divider-v { width: 1px; background: var(--border); align-self: stretch; }
+
+/* ── Prose ─────────────────────────────────────────────────────── */
+.label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* ── Progress ──────────────────────────────────────────────────── */
+.progress { height: 4px; background: var(--border-2); border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--indigo); border-radius: 4px; transition: width 0.6s ease; }

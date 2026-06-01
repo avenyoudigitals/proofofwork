@@ -1,48 +1,5 @@
 'use client'
 
-/* ── VerificationBadge ─────────────────────────────────────────── */
-
-export function VerificationBadge({ status, company }: { status: 'self' | 'peer' | 'company'; company?: string }) {
-  if (status === 'company')
-    return (
-      <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold"
-        style={{ color: '#10b981', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
-        <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#10b981', animation: 'pulseDot 2s ease-in-out infinite' }} />
-        {company ? `${company} Verified` : 'Company Verified'}
-      </span>
-    )
-  if (status === 'peer')
-    return (
-      <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold"
-        style={{ color: '#818cf8', background: 'rgba(79,70,229,0.1)', border: '1px solid rgba(79,70,229,0.2)' }}>
-        <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#818cf8' }} />
-        Peer Verified
-      </span>
-    )
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold"
-      style={{ color: '#475569', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-      <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#475569' }} />
-      Self Claimed
-    </span>
-  )
-}
-
-/* ── Avatar ─────────────────────────────────────────────────────── */
-
-const COLORS = ['#7c3aed','#4f46e5','#10b981','#f59e0b','#f43f5e','#38bdf8','#8b5cf6']
-
-function Avatar({ initials, idx }: { initials: string; idx: number }) {
-  return (
-    <div className="flex h-6 w-6 items-center justify-center rounded-full text-[9px] font-bold text-white ring-2"
-      style={{ background: COLORS[idx % COLORS.length], ringColor: 'transparent', boxShadow: '0 0 0 2px #05050f' }}>
-      {initials}
-    </div>
-  )
-}
-
-/* ── ProjectData ─────────────────────────────────────────────────── */
-
 export interface ProjectData {
   id: number
   title: string
@@ -52,87 +9,98 @@ export interface ProjectData {
   contributors: string[]
   company: string
   status: 'self' | 'peer' | 'company'
-  color: string
-  accent: string
 }
 
-/* ── ProjectCard ─────────────────────────────────────────────────── */
+const STATUS_CFG = {
+  company: { label: 'Company Verified', cls: 'badge-green'  },
+  peer:    { label: 'Peer Verified',    cls: 'badge-indigo' },
+  self:    { label: 'Self Claimed',     cls: 'badge-zinc'   },
+}
+
+const COMPANY_INITIALS: Record<string, string> = {
+  Stripe: 'S', Linear: 'L', OpenAI: 'O', Figma: 'F', GitHub: 'G', Vercel: 'V',
+}
 
 export function ProjectCard({ project }: { project: ProjectData }) {
+  const cfg = STATUS_CFG[project.status]
+  const initial = COMPANY_INITIALS[project.company] ?? project.company[0]
+
   return (
-    <div
-      className="group relative flex flex-col rounded-2xl p-5 transition-all duration-250"
-      style={{
-        background: 'rgba(255,255,255,0.028)',
-        border: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: '0 1px 0 rgba(255,255,255,0.04) inset',
-        cursor: 'default',
-      }}
-      onMouseEnter={(e) => {
-        const el = e.currentTarget
-        el.style.background = 'rgba(255,255,255,0.042)'
-        el.style.border = `1px solid ${project.accent}28`
-        el.style.boxShadow = `0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px ${project.accent}14`
-        el.style.transform = 'translateY(-2px)'
-      }}
-      onMouseLeave={(e) => {
-        const el = e.currentTarget
-        el.style.background = 'rgba(255,255,255,0.028)'
-        el.style.border = '1px solid rgba(255,255,255,0.07)'
-        el.style.boxShadow = '0 1px 0 rgba(255,255,255,0.04) inset'
-        el.style.transform = 'translateY(0)'
-      }}
-    >
-      {/* Subtle top accent line */}
-      <div className="absolute inset-x-0 top-0 h-px rounded-t-2xl"
-        style={{ background: `linear-gradient(90deg, transparent, ${project.accent}50, transparent)` }} />
+    <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-      {/* Corner glow (visible on hover via group) */}
-      <div className="pointer-events-none absolute -top-8 -right-8 h-24 w-24 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{ background: `radial-gradient(circle, ${project.accent}12 0%, transparent 70%)` }} />
-
-      {/* Header */}
-      <div className="mb-4 flex items-start justify-between gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl text-xs font-black"
-          style={{ background: `${project.accent}14`, color: project.accent, border: `1px solid ${project.accent}20` }}>
-          {project.company[0]}
+      {/* Company + Status */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{
+            width: 36, height: 36, borderRadius: 10,
+            background: 'rgba(99,102,241,0.12)',
+            border: '1px solid rgba(99,102,241,0.2)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 14, fontWeight: 700, color: '#818cf8',
+            flexShrink: 0,
+          }}>
+            {initial}
+          </div>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 500, color: '#f4f4f5' }}>{project.company}</p>
+            <p style={{ fontSize: 11, color: '#71717a' }}>{project.role}</p>
+          </div>
         </div>
-        <VerificationBadge status={project.status} />
+        <span className={`badge ${cfg.cls}`} style={{ fontSize: 10, flexShrink: 0 }}>
+          {cfg.label}
+        </span>
       </div>
 
-      {/* Company */}
-      <div className="mb-1 text-[10px] font-bold uppercase tracking-widest" style={{ color: project.accent, opacity: 0.8 }}>
-        {project.company}
-      </div>
-
-      {/* Title + description */}
-      <h3 className="mb-1.5 text-sm font-bold leading-snug" style={{ color: '#f8fafc' }}>{project.title}</h3>
-      <p className="mb-4 flex-1 text-[11px] leading-5" style={{ color: '#475569' }}>{project.description}</p>
-
-      {/* Role */}
-      <div className="mb-3 text-[10px]" style={{ color: '#334155' }}>
-        <span style={{ color: '#1e293b' }}>Role:</span> {project.role}
+      {/* Title & description */}
+      <div>
+        <h3 style={{ fontSize: 15, fontWeight: 600, color: '#f4f4f5', marginBottom: 6, letterSpacing: '-0.02em' }}>
+          {project.title}
+        </h3>
+        <p style={{ fontSize: 13, color: '#71717a', lineHeight: 1.6 }}>
+          {project.description}
+        </p>
       </div>
 
       {/* Tags */}
-      <div className="mb-4 flex flex-wrap gap-1.5">
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
         {project.tags.map((tag) => (
-          <span key={tag} className="rounded-md px-2 py-0.5 text-[10px] font-medium"
-            style={{ background: 'rgba(255,255,255,0.04)', color: '#475569', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <span key={tag} style={{
+            fontSize: 11, color: '#a1a1aa',
+            padding: '2px 8px',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 4,
+            background: 'rgba(255,255,255,0.04)',
+          }}>
             {tag}
           </span>
         ))}
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-3"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="flex -space-x-1.5">
-          {project.contributors.map((c, i) => <Avatar key={c} initials={c} idx={i} />)}
+      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ display: 'flex' }}>
+            {project.contributors.slice(0, 3).map((c, i) => (
+              <div key={c} style={{
+                width: 22, height: 22, borderRadius: '50%',
+                background: `hsl(${i * 60 + 200}, 60%, 50%)`,
+                border: '2px solid #18181b',
+                marginLeft: i > 0 ? -6 : 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 9, fontWeight: 700, color: '#fff',
+                flexShrink: 0,
+              }}>
+                {c.toUpperCase()}
+              </div>
+            ))}
+          </div>
+          <span style={{ fontSize: 11, color: '#71717a' }}>
+            {project.contributors.length} contributor{project.contributors.length !== 1 ? 's' : ''}
+          </span>
         </div>
-        <span className="text-[10px]" style={{ color: '#334155' }}>
-          {project.contributors.length} contributor{project.contributors.length > 1 ? 's' : ''}
-        </span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#52525b" strokeWidth="2">
+          <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </div>
     </div>
   )

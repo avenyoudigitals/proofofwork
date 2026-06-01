@@ -1,379 +1,325 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { ProjectCard, VerificationBadge } from './_components/project-card'
+import { ProjectCard } from './_components/project-card'
 import type { ProjectData } from './_components/project-card'
 import { HeroFloatingCard } from './_components/hero-floating-card'
 import { FeatureCard } from './_components/interactive-cards'
 import { Navbar } from './_components/landing-nav'
 
 export const metadata: Metadata = {
-  title: 'ProofForge — Proof of Work. Verified.',
-  description: 'The verified proof-of-work platform. Showcase real contributions. Get verified by companies and peers.',
+  title: 'ProofForge — Professional Verification for Developers',
+  description: 'The verified proof-of-work platform. Connect your GitHub, get company-verified, and build a credible professional record.',
 }
 
-/* ── Data ────────────────────────────────────────────────────── */
-
+/* ── Data ─────────────────────────────────────────────────────── */
 const PROJECTS: ProjectData[] = [
-  { id: 1, title: 'Stripe Checkout Redesign', description: 'End-to-end redesign of payment flow, reducing cart abandonment by 34% across 12M monthly users.', role: 'Product Design Lead', tags: ['Figma', 'UX Research', 'A/B Testing'], contributors: ['AK', 'SR', 'MJ'], company: 'Stripe', status: 'company', color: 'from-violet-500/15 to-indigo-500/5', accent: '#7c3aed' },
-  { id: 2, title: 'Real-time Sync Engine', description: 'Distributed CRDT engine supporting 10k concurrent users with sub-50ms latency at global scale.', role: 'Senior Backend Engineer', tags: ['Rust', 'WebSockets', 'CRDTs'], contributors: ['TN', 'PK'], company: 'Linear', status: 'company', color: 'from-sky-500/15 to-cyan-500/5', accent: '#38bdf8' },
-  { id: 3, title: 'ML Pipeline Architecture', description: 'Designed training pipeline processing 2TB/day with 99.9% uptime. Cut training costs by 42%.', role: 'ML Infrastructure Engineer', tags: ['PyTorch', 'Kubernetes', 'Ray'], contributors: ['YZ', 'RB', 'CL'], company: 'OpenAI', status: 'company', color: 'from-emerald-500/15 to-teal-500/5', accent: '#10b981' },
-  { id: 4, title: 'Design System v4.0', description: '350-component library adopted across 12 product teams. Reduced design-to-dev handoff time by 60%.', role: 'Design Systems Lead', tags: ['React', 'Storybook', 'Tokens'], contributors: ['LH', 'OA'], company: 'Figma', status: 'peer', color: 'from-rose-500/15 to-pink-500/5', accent: '#f43f5e' },
-  { id: 5, title: 'Zero-Trust Auth Overhaul', description: 'Re-architected auth across 200+ microservices. Zero CVEs since rollout, serving 90M developers.', role: 'Security Engineering Lead', tags: ['OAuth 2.1', 'OIDC', 'Go'], contributors: ['JK', 'NM', 'FB'], company: 'GitHub', status: 'company', color: 'from-orange-500/15 to-amber-500/5', accent: '#f59e0b' },
-  { id: 6, title: 'Edge CDN Dashboard', description: 'Analytics platform visualizing 50M+ daily edge requests globally with P99 latency tracking.', role: 'Full Stack Engineering', tags: ['Next.js', 'ClickHouse', 'D3.js'], contributors: ['PV', 'KT'], company: 'Vercel', status: 'peer', color: 'from-sky-500/15 to-blue-500/5', accent: '#3b82f6' },
+  { id: 1, title: 'Stripe Checkout Redesign',   description: 'End-to-end redesign of the payment flow. Reduced cart abandonment by 34% across 12M monthly users.', role: 'Product Design Lead',       tags: ['Figma', 'UX Research', 'A/B Testing'],  contributors: ['AK','SR','MJ'], company: 'Stripe', status: 'company' },
+  { id: 2, title: 'Real-time Sync Engine',       description: 'Distributed CRDT sync engine handling 10k concurrent users with sub-50ms global latency.',           role: 'Senior Backend Engineer',   tags: ['Rust', 'WebSockets', 'CRDTs'],         contributors: ['TN','PK'],      company: 'Linear', status: 'company' },
+  { id: 3, title: 'ML Pipeline Architecture',    description: 'Designed a 2TB/day training pipeline with 99.9% uptime, cutting training costs by 42%.',             role: 'ML Infrastructure Lead',    tags: ['PyTorch', 'Kubernetes', 'Ray'],         contributors: ['YZ','RB','CL'], company: 'OpenAI', status: 'company' },
+  { id: 4, title: 'Design System v4.0',          description: '350-component library adopted by 12 product teams, reducing design-to-dev handoff by 60%.',           role: 'Design Systems Lead',       tags: ['React', 'Storybook', 'Tokens'],        contributors: ['LH','OA'],      company: 'Figma',  status: 'peer'    },
+  { id: 5, title: 'Zero-Trust Auth Overhaul',    description: 'Re-architected auth across 200+ microservices. Zero CVEs post-rollout for 90M developers.',          role: 'Security Engineering Lead', tags: ['OAuth 2.1', 'OIDC', 'Go'],             contributors: ['JK','NM','FB'], company: 'GitHub', status: 'company' },
+  { id: 6, title: 'Edge CDN Dashboard',          description: 'Real-time global analytics dashboard for 50M+ daily requests with sub-second P99 latency tracking.',  role: 'Full Stack Engineering',    tags: ['Next.js', 'ClickHouse', 'D3.js'],      contributors: ['PV','KT'],      company: 'Vercel', status: 'peer'    },
 ]
 
 const FEATURES = [
   {
-    icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>,
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" /></svg>,
     title: 'GitHub & Figma Integration',
-    description: 'Connect your accounts and let ProofForge automatically detect and surface your real contributions — commits, PRs, designs — with cryptographic timestamps.',
-    color: '#7c3aed', glow: 'rgba(124,58,237,0.2)',
+    description: 'Connect your accounts and automatically surface verified commits, pull requests, and designs with cryptographic timestamps.',
   },
   {
-    icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>,
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
     title: 'Company Verification',
-    description: 'Verified companies officially co-sign your work. A badge from Stripe, Linear, or GitHub is worth more than any resume line — it\'s immutable evidence.',
-    color: '#10b981', glow: 'rgba(16,185,129,0.2)',
+    description: 'Verified companies co-sign your work with legal accountability. A seal from Stripe or GitHub carries real evidentiary weight.',
   },
   {
-    icon: <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" /></svg>,
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+    title: 'Peer Co-signing',
+    description: 'Colleagues who worked alongside you cryptographically co-sign contributions, adding trusted human verification to your record.',
+  },
+  {
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
     title: 'Reputation Score',
-    description: 'An algorithmic score weighted by verification tier, contribution impact, and peer consensus — giving employers a signal they can actually trust and compare.',
-    color: '#f59e0b', glow: 'rgba(245,158,11,0.2)',
+    description: 'An algorithmic score weighted by verification tier, contribution impact, and peer consensus — a signal employers can act on.',
+  },
+  {
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+    title: 'Cryptographic Proof',
+    description: 'Every submission is timestamped and hashed. Your work record is immutable, auditable, and tamper-proof by design.',
+  },
+  {
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+    title: 'Recruiter Discovery',
+    description: 'Companies search ProofForge for verified professionals matching specific skills, companies, and contribution types.',
   },
 ]
 
 const STEPS = [
-  { n: '01', title: 'Upload Evidence', body: 'Submit code commits, design files, case studies, or any proof of contribution. Link your GitHub, Figma, or upload directly.', color: '#7c3aed', pale: 'rgba(124,58,237,0.1)', status: 'self' as const },
-  { n: '02', title: 'Peer Co-signing', body: 'Colleagues who worked alongside you cryptographically co-sign your contributions — adding a layer of trust beyond self-reporting.', color: '#38bdf8', pale: 'rgba(56,189,248,0.1)', status: 'peer' as const },
-  { n: '03', title: 'Company Seal', body: 'Partner companies officially verify and endorse your work. Their badge is backed by legal accountability and carries maximum weight.', color: '#10b981', pale: 'rgba(16,185,129,0.1)', status: 'company' as const },
+  { n: '01', title: 'Upload Evidence',    body: 'Submit commits, designs, case studies, or any proof of contribution. Connect GitHub or Figma to import automatically.' },
+  { n: '02', title: 'Peer Co-signing',    body: 'Invite colleagues to co-sign your work. Their cryptographic signature adds a layer of trusted human verification.' },
+  { n: '03', title: 'Company Seal',       body: 'Partner companies officially verify and endorse your work. Their seal carries the highest evidentiary weight.' },
 ]
 
 const STATS = [
   { v: '47K+',  l: 'Verified professionals' },
-  { v: '180K+', l: 'Proof submissions' },
-  { v: '2,400+',l: 'Company verifications' },
-  { v: '98.7%', l: 'Verification accuracy' },
+  { v: '180K+', l: 'Proof submissions'       },
+  { v: '2,400+',l: 'Company seals issued'    },
+  { v: '98.7%', l: 'Verification accuracy'   },
 ]
 
 const COMPANIES = ['Stripe', 'Linear', 'Vercel', 'OpenAI', 'GitHub', 'Figma', 'Shopify', 'Notion']
 
-/* ── Page ────────────────────────────────────────────────────── */
-
+/* ── Page ─────────────────────────────────────────────────────── */
 export default function LandingPage() {
   return (
-    <main className="relative z-10 overflow-x-hidden">
+    <main style={{ background: 'var(--bg)' }}>
       <Navbar />
 
-      {/* ════════════════════════════════════════════
+      {/* ══════════════════════════════════════════
           HERO
-      ════════════════════════════════════════════ */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-28 pb-20">
+      ══════════════════════════════════════════ */}
+      <section style={{ paddingTop: 120, paddingBottom: 96, padding: '120px 24px 96px', position: 'relative', overflow: 'hidden' }}>
+        {/* Background gradient orbs */}
+        <div style={{ position: 'absolute', top: 80, left: '50%', transform: 'translateX(-50%)', width: 800, height: 500, background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.08) 0%, transparent 65%)', pointerEvents: 'none', zIndex: 0 }} />
 
-        {/* Badge */}
-        <div className="mb-8" style={{ animation: 'fadeUp 0.6s ease-out both' }}>
-          <Link
-            href="/signup"
-            className="inline-flex items-center gap-2.5 rounded-full px-4 py-2 text-xs font-semibold transition-all hover:opacity-80"
-            style={{
-              background: 'rgba(124,58,237,0.12)',
-              border: '1px solid rgba(124,58,237,0.3)',
-              color: '#c4b5fd',
-            }}
-          >
-            <span className="flex h-4 w-4 items-center justify-center rounded-full" style={{ background: 'rgba(124,58,237,0.25)', color: '#a78bfa' }}>✦</span>
-            Company verification now live for 2,400+ companies
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
-          </Link>
+        <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 500px', gap: 80, alignItems: 'center' }} className="lg:grid">
+
+            {/* Left */}
+            <div style={{ maxWidth: 560 }}>
+              {/* Eyebrow */}
+              <div style={{ marginBottom: 24, display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 12px', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 20, background: 'rgba(255,255,255,0.04)' }}>
+                <span className="dot-live" />
+                <span style={{ fontSize: 12, color: '#a1a1aa', fontWeight: 450 }}>
+                  2,400+ company verifications live
+                </span>
+              </div>
+
+              <h1 style={{ fontSize: 'clamp(40px, 6vw, 60px)', fontWeight: 700, letterSpacing: '-0.04em', lineHeight: 1.05, color: '#f4f4f5', marginBottom: 20 }}>
+                The professional<br />
+                verification network<br />
+                <span style={{ color: '#818cf8' }}>for builders.</span>
+              </h1>
+
+              <p style={{ fontSize: 17, color: '#71717a', lineHeight: 1.7, marginBottom: 32, maxWidth: 460 }}>
+                Connect your GitHub, get company-verified, and build a credible work record that speaks louder than a resume. Stop claiming. Start proving.
+              </p>
+
+              {/* CTAs */}
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 40 }}>
+                <Link href="/signup" id="hero-primary" className="btn-primary" style={{ fontSize: 15, padding: '11px 22px' }}>
+                  Get started for free
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </Link>
+                <Link href="#how" id="hero-secondary" className="btn-secondary" style={{ fontSize: 15, padding: '11px 22px' }}>
+                  See how it works
+                </Link>
+              </div>
+
+              {/* Trust signals */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 20 }}>
+                {[
+                  'Free for individuals',
+                  'No credit card required',
+                  'GitHub OAuth',
+                ].map((t) => (
+                  <div key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#71717a' }}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.5">
+                      <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {t}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — product screenshot */}
+            <div className="hidden lg:block" style={{ paddingBottom: 32 }}>
+              <HeroFloatingCard />
+            </div>
+          </div>
+
+          {/* Mobile card */}
+          <div className="lg:hidden" style={{ marginTop: 48 }}>
+            <HeroFloatingCard />
+          </div>
         </div>
+      </section>
 
-        {/* Headline */}
-        <div className="text-center max-w-4xl" style={{ animation: 'fadeUp 0.6s ease-out both', animationDelay: '0.1s' }}>
-          <h1 className="text-6xl font-black leading-[1.04] tracking-tight sm:text-7xl lg:text-8xl" style={{ letterSpacing: '-0.03em' }}>
-            <span style={{ color: '#f8fafc' }}>Your Work.</span>
-            <br />
-            <span style={{ background: 'linear-gradient(135deg, #c4b5fd 0%, #a78bfa 40%, #818cf8 70%, #67e8f9 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Verified.</span>
-          </h1>
-        </div>
-
-        {/* Sub */}
-        <p className="mt-7 max-w-lg text-center text-base leading-7" style={{ color: '#64748b', animation: 'fadeUp 0.6s ease-out both', animationDelay: '0.2s' }}>
-          The professional network where contributions are{' '}
-          <span style={{ color: '#94a3b8' }}>cryptographically proven</span> and{' '}
-          <span style={{ color: '#94a3b8' }}>company-verified</span> — not just claimed.
-          Stop writing words. Start showing receipts.
+      {/* ══════════════════════════════════════════
+          SOCIAL PROOF BAR
+      ══════════════════════════════════════════ */}
+      <section style={{ borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)', overflow: 'hidden', padding: '16px 0', background: 'rgba(255,255,255,0.02)' }}>
+        <p style={{ textAlign: 'center', fontSize: 12, color: '#52525b', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 500, marginBottom: 16 }}>
+          Trusted by professionals at
         </p>
-
-        {/* CTAs */}
-        <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row" style={{ animation: 'fadeUp 0.6s ease-out both', animationDelay: '0.3s' }}>
-          <Link href="/signup"
-            className="inline-flex items-center justify-center gap-2"
-            style={{ padding: '13px 28px', fontSize: 14, fontWeight: 600, color: '#fff', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', borderRadius: 999, textDecoration: 'none', boxShadow: '0 4px 20px rgba(124,58,237,0.4)', display: 'inline-flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap' }}>
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-            Upload Your Work — Free
-          </Link>
-          <Link href="#how"
-            className="inline-flex items-center justify-center gap-2"
-            style={{ padding: '13px 28px', fontSize: 14, fontWeight: 500, color: '#94a3b8', background: 'rgba(255,255,255,0.028)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 999, textDecoration: 'none', boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset', whiteSpace: 'nowrap' }}>
-            See how it works
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-          </Link>
-        </div>
-
-        {/* Stats row */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-6" style={{ animation: 'fadeUp 0.6s ease-out both', animationDelay: '0.4s' }}>
-          {STATS.map((s, i) => (
-            <div key={s.l} className="flex items-center gap-2">
-              {i > 0 && <div className="h-3 w-px" style={{ background: 'rgba(255,255,255,0.1)' }} />}
-              <span className="text-sm font-bold" style={{ color: '#f8fafc' }}>{s.v}</span>
-              <span className="text-sm" style={{ color: '#475569' }}>{s.l}</span>
+        <div style={{ display: 'flex', width: 'max-content' }} className="animate-marquee">
+          {[...COMPANIES, ...COMPANIES].map((c, i) => (
+            <div key={i} style={{ padding: '0 32px', fontSize: 14, fontWeight: 600, color: '#3f3f46', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.04)' }}>
+              {c}
             </div>
           ))}
         </div>
-
-        {/* Hero visual */}
-        <div className="mt-20 w-full max-w-5xl" style={{ animation: 'fadeUp 0.6s ease-out both', animationDelay: '0.5s' }}>
-          <HeroFloatingCard />
-        </div>
       </section>
 
-      {/* ════════════════════════════════════════════
-          TRUSTED BY
-      ════════════════════════════════════════════ */}
-      <section className="relative z-10 px-6 py-12">
-        <div className="mx-auto max-w-5xl">
-          <div className="flex flex-col items-center gap-6">
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#334155' }}>
-              Trusted by engineers at world-class companies
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-8">
-              {COMPANIES.map((c) => (
-                <span key={c} className="text-sm font-bold transition-colors" style={{ color: '#334155' }}>{c}</span>
-              ))}
+      {/* ══════════════════════════════════════════
+          STATS
+      ══════════════════════════════════════════ */}
+      <section style={{ padding: '72px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0, border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, overflow: 'hidden', background: 'rgba(255,255,255,0.02)' }} className="sm:grid-cols-4">
+          {STATS.map(({ v, l }, i) => (
+            <div key={l} style={{ padding: '32px 24px', textAlign: 'center', borderRight: i < 3 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
+              <p style={{ fontSize: 36, fontWeight: 700, color: '#f4f4f5', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 6 }}>{v}</p>
+              <p style={{ fontSize: 13, color: '#71717a' }}>{l}</p>
             </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
+      {/* ══════════════════════════════════════════
           FEATURES
-      ════════════════════════════════════════════ */}
-      <section className="relative z-10 px-6 py-24">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-16 text-center">
-            <p className="mb-3 text-xs font-bold uppercase tracking-widest" style={{ color: '#7c3aed' }}>Why ProofForge</p>
-            <h2 className="text-4xl font-black tracking-tight" style={{ color: '#f8fafc', letterSpacing: '-0.02em' }}>
-              Evidence over claims.
+      ══════════════════════════════════════════ */}
+      <section id="features" style={{ padding: '96px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 64, maxWidth: 560, margin: '0 auto 64px' }}>
+            <p className="label" style={{ marginBottom: 12 }}>Platform Features</p>
+            <h2 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, letterSpacing: '-0.03em', color: '#f4f4f5', marginBottom: 14 }}>
+              Evidence over claims
             </h2>
-            <p className="mt-4 text-sm leading-7" style={{ color: '#475569' }}>
-              Three tools that replace empty LinkedIn bullet points with irrefutable proof.
+            <p style={{ fontSize: 16, color: '#71717a', lineHeight: 1.65 }}>
+              Everything you need to build a professional record that companies can actually trust.
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }} className="sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => <FeatureCard key={f.title} {...f} />)}
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
+      {/* ══════════════════════════════════════════
           HOW IT WORKS
-      ════════════════════════════════════════════ */}
-      <section id="how" className="relative z-10 px-6 py-24">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-16 text-center">
-            <p className="mb-3 text-xs font-bold uppercase tracking-widest" style={{ color: '#7c3aed' }}>Three Tiers of Truth</p>
-            <h2 className="text-4xl font-black tracking-tight" style={{ color: '#f8fafc', letterSpacing: '-0.02em' }}>
-              Evidence compounds.
+      ══════════════════════════════════════════ */}
+      <section id="how" style={{ padding: '96px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.01)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 64, maxWidth: 560, margin: '0 auto 64px' }}>
+            <p className="label" style={{ marginBottom: 12 }}>How It Works</p>
+            <h2 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, letterSpacing: '-0.03em', color: '#f4f4f5' }}>
+              Three tiers, compounding trust
             </h2>
-            <p className="mt-4 text-sm" style={{ color: '#475569' }}>
-              Each tier adds weight. Company-verified work is undeniable.
-            </p>
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-3">
-            {STEPS.map((step, i) => (
-              <div
-                key={step.n}
-                className="relative rounded-2xl p-7"
-                style={{
-                  background: 'rgba(255,255,255,0.028)',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  boxShadow: '0 1px 0 rgba(255,255,255,0.05) inset',
-                }}
-              >
-                {/* Step connector */}
-                {i < STEPS.length - 1 && (
-                  <div className="absolute -right-2.5 top-10 hidden h-px w-5 sm:block"
-                    style={{ background: 'rgba(255,255,255,0.1)' }} />
-                )}
-                {/* Number */}
-                <div className="mb-5 text-xs font-black uppercase tracking-widest" style={{ color: step.color, opacity: 0.7 }}>
-                  Step {step.n}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }} className="sm:grid-cols-3">
+            {STEPS.map((step) => (
+              <div key={step.n} style={{ padding: '28px 24px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#818cf8' }}>{step.n}</span>
                 </div>
-                {/* Icon circle */}
-                <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl"
-                  style={{ background: step.pale, border: `1px solid ${step.color}25` }}>
-                  <div className="h-2.5 w-2.5 rounded-full" style={{ background: step.color }} />
-                </div>
-                <h3 className="mb-2 text-base font-bold" style={{ color: '#f8fafc' }}>{step.title}</h3>
-                <p className="mb-5 text-xs leading-6" style={{ color: '#475569' }}>{step.body}</p>
-                <VerificationBadge status={step.status} />
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: '#f4f4f5', marginBottom: 10, letterSpacing: '-0.02em' }}>{step.title}</h3>
+                <p style={{ fontSize: 13, color: '#71717a', lineHeight: 1.65 }}>{step.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
-          PROJECTS GRID
-      ════════════════════════════════════════════ */}
-      <section id="projects" className="relative z-10 px-6 py-24">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      {/* ══════════════════════════════════════════
+          PROJECTS
+      ══════════════════════════════════════════ */}
+      <section style={{ padding: '96px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 48, flexWrap: 'wrap', gap: 16 }}>
             <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-widest" style={{ color: '#7c3aed' }}>Verified Work</p>
-              <h2 className="text-3xl font-black tracking-tight" style={{ color: '#f8fafc', letterSpacing: '-0.02em' }}>
-                Real contributions.
-                <br />
-                <span style={{ background: 'linear-gradient(135deg, #c4b5fd 0%, #a78bfa 40%, #818cf8 70%, #67e8f9 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Verified.</span>
+              <p className="label" style={{ marginBottom: 12 }}>Verified Work</p>
+              <h2 style={{ fontSize: 'clamp(28px, 4vw, 40px)', fontWeight: 700, letterSpacing: '-0.03em', color: '#f4f4f5' }}>
+                Real contributions
               </h2>
             </div>
-            <Link href="/signup"
-              className="inline-flex items-center justify-center shrink-0"
-              style={{ fontSize: 13, fontWeight: 500, color: '#94a3b8', background: 'rgba(255,255,255,0.028)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 999, padding: '10px 20px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
-              Browse all projects →
+            <Link
+              href="/signup"
+              id="browse-all"
+              className="btn-secondary hover-border"
+              style={{ fontSize: 13 }}
+            >
+              Browse all
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </Link>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }} className="sm:grid-cols-2 lg:grid-cols-3">
             {PROJECTS.map((p) => <ProjectCard key={p.id} project={p} />)}
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
-          SOCIAL PROOF / QUOTE
-      ════════════════════════════════════════════ */}
-      <section className="relative z-10 px-6 py-24">
-        <div className="mx-auto max-w-5xl">
-          <div
-            className="relative overflow-hidden rounded-3xl p-10 sm:p-14"
-            style={{
-              background: 'linear-gradient(145deg, rgba(124,58,237,0.1) 0%, rgba(79,70,229,0.08) 50%, rgba(16,185,129,0.06) 100%)',
-              border: '1px solid rgba(124,58,237,0.2)',
-              boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset',
-            }}
-          >
-            {/* BG glow */}
-            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full opacity-30"
-              style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.5) 0%, transparent 70%)' }} />
+      {/* ══════════════════════════════════════════
+          CTA
+      ══════════════════════════════════════════ */}
+      <section style={{ padding: '96px 24px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.14)', borderRadius: 24, padding: '72px 48px', position: 'relative', overflow: 'hidden' }}>
+            {/* Gradient bg */}
+            <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 600, height: 300, background: 'radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-            <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center">
-              <div>
-                <p className="mb-6 text-xs font-bold uppercase tracking-widest" style={{ color: '#7c3aed' }}>For Professionals</p>
-                <h2 className="mb-5 text-3xl font-black leading-tight" style={{ color: '#f8fafc', letterSpacing: '-0.02em' }}>
-                  Your career in{' '}
-                  <span style={{ background: 'linear-gradient(135deg, #c4b5fd 0%, #a78bfa 40%, #818cf8 70%, #67e8f9 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>provable facts.</span>
-                </h2>
-                <p className="mb-8 text-sm leading-7" style={{ color: '#475569' }}>
-                  Stop writing &ldquo;I led this initiative&rdquo; and hoping they believe you.
-                  Upload the PR, the design file, the metrics dashboard. Let the evidence speak.
-                </p>
-                <Link href="/signup"
-                  className="inline-flex items-center justify-center"
-                  style={{ padding: '12px 24px', fontSize: 13, fontWeight: 600, color: '#fff', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', borderRadius: 999, textDecoration: 'none', boxShadow: '0 4px 20px rgba(124,58,237,0.4)', whiteSpace: 'nowrap' }}>
-                  Build your proof profile →
-                </Link>
-              </div>
-
-              {/* Mini stat cards */}
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { label: 'Reputation Score', val: '847', sub: 'Top 4% globally', color: '#7c3aed' },
-                  { label: 'Verified Works', val: '23', sub: '+3 this month', color: '#10b981' },
-                  { label: 'Company Seals', val: '7', sub: 'Stripe, GitHub…', color: '#38bdf8' },
-                  { label: 'Collaborators', val: '34', sub: 'Across all works', color: '#f59e0b' },
-                ].map((s) => (
-                  <div key={s.label} className="rounded-xl p-4"
-                    style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${s.color}20` }}>
-                    <div className="text-2xl font-black" style={{ color: '#f8fafc' }}>{s.val}</div>
-                    <div className="mt-0.5 text-[10px] font-bold uppercase tracking-wide" style={{ color: s.color }}>{s.label}</div>
-                    <div className="mt-0.5 text-[10px]" style={{ color: '#334155' }}>{s.sub}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════
-          FINAL CTA
-      ════════════════════════════════════════════ */}
-      <section className="relative z-10 px-6 pb-28">
-        <div className="mx-auto max-w-3xl text-center">
-          <div
-            className="relative overflow-hidden rounded-3xl px-10 py-20"
-            style={{
-              background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #0ea5e9 100%)',
-              boxShadow: '0 24px 80px rgba(124,58,237,0.45)',
-            }}
-          >
-            {/* Noise / glow */}
-            <div className="pointer-events-none absolute inset-0 rounded-3xl"
-              style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.15) 0%, transparent 60%)' }} />
-            <div className="relative">
-              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-white/60">Get Started Today</p>
-              <h2 className="mb-5 text-5xl font-black leading-tight text-white" style={{ letterSpacing: '-0.02em' }}>
-                Prove it.
-                <br />
-                Get hired.
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <p className="label" style={{ marginBottom: 16 }}>Get started today</p>
+              <h2 style={{ fontSize: 'clamp(28px, 5vw, 48px)', fontWeight: 700, letterSpacing: '-0.04em', color: '#f4f4f5', marginBottom: 16, maxWidth: 600, margin: '0 auto 16px' }}>
+                Your career in provable facts
               </h2>
-              <p className="mx-auto mb-10 max-w-md text-sm leading-7 text-white/65">
-                Join 47,000+ professionals who swapped claims for cryptographic proof. Free forever for individuals.
+              <p style={{ fontSize: 16, color: '#71717a', lineHeight: 1.65, maxWidth: 460, margin: '0 auto 32px' }}>
+                Stop writing &ldquo;led initiative&rdquo; and hoping they believe you. Upload the PR, the design file, the metrics. Let the evidence speak.
               </p>
-              <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                <Link href="/signup"
-                  className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-bold transition hover:opacity-90 active:scale-[0.98]"
-                  style={{ background: '#fff', color: '#4f46e5', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
-                  Upload Your Work — Free
+
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                <Link href="/signup" id="cta-primary" className="btn-primary" style={{ fontSize: 15, padding: '12px 28px' }}>
+                  Get started for free
                 </Link>
-                <Link href="/login"
-                  className="inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold text-white/80 transition hover:text-white"
-                  style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)' }}>
-                  Sign in →
+                <Link href="/login" id="cta-secondary" className="btn-secondary" style={{ fontSize: 15, padding: '12px 24px' }}>
+                  Sign in
                 </Link>
               </div>
+
+              <p style={{ marginTop: 20, fontSize: 13, color: '#52525b' }}>
+                Free forever for individuals · No credit card required
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
+      {/* ══════════════════════════════════════════
           FOOTER
-      ════════════════════════════════════════════ */}
-      <footer className="relative z-10 px-6 py-10" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="mx-auto max-w-5xl flex flex-col items-center justify-between gap-5 sm:flex-row">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }}>
-              <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      ══════════════════════════════════════════ */}
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '28px 24px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 22, height: 22, borderRadius: 6, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <span className="text-sm font-bold text-white">ProofForge</span>
-            <span className="text-xs ml-2" style={{ color: '#1e293b' }}>© 2026</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: '#a1a1aa', letterSpacing: '-0.01em' }}>ProofForge</span>
+            <span style={{ fontSize: 12, color: '#3f3f46' }}>© 2026</span>
           </div>
-          <div className="flex flex-wrap items-center gap-6">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 0 }}>
             {[
-              { label: 'Privacy',   href: '/terms#privacy' },
-              { label: 'Terms',     href: '/terms' },
-              { label: 'Cookies',   href: '/terms#cookies' },
-              { label: 'Security',  href: '#' },
-              { label: 'Docs',      href: '#' },
-              { label: 'Blog',      href: '#' },
+              { label: 'Privacy',  href: '/terms#privacy'  },
+              { label: 'Terms',    href: '/terms'           },
+              { label: 'Security', href: '#'                },
+              { label: 'Docs',     href: '#'                },
             ].map((l) => (
-              <Link key={l.label} href={l.href} className="text-xs transition" style={{ color: '#334155' }}>{l.label}</Link>
+              <Link
+                key={l.label}
+                href={l.href}
+                className="hover-text"
+                style={{ fontSize: 13, color: '#52525b', textDecoration: 'none', padding: '4px 12px', borderRadius: 4, transition: 'color 0.15s' }}
+              >
+                {l.label}
+              </Link>
             ))}
           </div>
         </div>

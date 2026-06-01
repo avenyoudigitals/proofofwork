@@ -6,23 +6,19 @@ import { CookieConsent } from './_components/cookie-consent'
 const inter = Inter({
   variable: '--font-inter',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: { default: 'ProofForge', template: '%s — ProofForge' },
-  description: 'The verified proof-of-work network. Where professionals showcase real contributions and companies validate talent.',
-  keywords: ['proof of work', 'verified contributions', 'professional network', 'portfolio verification'],
-  openGraph: {
-    siteName: 'ProofForge',
-    type: 'website',
-  },
+  description: 'The professional verification network for developers and builders. Company-verified proof of work.',
+  keywords: ['proof of work', 'verified portfolio', 'developer verification', 'professional network'],
+  openGraph: { siteName: 'ProofForge', type: 'website' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} h-full`}>
       <body className="min-h-full flex flex-col">{children}<CookieConsent /></body>
     </html>
   )
