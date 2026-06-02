@@ -123,10 +123,6 @@ export default function UploadWorkPage() {
             </div>
           </Field>
 
-          <Field label="Company / Organization" hint="Where was this work done? Leave blank if personal project.">
-            <Input name="company" placeholder="e.g. Stripe, OpenAI, your own startup…" />
-          </Field>
-
           <Field label="What you built / designed" required hint="Be specific. What problem did you solve? What was the measurable impact?">
             <textarea
               name="description"

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { DeleteButton } from '@/app/_components/delete-button'
 import { RequestVerificationButton } from '@/app/_components/request-verification'
 
+export const dynamic = 'force-dynamic'
 export const metadata = { title: 'My Works — ProofForge' }
 
 type Work = {
@@ -13,6 +14,7 @@ type Work = {
   role: string
   company: string | null
   status: 'self_claimed' | 'peer_verified' | 'company_verified'
+  verified_by_company: string | null
   github_url: string | null
   figma_url: string | null
   live_url: string | null
@@ -46,7 +48,7 @@ export default async function WorksPage() {
 
   const { data: works, error } = await supabase
     .from('works')
-    .select('*')
+    .select('id, title, description, role, company, status, verified_by_company, github_url, figma_url, live_url, case_study_url, tags, created_at')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -112,25 +114,34 @@ export default async function WorksPage() {
             <div key={work.id} className="group rounded-2xl p-6 transition hover:bg-white/[0.03]"
               style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
 
-              {/* Top row */}
               <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <h3 className="text-base font-semibold text-white leading-snug">{work.title}</h3>
-                  {work.company && (
-                    <p className="mt-0.5 text-xs text-slate-500">{work.role} · {work.company}</p>
-                  )}
-                  {!work.company && (
-                    <p className="mt-0.5 text-xs text-slate-500">{work.role}</p>
-                  )}
+                  <p className="mt-0.5 text-xs text-slate-500">{work.role}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-wide"
-                    style={{ color: s.color, background: s.bg, border: `1px solid ${s.border}` }}>
-                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: s.color }} />
-                    {work.status === 'company_verified' && work.company
-                      ? work.company.toUpperCase()
-                      : s.label.toUpperCase()}
-                  </span>
+                  {/* Status chip — shows verifying company name when company_verified */}
+                  {work.status === 'company_verified' && work.verified_by_company ? (
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      padding: '4px 10px', borderRadius: 20,
+                      background: 'rgba(16,185,129,0.1)',
+                      border: '1px solid rgba(16,185,129,0.28)',
+                    }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5">
+                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: '#10b981', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                        Verified by {work.verified_by_company}
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-wide"
+                      style={{ color: s.color, background: s.bg, border: `1px solid ${s.border}` }}>
+                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: s.color }} />
+                      {s.label.toUpperCase()}
+                    </span>
+                  )}
                 </div>
               </div>
 
