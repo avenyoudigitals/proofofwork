@@ -39,14 +39,18 @@ export default async function AdminPortalPage({ params }: Props) {
 
   const service = createServiceClient()
 
+  // Only load works assigned to this portal
   const { data: allWorks } = await service
     .from('works')
     .select('*')
+    .eq('assigned_to', cfg.slug)
     .order('created_at', { ascending: false })
 
   const works = allWorks ?? []
 
+  // Pending = assigned to us and not yet company_verified by anyone
   const pending = works.filter((w) => w.status !== 'company_verified')
+  // Approved = verified specifically by this portal
   const approved = works.filter(
     (w) => w.status === 'company_verified' && w.verified_by_company === cfg.displayName
   )
@@ -56,6 +60,7 @@ export default async function AdminPortalPage({ params }: Props) {
   const approvedToday = approved.filter(
     (w) => w.updated_at && new Date(w.updated_at) >= today
   ).length
+
 
   return (
     <AdminDashboard

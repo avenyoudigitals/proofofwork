@@ -42,6 +42,15 @@ export async function createWork(
   if (title.length > 120) return { error: 'Title must be under 120 characters.' }
   if (description.length > 2000) return { error: 'Description must be under 2000 characters.' }
 
+  // ── Round-robin assignment ──────────────────────────────────────
+  // Count all works globally; alternate assignment based on parity.
+  const { count: totalWorks } = await supabase
+    .from('works')
+    .select('*', { count: 'exact', head: true })
+
+  const assigned_to = (totalWorks ?? 0) % 2 === 0 ? 'nextovate' : 'ax-ventures'
+  // ───────────────────────────────────────────────────────────────
+
   const { data, error } = await supabase
     .from('works')
     .insert({
@@ -56,6 +65,7 @@ export async function createWork(
       case_study_url,
       tags,
       status: 'self_claimed',
+      assigned_to,
     })
     .select('id')
     .single()

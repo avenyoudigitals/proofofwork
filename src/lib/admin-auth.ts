@@ -5,6 +5,8 @@ import { cookies } from 'next/headers'
 
 export type PortalSlug = 'nextovate' | 'ax-ventures'
 
+export const SUPERUSER_COOKIE = 'superuser_session'
+
 export interface PortalConfig {
   slug: PortalSlug
   displayName: string
@@ -128,4 +130,49 @@ export async function isAdminAuthenticated(slug: PortalSlug): Promise<boolean> {
   const token = await getAdminSessionCookie(slug)
   if (!token) return false
   return verifySession(slug, token)
+}
+
+/* ── Superuser ────────────────────────────────────────────────── */
+
+export function validateSuperuserCredentials(username: string, password: string): boolean {
+  const envUser = process.env.SUPERUSER_USERNAME
+  const envPass = process.env.SUPERUSER_PASSWORD
+  if (!envUser || !envPass) return false
+  try {
+    const userMatch = timingSafeEqual(Buffer.from(username), Buffer.from(envUser))
+    const passMatch = timingSafeEqual(Buffer.from(password), Buffer.from(envPass))
+    return userMatch && passMatch
+  } catch { return false }
+}
+
+export function signSuperuserSession(): string {
+  const payload = `superuser:${Date.now()}`
+  const sig = createHmac('sha256', getSecret()).update(payload).digest('hex')
+  return `${payload}.${sig}`
+}
+
+export function verifySuperuserSession(token: string): boolean {
+  try {
+    const lastDot = token.lastIndexOf('.')
+    if (lastDot === -1) return false
+    const payload = token.slice(0, lastDot)
+    const sig     = token.slice(lastDot + 1)
+    const expected = createHmac('sha256', getSecret()).update(payload).digest('hex')
+    const sigBuf   = Buffer.from(sig, 'hex')
+    const expBuf   = Buffer.from(expected, 'hex')
+    if (sigBuf.length !== expBuf.length) return false
+    if (!timingSafeEqual(sigBuf, expBuf)) return false
+    const [role, timestampStr] = payload.split(':')
+    if (role !== 'superuser') return false
+    const ts = parseInt(timestampStr, 10)
+    if (isNaN(ts) || Date.now() - ts > SESSION_TTL_MS) return false
+    return true
+  } catch { return false }
+}
+
+export async function isSuperuserAuthenticated(): Promise<boolean> {
+  const jar = await cookies()
+  const token = jar.get(SUPERUSER_COOKIE)?.value
+  if (!token) return false
+  return verifySuperuserSession(token)
 }
