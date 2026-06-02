@@ -40,11 +40,13 @@ export default async function DashboardPage() {
 
   const list = works ?? []
 
-  const total    = list.length
-  const selfClaimed = list.filter(w => w.status === 'self_claimed').length
-  const peerVer  = list.filter(w => w.status === 'peer_verified').length
-  const compVer  = list.filter(w => w.status === 'company_verified').length
-  const recent   = list.slice(0, 5)
+  const total       = list.length
+  const selfClaimed  = list.filter(w => w.status === 'self_claimed').length
+  const peerVer      = list.filter(w => w.status === 'peer_verified').length
+  const compVer      = list.filter(w => w.status === 'company_verified').length
+  const nextovateVer = list.filter(w => w.verified_by_company === 'Nextovate').length
+  const axVer        = list.filter(w => w.verified_by_company === 'AX Ventures').length
+  const recent       = list.slice(0, 5)
 
   const cardStyle = {
     background: 'rgba(255,255,255,0.03)',
@@ -68,9 +70,9 @@ export default async function DashboardPage() {
       {/* Stat cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 24 }}>
         {[
-          { label: 'Total Submissions', val: total,     accent: '#818cf8', icon: '📂' },
-          { label: 'Peer Verified',     val: peerVer,   accent: '#60a5fa', icon: '👥' },
-          { label: 'Company Verified',  val: compVer,   accent: '#22c55e', icon: '🏢' },
+          { label: 'Total Submissions',    val: total,    accent: '#818cf8', icon: '📂' },
+          { label: 'Peer Verified',         val: peerVer,  accent: '#60a5fa', icon: '👥' },
+          { label: 'Company Verified',      val: compVer,  accent: '#22c55e', icon: '🏢' },
         ].map(({ label, val, accent, icon }) => (
           <div key={label} style={{ ...cardStyle, padding: '22px 24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
@@ -172,9 +174,10 @@ export default async function DashboardPage() {
             </div>
             <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 12 }}>
               {[
-                { label: 'Self Claimed',     count: selfClaimed, color: '#94a3b8' },
-                { label: 'Peer Verified',    count: peerVer,     color: '#818cf8' },
-                { label: 'Company Verified', count: compVer,     color: '#22c55e' },
+                { label: 'Self Claimed',          count: selfClaimed,  color: '#94a3b8' },
+                { label: 'Peer Verified',          count: peerVer,      color: '#818cf8' },
+                { label: '🏢 Nextovate Verified',  count: nextovateVer, color: '#22c55e' },
+                { label: '🏢 AX Ventures Verified',count: axVer,        color: '#0ea5e9' },
               ].map(({ label, count, color }) => (
                 <div key={label}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
