@@ -1,6 +1,6 @@
 import { isSuperuserAuthenticated } from '@/lib/admin-auth'
 import { createServiceClient } from '@/lib/supabase/service'
-import { superuserLoginAction, superuserLogoutAction } from './superuser-actions'
+import { superuserLoginAction, superuserLogoutAction, superuserDeleteWork } from './superuser-actions'
 
 export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Superuser — ProofForge' }
@@ -141,10 +141,13 @@ export default async function SuperuserPage({
   // ── Fetch all data ────────────────────────────────────
   const service = createServiceClient()
 
-  const { data: allWorks } = await service
+  const { data: allWorks, error: worksError } = await service
     .from('works')
     .select('id, title, role, status, assigned_to, verified_by_company, created_at, updated_at, user_id')
     .order('created_at', { ascending: false })
+
+  // Log fetch issues for debugging
+  if (worksError) console.error('[Superuser] works fetch error:', worksError.message)
 
   const { data: rejections } = await service
     .from('admin_rejections')
@@ -158,9 +161,11 @@ export default async function SuperuserPage({
   }
 
   // ── Stats ─────────────────────────────────────────────
-  const total = works.length
-  const nWorks = works.filter(w => w.assigned_to === 'nextovate')
-  const axWorks = works.filter(w => w.assigned_to === 'ax-ventures')
+  const total      = works.length
+  const nWorks     = works.filter(w => w.assigned_to === 'nextovate')
+  const axWorks    = works.filter(w => w.assigned_to === 'ax-ventures')
+  const unassigned = works.filter(w => !w.assigned_to)
+  const totalVerified = works.filter(w => w.status === 'company_verified').length
 
   const portalStats = [
     {
@@ -257,11 +262,12 @@ export default async function SuperuserPage({
         </div>
 
         {/* Global stat cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 24 }}>
           {[
-            { label: 'Total Submissions', val: total, accent: '#f59e0b', icon: '📦' },
-            { label: 'Assigned to Nextovate', val: nWorks.length, accent: '#6366f1', icon: '🔵' },
+            { label: 'Total Submissions',     val: total,          accent: '#f59e0b', icon: '📦' },
+            { label: 'Assigned to Nextovate', val: nWorks.length,  accent: '#6366f1', icon: '🔵' },
             { label: 'Assigned to AX Ventures', val: axWorks.length, accent: '#0ea5e9', icon: '🩵' },
+            { label: 'Total Verified',        val: totalVerified,  accent: '#22c55e', icon: '✅' },
           ].map(({ label, val, accent, icon }) => (
             <div key={label} style={{ ...card, padding: '20px 22px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
@@ -272,6 +278,21 @@ export default async function SuperuserPage({
             </div>
           ))}
         </div>
+
+        {/* Unassigned notice */}
+        {unassigned.length > 0 && (
+          <div style={{
+            marginBottom: 16, padding: '12px 16px', borderRadius: 12,
+            background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)',
+            display: 'flex', alignItems: 'center', gap: 10,
+          }}>
+            <span style={{ fontSize: 16 }}>⚠️</span>
+            <p style={{ fontSize: 13, color: '#fbbf24', margin: 0 }}>
+              <strong>{unassigned.length} work{unassigned.length > 1 ? 's' : ''}</strong> have no assignment yet.
+              Run the <code style={{ fontSize: 11, background: 'rgba(255,255,255,0.08)', padding: '1px 5px', borderRadius: 4 }}>schema-assignment.sql</code> migration in Supabase to backfill them.
+            </p>
+          </div>
+        )}
 
         {/* Per-portal breakdown */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 24 }}>
@@ -329,11 +350,11 @@ export default async function SuperuserPage({
             <>
               {/* Table header */}
               <div style={{
-                display: 'grid', gridTemplateColumns: '1fr 130px 120px 130px 90px',
+                display: 'grid', gridTemplateColumns: '1fr 130px 120px 130px 90px 44px',
                 padding: '9px 22px', borderBottom: '1px solid rgba(255,255,255,0.05)',
                 background: 'rgba(255,255,255,0.02)',
               }}>
-                {['Work Title', 'Role', 'Assigned To', 'Verification', 'Submitted'].map(h => (
+                {['Work Title', 'Role', 'Assigned To', 'Verification', 'Submitted', ''].map(h => (
                   <span key={h} style={{ fontSize: 10, fontWeight: 700, color: '#52525b', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{h}</span>
                 ))}
               </div>
@@ -346,8 +367,8 @@ export default async function SuperuserPage({
                   <div
                     key={w.id}
                     style={{
-                      display: 'grid', gridTemplateColumns: '1fr 130px 120px 130px 90px',
-                      padding: '13px 22px', alignItems: 'center',
+                      display: 'grid', gridTemplateColumns: '1fr 130px 120px 130px 90px 44px',
+                      padding: '11px 22px', alignItems: 'center',
                       borderBottom: i < works.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none',
                     }}
                   >
@@ -381,6 +402,30 @@ export default async function SuperuserPage({
                     <p style={{ fontSize: 11, color: '#52525b', margin: 0 }}>
                       {timeAgo(w.created_at)}
                     </p>
+
+                    {/* Delete */}
+                    <form action={superuserDeleteWork} style={{ display: 'flex', justifyContent: 'center' }}>
+                      <input type="hidden" name="workId" value={w.id} />
+                      <button
+                        type="submit"
+                        title="Delete this work"
+                        style={{
+                          width: 28, height: 28, borderRadius: 7, border: 'none',
+                          background: 'rgba(239,68,68,0.08)',
+                          color: '#f87171', cursor: 'pointer', display: 'flex',
+                          alignItems: 'center', justifyContent: 'center',
+                          transition: 'background 0.15s',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="3 6 5 6 21 6" strokeLinecap="round" />
+                          <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" strokeLinecap="round" />
+                          <path d="M10 11v6M14 11v6" strokeLinecap="round" />
+                          <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" strokeLinecap="round" />
+                        </svg>
+                      </button>
+                    </form>
                   </div>
                 )
               })}
