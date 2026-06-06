@@ -77,22 +77,30 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
           alignItems: 'center',
           gap: 6,
           padding: '5px 12px',
-          fontFamily: 'var(--font-mono)',
-          fontSize: 10,
-          fontWeight: 700,
-          letterSpacing: '0.06em',
-          textTransform: 'uppercase',
-          color: '#d97706',
-          border: '1px solid #d97706',
-          background: '#fef3c7',
+          fontFamily: 'var(--font)',
+          fontSize: 11,
+          fontWeight: 600,
+          letterSpacing: '0.01em',
+          color: 'var(--text-2)',
+          border: '1px solid var(--border-2)',
+          borderRadius: 8,
+          background: 'rgba(255,255,255,0.04)',
           cursor: 'pointer',
-          transition: 'background 0.1s',
+          transition: 'background 0.15s, color 0.15s, border-color 0.15s',
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#fde68a' }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#fef3c7' }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(99,102,241,0.1)'
+          e.currentTarget.style.borderColor = 'rgba(99,102,241,0.4)'
+          e.currentTarget.style.color = '#a5b4fc'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
+          e.currentTarget.style.borderColor = 'var(--border-2)'
+          e.currentTarget.style.color = 'var(--text-2)'
+        }}
       >
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeLinecap="square" />
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         Request Verification
       </button>

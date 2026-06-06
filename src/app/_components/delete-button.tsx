@@ -18,8 +18,8 @@ export function DeleteButton({ workId }: { workId: string }) {
       type="button"
       disabled={pending}
       onClick={handleClick}
-      className="rounded-lg px-3 py-1.5 text-[10px] font-medium text-slate-600 transition hover:bg-red-500/10 hover:text-red-400 disabled:opacity-40"
-      style={{ border: '1px solid transparent' }}
+      className="rounded-lg px-3 py-1.5 text-[11px] font-medium transition hover:bg-red-500/10 hover:text-red-400 disabled:opacity-40"
+      style={{ border: '1px solid transparent', color: 'var(--text-3)', background: 'transparent', cursor: 'pointer', fontFamily: 'var(--font)' }}
     >
       {pending ? 'Deleting…' : 'Delete'}
     </button>
