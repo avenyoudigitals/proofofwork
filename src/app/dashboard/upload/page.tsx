@@ -26,10 +26,10 @@ const ROLE_OPTIONS = [
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '11px 14px',
-  background: 'rgba(255,255,255,0.05)',
-  border: '1px solid rgba(255,255,255,0.1)',
+  background: 'var(--card-2)',
+  border: '1px solid var(--border-2)',
   borderRadius: 10,
-  color: '#f4f4f5',
+  color: 'var(--text)',
   fontSize: 14,
   outline: 'none',
   fontFamily: 'var(--font)',
@@ -41,14 +41,14 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
   fontSize: 12,
   fontWeight: 600,
-  color: '#a1a1aa',
+  color: 'var(--text-2)',
   marginBottom: 7,
   letterSpacing: '0.01em',
 }
 
 const sectionStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.025)',
-  border: '1px solid rgba(255,255,255,0.08)',
+  background: 'var(--surface)',
+  border: '1px solid var(--border)',
   borderRadius: 16,
   padding: '24px',
   marginBottom: 16,
@@ -59,7 +59,7 @@ function focusInput(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement |
   e.currentTarget.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.15)'
 }
 function blurInput(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+  e.currentTarget.style.borderColor = 'var(--border-2)'
   e.currentTarget.style.boxShadow = 'none'
 }
 
@@ -84,10 +84,10 @@ export default function UploadWorkPage() {
         <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#71717a', margin: '0 0 8px' }}>
           New Submission
         </p>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: '#f4f4f5', letterSpacing: '-0.03em', margin: '0 0 6px' }}>
+        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.03em', margin: '0 0 6px' }}>
           Upload proof of work
         </h1>
-        <p style={{ fontSize: 13, color: '#71717a', margin: 0, lineHeight: 1.65 }}>
+        <p style={{ fontSize: 13, color: 'var(--text-2)', margin: 0, lineHeight: 1.65 }}>
           Submit verifiable evidence of a real contribution. Starts as self-claimed — peers and companies can verify it later.
         </p>
       </div>
@@ -140,7 +140,7 @@ export default function UploadWorkPage() {
             >
               <option value="" disabled>Select a role…</option>
               {ROLE_OPTIONS.map((r) => (
-                <option key={r} value={r} style={{ background: '#0f0f1a' }}>{r}</option>
+                <option key={r} value={r}>{r}</option>
               ))}
             </select>
             <p style={{ fontSize: 11, color: '#71717a', margin: '5px 0 0' }}>What specifically did you build or design?</p>
@@ -228,14 +228,14 @@ export default function UploadWorkPage() {
               <label style={labelStyle}>{f.label}</label>
               <div style={{
                 display: 'flex', alignItems: 'center',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: 'var(--card-2)',
+                border: '1px solid var(--border-2)',
                 borderRadius: 10, overflow: 'hidden',
               }}>
                 <div style={{
                   padding: '11px 12px',
-                  borderRight: '1px solid rgba(255,255,255,0.08)',
-                  background: 'rgba(255,255,255,0.03)',
+                  borderRight: '1px solid var(--border)',
+                  background: 'var(--card-3)',
                   display: 'flex', alignItems: 'center',
                 }}>
                   {f.icon}
@@ -246,7 +246,7 @@ export default function UploadWorkPage() {
                   style={{
                     flex: 1, padding: '11px 14px',
                     background: 'transparent', border: 'none',
-                    color: '#f4f4f5', fontSize: 14, outline: 'none',
+                    color: 'var(--text)', fontSize: 14, outline: 'none',
                     fontFamily: 'var(--font)',
                   }}
                 />
@@ -282,8 +282,8 @@ export default function UploadWorkPage() {
             onClick={() => router.back()}
             style={{
               padding: '11px 20px', borderRadius: 10,
-              background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
-              fontSize: 13, color: '#71717a', cursor: 'pointer',
+              background: 'var(--card-2)', border: '1px solid var(--border-2)',
+              fontSize: 13, color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'var(--font)',
             }}
           >
             Cancel
