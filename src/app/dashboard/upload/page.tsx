@@ -81,7 +81,7 @@ export default function UploadWorkPage() {
 
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#52525b', margin: '0 0 8px' }}>
+        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#71717a', margin: '0 0 8px' }}>
           New Submission
         </p>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: '#f4f4f5', letterSpacing: '-0.03em', margin: '0 0 6px' }}>
@@ -110,7 +110,7 @@ export default function UploadWorkPage() {
 
         {/* ── Project Info ── */}
         <div style={sectionStyle}>
-          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#52525b', margin: '0 0 20px' }}>
+          <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#71717a', margin: '0 0 20px' }}>
             Project Info
           </p>
 
@@ -125,7 +125,7 @@ export default function UploadWorkPage() {
               style={inputStyle}
               onFocus={focusInput} onBlur={blurInput}
             />
-            <p style={{ fontSize: 11, color: '#52525b', margin: '5px 0 0' }}>Keep it concise — this is your headline.</p>
+            <p style={{ fontSize: 11, color: '#71717a', margin: '5px 0 0' }}>Keep it concise — this is your headline.</p>
           </div>
 
           {/* Role */}
@@ -143,7 +143,7 @@ export default function UploadWorkPage() {
                 <option key={r} value={r} style={{ background: '#0f0f1a' }}>{r}</option>
               ))}
             </select>
-            <p style={{ fontSize: 11, color: '#52525b', margin: '5px 0 0' }}>What specifically did you build or design?</p>
+            <p style={{ fontSize: 11, color: '#71717a', margin: '5px 0 0' }}>What specifically did you build or design?</p>
           </div>
 
           {/* Description */}
@@ -157,7 +157,7 @@ export default function UploadWorkPage() {
               style={{ ...inputStyle, resize: 'vertical' }}
               onFocus={focusInput} onBlur={blurInput}
             />
-            <p style={{ fontSize: 11, color: '#52525b', margin: '5px 0 0' }}>Be specific. What problem did you solve? What was the measurable impact?</p>
+            <p style={{ fontSize: 11, color: '#71717a', margin: '5px 0 0' }}>Be specific. What problem did you solve? What was the measurable impact?</p>
           </div>
 
           {/* Tags */}
@@ -169,17 +169,17 @@ export default function UploadWorkPage() {
               style={inputStyle}
               onFocus={focusInput} onBlur={blurInput}
             />
-            <p style={{ fontSize: 11, color: '#52525b', margin: '5px 0 0' }}>Comma-separated. e.g. React, Figma, TypeScript, A/B Testing</p>
+            <p style={{ fontSize: 11, color: '#71717a', margin: '5px 0 0' }}>Comma-separated. e.g. React, Figma, TypeScript, A/B Testing</p>
           </div>
         </div>
 
         {/* ── Proof Links ── */}
         <div style={sectionStyle}>
           <div style={{ marginBottom: 20 }}>
-            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#52525b', margin: '0 0 3px' }}>
+            <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#71717a', margin: '0 0 3px' }}>
               Proof Links
             </p>
-            <p style={{ fontSize: 11, color: '#52525b', margin: 0 }}>Add at least one link so verifiers can review your work.</p>
+            <p style={{ fontSize: 11, color: '#71717a', margin: 0 }}>Add at least one link so verifiers can review your work.</p>
           </div>
 
           {[
