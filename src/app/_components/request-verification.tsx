@@ -101,16 +101,17 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(14,13,11,0.7)' }}
+          style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false) }}
         >
           <div
             ref={dialogRef}
-            className="w-full max-w-lg max-h-[90vh] overflow-y-auto"
+            className="w-full max-w-lg max-h-[90vh] overflow-y-auto animate-fade-up"
             style={{
-              background: '#fff',
-              border: '2px solid #0e0d0b',
-              boxShadow: '8px 8px 0 #0e0d0b',
+              background: 'var(--card)',
+              border: '1px solid var(--border-2)',
+              borderRadius: 16,
+              boxShadow: '0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
               padding: 28,
             }}
           >
@@ -119,16 +120,18 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
               <div>
                 <div
                   className="mb-2 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold"
-                  style={{ background: 'rgba(124,58,237,0.12)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.2)' }}
+                  style={{ background: 'rgba(124,58,237,0.15)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.25)' }}
                 >
                   ✦ Company Verification
                 </div>
-                <h2 className="text-base font-bold text-white">Request company verification</h2>
-                <p className="mt-1 text-xs text-slate-400 leading-5">
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.025em' }}>
+                  Request company verification
+                </h2>
+                <p style={{ marginTop: 6, fontSize: 13, color: 'var(--text-2)', lineHeight: '1.6' }}>
                   Send a professional email to your company contacts asking them to verify{' '}
-                  <span className="text-slate-200 font-medium">{workTitle}</span>.
+                  <span style={{ color: 'var(--text)', fontWeight: 500 }}>{workTitle}</span>.
                   {rows.length > 1 && (
-                    <span className="ml-1 text-violet-400 font-medium">
+                    <span style={{ marginLeft: 4, color: '#a78bfa', fontWeight: 500 }}>
                       {rows.length} contacts will be emailed.
                     </span>
                   )}
@@ -137,9 +140,24 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="shrink-0 rounded-lg p-1.5 text-stone-400 transition hover:bg-stone-200/50 hover:text-stone-900"
+                style={{
+                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 30,
+                  height: 30,
+                  borderRadius: 8,
+                  border: '1px solid var(--border-2)',
+                  background: 'transparent',
+                  color: 'var(--text-2)',
+                  cursor: 'pointer',
+                  transition: 'background 0.15s, color 0.15s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'var(--text)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-2)' }}
               >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -148,57 +166,92 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
             {/* Success state */}
             {isSuccess ? (
               <div
-                className="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-4"
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 12,
+                  borderRadius: 12,
+                  border: '1px solid rgba(34,197,94,0.25)',
+                  background: 'rgba(34,197,94,0.08)',
+                  padding: '16px',
+                }}
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-sm font-bold">
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  width: 32, height: 32, flexShrink: 0,
+                  borderRadius: '50%',
+                  background: 'rgba(34,197,94,0.15)',
+                  color: '#4ade80',
+                  fontSize: 14, fontWeight: 700,
+                }}>
                   ✓
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-emerald-900">
+                  <p style={{ fontSize: 14, fontWeight: 600, color: '#4ade80' }}>
                     {successCount === 1
                       ? 'Verification request sent!'
                       : `${successCount} verification requests sent!`}
                   </p>
-                  <p className="text-xs text-emerald-700 mt-0.5">
+                  <p style={{ fontSize: 12, color: 'rgba(74,222,128,0.7)', marginTop: 2 }}>
                     {successCount === 1
                       ? 'The company contact will receive your request by email.'
-                      : 'All company contacts have been emailed. You\'ll be notified when they respond.'}
+                      : "All company contacts have been emailed. You'll be notified when they respond."}
                   </p>
                   {state?.partialError && (
-                    <p className="text-xs text-amber-700 mt-2">{state.partialError}</p>
+                    <p style={{ fontSize: 12, color: '#fbbf24', marginTop: 8 }}>{state.partialError}</p>
                   )}
                 </div>
               </div>
             ) : (
-              <form action={action} className="space-y-4">
+              <form action={action} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <input type="hidden" name="workId" value={workId} />
                 <input type="hidden" name="rowCount" value={rows.length} />
 
                 {state?.error && (
-                  <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+                  <div style={{
+                    borderRadius: 10,
+                    border: '1px solid rgba(239,68,68,0.3)',
+                    background: 'rgba(239,68,68,0.08)',
+                    padding: '10px 14px',
+                    fontSize: 13,
+                    color: '#fca5a5',
+                  }}>
                     {state.error}
                   </div>
                 )}
 
                 {/* Company rows */}
-                <div className="space-y-3">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {rows.map((row, idx) => (
                     <div
                       key={row.id}
-                      className="rounded-xl p-4 relative border border-stone-200 bg-white"
+                      style={{
+                        borderRadius: 12,
+                        padding: 16,
+                        border: '1px solid var(--border-2)',
+                        background: 'var(--card-2)',
+                      }}
                     >
                       {/* Row number + remove */}
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-stone-400">
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                        <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-3)' }}>
                           Contact {rows.length > 1 ? idx + 1 : ''}
                         </span>
                         {rows.length > 1 && (
                           <button
                             type="button"
                             onClick={() => removeRow(row.id)}
-                            className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] text-stone-400 transition hover:text-red-600 hover:bg-red-50"
+                            style={{
+                              display: 'flex', alignItems: 'center', gap: 4,
+                              borderRadius: 6, padding: '2px 8px',
+                              fontSize: 10, color: 'var(--text-3)',
+                              background: 'transparent', border: 'none', cursor: 'pointer',
+                              transition: 'color 0.15s, background 0.15s',
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.background = 'rgba(239,68,68,0.08)' }}
+                            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-3)'; e.currentTarget.style.background = 'transparent' }}
                           >
-                            <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                             Remove
@@ -207,9 +260,9 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                       </div>
 
                       {/* Contact name */}
-                      <div className="space-y-1.5 mb-3">
-                        <label className="block text-xs font-semibold text-stone-700">
-                          Contact name <span className="text-stone-400">(optional)</span>
+                      <div style={{ marginBottom: 10 }}>
+                        <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text-2)', marginBottom: 6, letterSpacing: '0.02em' }}>
+                          Contact name <span style={{ color: 'var(--text-3)', fontWeight: 400 }}>(optional)</span>
                         </label>
                         <input
                           name={`contactName_${idx}`}
@@ -218,14 +271,14 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                           onChange={e => updateRow(row.id, 'contactName', e.target.value)}
                           defaultValue={idx === 0 ? (company ?? '') : ''}
                           placeholder="e.g. Sarah Chen, Hiring Manager"
-                          className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-900 placeholder-stone-400 outline-none transition focus:border-amber-500"
+                          style={{ width: '100%', padding: '8px 12px' }}
                         />
                       </div>
 
                       {/* Company email */}
-                      <div className="space-y-1.5">
-                        <label className="block text-xs font-semibold text-stone-700">
-                          Company contact email <span className="text-amber-600">*</span>
+                      <div>
+                        <label style={{ display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--text-2)', marginBottom: 6, letterSpacing: '0.02em' }}>
+                          Company contact email <span style={{ color: 'var(--amber)' }}>*</span>
                         </label>
                         <input
                           name={`companyEmail_${idx}`}
@@ -234,7 +287,7 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                           value={row.companyEmail}
                           onChange={e => updateRow(row.id, 'companyEmail', e.target.value)}
                           placeholder="hr@company.com or manager@company.com"
-                          className="w-full rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-sm text-stone-900 placeholder-stone-400 outline-none transition focus:border-amber-500"
+                          style={{ width: '100%', padding: '8px 12px' }}
                         />
                       </div>
                     </div>
@@ -245,42 +298,93 @@ export function RequestVerificationButton({ workId, workTitle, company }: Props)
                 <button
                   type="button"
                   onClick={addRow}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl border border-dashed border-stone-300 py-2.5 text-xs font-bold text-stone-500 transition hover:border-stone-400 hover:text-stone-700"
+                  style={{
+                    width: '100%',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+                    borderRadius: 10,
+                    border: '1px dashed var(--border-2)',
+                    padding: '10px 0',
+                    fontSize: 12, fontWeight: 600,
+                    color: 'var(--text-3)',
+                    background: 'transparent',
+                    cursor: 'pointer',
+                    transition: 'border-color 0.15s, color 0.15s, background 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; e.currentTarget.style.color = 'var(--text-2)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-2)'; e.currentTarget.style.color = 'var(--text-3)'; e.currentTarget.style.background = 'transparent' }}
                 >
-                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                   </svg>
                   Add another company contact
                 </button>
 
                 {/* Info note */}
-                <div className="rounded-xl border border-stone-200 bg-stone-100 px-4 py-3 flex items-start gap-2.5">
-                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-stone-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div style={{
+                  borderRadius: 10,
+                  border: '1px solid var(--border)',
+                  background: 'rgba(255,255,255,0.02)',
+                  padding: '10px 14px',
+                  display: 'flex', alignItems: 'flex-start', gap: 10,
+                }}>
+                  <svg style={{ marginTop: 1, flexShrink: 0, color: 'var(--text-3)' }} width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-[10px] leading-5 text-stone-600">
+                  <p style={{ fontSize: 11, lineHeight: '1.7', color: 'var(--text-3)' }}>
                     Each contact will receive an email with your work title, role, description, and proof links.
                     You&apos;ll get a return email when they approve or decline. Only one approval is needed to mark the work as Company Verified.
                   </p>
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-3 pt-1">
+                <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
                   <button
                     type="button"
                     onClick={() => setOpen(false)}
-                    className="flex-1 rounded-xl border border-stone-200 py-2.5 text-sm text-stone-600 transition hover:bg-stone-100"
+                    style={{
+                      flex: 1,
+                      borderRadius: 10,
+                      border: '1px solid var(--border-2)',
+                      padding: '10px 0',
+                      fontSize: 13, fontWeight: 500,
+                      color: 'var(--text-2)',
+                      background: 'transparent',
+                      cursor: 'pointer',
+                      transition: 'background 0.15s, color 0.15s',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = 'var(--text)' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-2)' }}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={pending}
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-stone-900 py-2.5 text-sm font-bold text-white transition hover:bg-stone-800 disabled:opacity-50"
+                    style={{
+                      flex: 1,
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                      borderRadius: 10,
+                      border: 'none',
+                      padding: '10px 0',
+                      fontSize: 13, fontWeight: 600,
+                      color: '#fff',
+                      background: pending ? 'var(--indigo-h)' : 'var(--indigo)',
+                      cursor: pending ? 'not-allowed' : 'pointer',
+                      opacity: pending ? 0.7 : 1,
+                      transition: 'background 0.15s, box-shadow 0.15s',
+                    }}
+                    onMouseEnter={e => { if (!pending) { e.currentTarget.style.background = 'var(--indigo-h)'; e.currentTarget.style.boxShadow = '0 4px 16px var(--indigo-glow)' } }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'var(--indigo)'; e.currentTarget.style.boxShadow = 'none' }}
                   >
                     {pending ? (
                       <>
-                        <span className="h-3.5 w-3.5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                        <span style={{
+                          width: 13, height: 13, borderRadius: '50%',
+                          border: '2px solid rgba(255,255,255,0.3)',
+                          borderTopColor: '#fff',
+                          animation: 'spin 0.7s linear infinite',
+                          display: 'inline-block',
+                        }} />
                         Sending…
                       </>
                     ) : (
