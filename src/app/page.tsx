@@ -513,7 +513,7 @@ export default function LandingPage() {
           <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 40 }}>
             <div>
               <span style={{
-                display: 'inline-block',
+                display: 'block',
                 fontSize: 11, fontWeight: 600, letterSpacing: '0.1em',
                 textTransform: 'uppercase', color: '#818cf8',
                 fontFamily: 'var(--font-mono)',
@@ -522,7 +522,7 @@ export default function LandingPage() {
                 border: '1px solid rgba(99,102,241,0.25)',
                 borderRadius: 'var(--radius-full)',
                 marginBottom: 20,
-                display: 'block' as const,
+                width: 'fit-content',
               }}>
                 Verified Work
               </span>
