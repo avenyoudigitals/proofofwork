@@ -69,10 +69,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
         position: 'fixed', top: 0, left: 0, bottom: 0,
         width: 232,
         display: 'flex', flexDirection: 'column',
-        background: 'rgba(12,12,21,0.95)',
+        background: 'var(--surface)',
         borderRight: '1px solid var(--border)',
         zIndex: 20,
-        backdropFilter: 'blur(20px)',
       }}>
 
         {/* Brand */}
@@ -205,8 +204,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           position: 'sticky', top: 0, zIndex: 10, height: 64,
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '0 36px',
-          background: 'rgba(5,5,10,0.85)',
-          backdropFilter: 'blur(20px)',
+          background: 'rgba(255,255,255,0.9)',
+          backdropFilter: 'blur(16px)',
           borderBottom: '1px solid var(--border)',
         }}>
           {/* Breadcrumb */}

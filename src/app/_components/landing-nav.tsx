@@ -1,106 +1,77 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 
 const NAV = [
-  { href: '#how',      label: 'How it works' },
-  { href: '#features', label: 'Features'     },
-  { href: '#work',     label: 'Work'         },
+  { href: '#how', label: 'How it works' },
+  { href: '#features', label: 'Features' },
+  { href: '#work', label: 'Work' },
 ]
 
 export function Navbar() {
+  const [mobileOpen, setMobileOpen] = useState(false)
+
   return (
     <header style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-      height: 64,
-      display: 'flex', alignItems: 'center',
-      background: 'rgba(5,5,10,0.75)',
-      backdropFilter: 'blur(20px)',
-      WebkitBackdropFilter: 'blur(20px)',
-      borderBottom: '1px solid rgba(139,92,246,0.1)',
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+      height: 60,
+      background: 'rgba(255,255,255,0.85)',
+      backdropFilter: 'blur(16px)',
+      borderBottom: '1px solid var(--border)',
     }}>
       <div style={{
-        maxWidth: 1280, margin: '0 auto', width: '100%',
-        padding: '0 32px',
+        maxWidth: 1200, margin: '0 auto', height: '100%',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 28px',
       }}>
 
-        {/* Logo */}
-        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 32, height: 32,
-            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-            borderRadius: 10,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            boxShadow: '0 4px 14px rgba(99,102,241,0.4)',
-          }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
-              <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
+        {/* Left nav */}
+        <nav style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {NAV.map((n) => (
+            <Link key={n.href} href={n.href} style={{
+              fontSize: 13, fontWeight: 500, color: 'var(--text-2)',
+              textDecoration: 'none', padding: '6px 14px',
+              borderRadius: 'var(--radius-full)',
+              transition: 'color 0.15s, background 0.15s',
+            }} className="nav-link">
+              {n.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Center logo */}
+        <Link href="/" style={{
+          position: 'absolute', left: '50%', transform: 'translateX(-50%)',
+          textDecoration: 'none', display: 'flex', alignItems: 'center',
+        }}>
           <span style={{
-            fontSize: 15, fontWeight: 700, color: 'var(--text)',
-            letterSpacing: '-0.02em', fontFamily: 'var(--font)',
+            fontSize: 15, fontWeight: 800, color: 'var(--text)',
+            letterSpacing: '-0.03em',
           }}>
             ProofForge
           </span>
         </Link>
 
-        {/* Nav */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          {NAV.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              style={{
-                padding: '6px 14px',
-                fontSize: 13, fontWeight: 500,
-                color: 'var(--text-2)',
-                textDecoration: 'none',
-                borderRadius: 'var(--radius-full)',
-                transition: 'color 0.15s, background 0.15s',
-              }}
-              className="nav-link"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {/* Right actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Link href="/login" style={{
             fontSize: 13, fontWeight: 500, color: 'var(--text-2)',
-            textDecoration: 'none',
-            padding: '7px 16px',
+            textDecoration: 'none', padding: '7px 16px',
             borderRadius: 'var(--radius-full)',
-            transition: 'color 0.15s',
-          }}
-          className="hover-text"
-          >
+            transition: 'color 0.15s, background 0.15s',
+          }} className="nav-link">
             Sign in
           </Link>
-          <Link href="/signup" style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            padding: '8px 20px',
-            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-            color: '#fff',
-            fontSize: 13, fontWeight: 600, textDecoration: 'none',
+          <Link href="/signup" id="nav-cta" style={{
+            fontSize: 13, fontWeight: 700, color: '#fff',
+            textDecoration: 'none', padding: '8px 20px',
+            background: '#0a0a12',
             borderRadius: 'var(--radius-full)',
-            letterSpacing: '-0.01em',
-            boxShadow: '0 4px 16px rgba(99,102,241,0.4)',
-            transition: 'opacity 0.15s, transform 0.1s, box-shadow 0.2s',
+            transition: 'opacity 0.15s',
           }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLAnchorElement).style.opacity = '0.88'
-            ;(e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(-1px)'
-            ;(e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 8px 24px rgba(99,102,241,0.55)'
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLAnchorElement).style.opacity = '1'
-            ;(e.currentTarget as HTMLAnchorElement).style.transform = 'translateY(0)'
-            ;(e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 4px 16px rgba(99,102,241,0.4)'
-          }}
+          onMouseEnter={e => (e.currentTarget.style.opacity = '0.82')}
+          onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
           >
             Get started
           </Link>

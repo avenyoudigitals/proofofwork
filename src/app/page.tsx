@@ -1,69 +1,118 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { FeatureCard } from './_components/interactive-cards'
 import { Navbar } from './_components/landing-nav'
 
 export const metadata: Metadata = {
-  title: 'ProofForge — Professional Verification for Developers',
-  description: 'The verified proof-of-work platform. Connect your GitHub, get company-verified, and build a credible professional record.',
+  title: 'ProofForge — Professional Verification Network',
+  description: 'Discover and verify professional work. The proof-of-work platform for developers, designers, and builders.',
 }
 
-const FEATURES = [
-  {
-    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" /></svg>,
-    title: 'GitHub & Figma Integration',
-    description: 'Connect your accounts and automatically surface verified commits, pull requests, and designs with cryptographic timestamps.',
-  },
-  {
-    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-    title: 'Company Verification',
-    description: 'Verified companies co-sign your work with legal accountability. A seal from Stripe or GitHub carries real evidentiary weight.',
-  },
-  {
-    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-    title: 'Peer Co-signing',
-    description: 'Colleagues who worked alongside you cryptographically co-sign contributions, adding trusted human verification.',
-  },
-  {
-    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-    title: 'Reputation Score',
-    description: 'An algorithmic score weighted by verification tier, contribution impact, and peer consensus — a signal employers act on.',
-  },
-  {
-    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-    title: 'Cryptographic Proof',
-    description: 'Every submission is timestamped and hashed. Your work record is immutable, auditable, and tamper-proof by design.',
-  },
-  {
-    icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round" /></svg>,
-    title: 'Recruiter Discovery',
-    description: 'Companies search ProofForge for verified professionals matching specific skills, companies, and contribution types.',
-  },
+const CATEGORIES = [
+  { label: 'GitHub Commits',   icon: '⌥' },
+  { label: 'Figma Designs',    icon: '◈' },
+  { label: 'Case Studies',     icon: '◎' },
+  { label: 'Open Source',      icon: '⊕' },
+  { label: 'Full Stack',       icon: '⟁' },
+  { label: 'ML / AI',          icon: '◑' },
+  { label: 'Design Systems',   icon: '▣' },
+  { label: 'DevOps / Infra',   icon: '⊞' },
 ]
 
-const STEPS = [
-  { n: '01', title: 'Upload Evidence',  body: 'Submit commits, designs, case studies, or any proof of contribution. Connect GitHub or Figma to import automatically.', color: '#6366f1' },
-  { n: '02', title: 'Peer Co-signing',  body: 'Invite colleagues to co-sign your work. Their cryptographic signature adds a layer of trusted human verification.', color: '#8b5cf6' },
-  { n: '03', title: 'Company Seal',     body: 'Partner companies officially verify and endorse your work. Their seal carries the highest evidentiary weight.', color: '#a855f7' },
-]
-
-const STATS = [
-  { v: '47K+',   l: 'Verified professionals', icon: '👤' },
-  { v: '180K+',  l: 'Proof submissions',       icon: '📋' },
-  { v: '2,400+', l: 'Company seals issued',    icon: '🏢' },
-  { v: '98.7%',  l: 'Verification accuracy',   icon: '✓' },
-]
-
-const COMPANIES = ['Stripe', 'Linear', 'Vercel', 'OpenAI', 'GitHub', 'Figma', 'Shopify', 'Notion']
-
-const WORKS = [
-  { title: 'Stripe Checkout Redesign',   role: 'Product Design Lead',       company: 'Stripe', tags: ['Figma', 'UX Research', 'A/B Testing'],  verifiedBy: 'Stripe'  },
-  { title: 'Real-time Sync Engine',      role: 'Senior Backend Engineer',    company: 'Linear', tags: ['Rust', 'WebSockets', 'CRDTs'],           verifiedBy: 'Linear'  },
-  { title: 'ML Pipeline Architecture',   role: 'ML Infrastructure Lead',     company: 'OpenAI', tags: ['PyTorch', 'Kubernetes', 'Ray'],           verifiedBy: 'OpenAI'  },
-  { title: 'Design System v4.0',         role: 'Design Systems Lead',        company: 'Figma',  tags: ['React', 'Storybook', 'Tokens'],           verifiedBy: null      },
-  { title: 'Zero-Trust Auth Overhaul',   role: 'Security Engineering Lead',  company: 'GitHub', tags: ['OAuth 2.1', 'OIDC', 'Go'],               verifiedBy: 'GitHub'  },
-  { title: 'Edge CDN Dashboard',         role: 'Full Stack Engineering',     company: 'Vercel', tags: ['Next.js', 'ClickHouse', 'D3.js'],         verifiedBy: null      },
-]
+function HeroCard() {
+  const NOTCHES = 24
+  return (
+    <div style={{
+      width: '100%', maxWidth: 500,
+      borderRadius: 28,
+      boxShadow: '0 32px 80px rgba(99,102,241,0.22), 0 8px 24px rgba(0,0,0,0.12)',
+      overflow: 'hidden',
+    }}>
+      <svg viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
+        <defs>
+          <linearGradient id="hbg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#1a1740" />
+            <stop offset="55%" stopColor="#2d2a6e" />
+            <stop offset="100%" stopColor="#4a1d96" />
+          </linearGradient>
+          <linearGradient id="hgold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#fcd34d" />
+            <stop offset="100%" stopColor="#b45309" />
+          </linearGradient>
+          <linearGradient id="hsheen" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#818cf8" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#818cf8" stopOpacity="0" />
+          </linearGradient>
+          <radialGradient id="hglow" cx="50%" cy="48%" r="40%">
+            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+          </radialGradient>
+          <filter id="hsglow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="4" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        <rect width="500" height="360" fill="url(#hbg)" />
+        <rect width="500" height="200" fill="url(#hsheen)" />
+        <ellipse cx="250" cy="175" rx="210" ry="150" fill="url(#hglow)" />
+        {/* Circuit traces */}
+        <g stroke="#818cf8" strokeWidth="0.8" strokeOpacity="0.35" fill="none">
+          <polyline points="28,55 100,55 100,110" />
+          <polyline points="50,85 82,85 82,140" />
+          <polyline points="472,50 400,50 400,108" />
+          <polyline points="450,80 418,80 418,132" />
+          <polyline points="35,305 35,255 95,255" />
+          <polyline points="62,285 120,285" />
+          <polyline points="465,308 465,258 405,258" />
+          <polyline points="438,290 380,290" />
+        </g>
+        {([28,100,472,400,35,465] as number[]).map((x,i) => <circle key={i} cx={x} cy={i<2?55:i<4?50:i<5?305:308} r="3" fill="#818cf8" fillOpacity="0.55" />)}
+        {/* Data rings */}
+        <circle cx="70" cy="308" r="40" fill="none" stroke="#6366f1" strokeWidth="1.3" strokeOpacity="0.45" />
+        <circle cx="70" cy="308" r="28" fill="none" stroke="#818cf8" strokeWidth="0.9" strokeOpacity="0.38" />
+        <circle cx="70" cy="308" r="16" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeOpacity="0.5" strokeDasharray="4 3" />
+        <circle cx="70" cy="308" r="6" fill="#818cf8" fillOpacity="0.3" />
+        <circle cx="430" cy="314" r="36" fill="none" stroke="#7c3aed" strokeWidth="1.3" strokeOpacity="0.4" />
+        <circle cx="430" cy="314" r="24" fill="none" stroke="#818cf8" strokeWidth="0.9" strokeOpacity="0.35" />
+        <circle cx="430" cy="314" r="13" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeOpacity="0.45" strokeDasharray="3 3" />
+        {/* Bar charts */}
+        {[{x:390,h:15},{x:399,h:22},{x:408,h:10},{x:417,h:18},{x:426,h:13}].map((b,i) => <rect key={i} x={b.x} y={66-b.h} width="6" height={b.h} rx="1.5" fill="#818cf8" fillOpacity="0.42" />)}
+        {[{x:388,h:13},{x:397,h:20},{x:406,h:8},{x:415,h:16}].map((b,i) => <rect key={i} x={b.x} y={310-b.h} width="6" height={b.h} rx="1.5" fill="#7c3aed" fillOpacity="0.4" />)}
+        {/* Dot grids */}
+        {[65,90,115].flatMap(x => [125,150,175].map(y => <circle key={`l${x}${y}`} cx={x} cy={y} r="1.4" fill="#818cf8" fillOpacity="0.22" />))}
+        {[385,410,435].flatMap(x => [125,150,175].map(y => <circle key={`r${x}${y}`} cx={x} cy={y} r="1.4" fill="#818cf8" fillOpacity="0.2" />))}
+        {/* Hexagon frame */}
+        <polygon points="250,88 308,121 308,187 250,220 192,187 192,121" fill="none" stroke="#6366f1" strokeWidth="1.5" strokeOpacity="0.55" />
+        <polygon points="250,97 301,128 301,182 250,213 199,182 199,128" fill="none" stroke="#818cf8" strokeWidth="0.7" strokeOpacity="0.3" />
+        {/* Glow */}
+        <ellipse cx="250" cy="175" rx="58" ry="58" fill="#6366f1" fillOpacity="0.2" filter="url(#hsglow)" />
+        {/* Notch ring */}
+        {Array.from({length: NOTCHES}, (_,i) => {
+          const a = (i/NOTCHES)*Math.PI*2, x=250+Math.cos(a)*50, y=175+Math.sin(a)*50
+          return <rect key={i} x={x-2} y={y-4.5} width="4" height="9" rx="2" fill="url(#hgold)" transform={`rotate(${(i/NOTCHES)*360},${x},${y})`} />
+        })}
+        {/* Seal */}
+        <circle cx="250" cy="175" r="43" fill="#1a1740" />
+        <circle cx="250" cy="175" r="38" fill="none" stroke="url(#hgold)" strokeWidth="2.5" />
+        {/* Stars */}
+        <text x="228" y="162" textAnchor="middle" fontSize="9" fill="#fcd34d" fillOpacity="0.95">&#9733;</text>
+        <text x="250" y="154" textAnchor="middle" fontSize="9" fill="#fcd34d" fillOpacity="0.95">&#9733;</text>
+        <text x="272" y="162" textAnchor="middle" fontSize="9" fill="#fcd34d" fillOpacity="0.95">&#9733;</text>
+        {/* Checkmark */}
+        <path d="M232,177 L245,191 L270,162" stroke="url(#hgold)" strokeWidth="5.5" strokeLinecap="round" strokeLinejoin="round" fill="none" filter="url(#hsglow)" />
+        {/* Divider */}
+        <rect x="120" y="238" width="260" height="1" fill="#818cf8" fillOpacity="0.18" />
+        {/* Label */}
+        <text x="250" y="264" textAnchor="middle" fontFamily="'SF Mono',monospace" fontSize="8.5" letterSpacing="4.5" fill="#818cf8" fillOpacity="0.75">VERIFIED CREDENTIAL</text>
+        {/* Dots */}
+        {([-60,-40,-20,0,20,40,60] as number[]).map((dx,i) => <circle key={i} cx={250+dx} cy={286} r={2.2} fill="#6366f1" fillOpacity={i===3?0.9:0.22} />)}
+        {/* Footer */}
+        <text x="250" y="330" textAnchor="middle" fontFamily="'SF Mono',monospace" fontSize="7" letterSpacing="2.5" fill="#c084fc" fillOpacity="0.45">PROOFFORGE · PROFESSIONAL NETWORK</text>
+        {/* Corner accents */}
+        {([[30,30],[470,30],[30,330],[470,330]] as [number,number][]).map(([cx,cy],i) => <circle key={i} cx={cx} cy={cy} r="4" fill="#818cf8" fillOpacity="0.18" />)}
+      </svg>
+    </div>
+  )
+}
 
 export default function LandingPage() {
   return (
@@ -71,250 +120,141 @@ export default function LandingPage() {
       <Navbar />
 
       {/* ══════════════════════════ HERO ══════════════════════════ */}
-      <section style={{ minHeight: '100vh', paddingTop: 64, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '120px 24px 80px', textAlign: 'center', position: 'relative' }}>
+      <section style={{ paddingTop: 60, minHeight: '92vh', display: 'flex', alignItems: 'center' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '80px 28px 60px', width: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'center' }}>
 
-        {/* Large ambient glow */}
-        <div style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translateX(-50%)', width: 800, height: 400, background: 'radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, transparent 65%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
-
-        {/* Marquee strip */}
-        <div style={{ position: 'absolute', top: 64, left: 0, right: 0, borderBottom: '1px solid var(--border)', padding: '10px 0', overflow: 'hidden', background: 'rgba(8,8,15,0.6)', backdropFilter: 'blur(8px)' }}>
-          <div style={{ display: 'flex', width: 'max-content' }} className="animate-marquee">
-            {[...COMPANIES, ...COMPANIES].map((c, i) => (
-              <span key={i} style={{ padding: '0 28px', fontSize: 9, fontWeight: 700, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', letterSpacing: '0.16em', textTransform: 'uppercase', borderRight: '1px solid var(--border)' }}>
-                {c}
+          {/* Left column */}
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 28 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 9 20 10.5 13.5 12 12 19 10.5 12 4 10.5 10.5 9 12 2z" fill="#0a0a12" /></svg>
+              <span style={{ fontSize: 12, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600 }}>
+                Professional Verification Network
               </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Live badge */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 'var(--radius-full)', marginBottom: 32, position: 'relative', zIndex: 1 }}>
-          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px rgba(16,185,129,0.8)', animation: 'pulseDot 2.2s ease-in-out infinite' }} />
-          <span style={{ fontSize: 11, fontWeight: 600, color: '#10b981', letterSpacing: '0.04em', fontFamily: 'var(--font-mono)' }}>
-            2,400+ company verifications live
-          </span>
-        </div>
-
-        {/* Main headline */}
-        <h1 style={{ fontSize: 'clamp(52px, 8vw, 96px)', fontWeight: 900, letterSpacing: '-0.05em', lineHeight: 0.92, marginBottom: 28, position: 'relative', zIndex: 1 }}>
-          <span style={{ color: 'var(--text)', display: 'block' }}>Stop claiming.</span>
-          <span style={{ background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', display: 'block' }}>
-            Start proving.
-          </span>
-        </h1>
-
-        <p style={{ fontSize: 18, color: 'var(--text-2)', lineHeight: 1.7, maxWidth: 560, marginBottom: 44, position: 'relative', zIndex: 1, letterSpacing: '-0.01em' }}>
-          The professional verification network. Connect your GitHub, get company-verified, and build a credible work record that speaks louder than any resume.
-        </p>
-
-        {/* CTA group */}
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 56, position: 'relative', zIndex: 1 }}>
-          <Link href="/signup" id="hero-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '15px 32px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7)', color: '#fff', fontSize: 15, fontWeight: 700, textDecoration: 'none', borderRadius: 'var(--radius-full)', boxShadow: '0 6px 32px rgba(99,102,241,0.5), 0 2px 8px rgba(0,0,0,0.3)', letterSpacing: '-0.01em', transition: 'all 0.2s' }}>
-            Get started free
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </Link>
-          <Link href="#how" id="hero-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '15px 32px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-2)', fontSize: 15, fontWeight: 600, textDecoration: 'none', border: '1px solid var(--border-2)', borderRadius: 'var(--radius-full)', backdropFilter: 'blur(8px)', transition: 'all 0.2s' }}>
-            How it works
-          </Link>
-        </div>
-
-        {/* Trust row */}
-        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 72, position: 'relative', zIndex: 1 }}>
-          {['Free for individuals', 'No credit card', 'GitHub OAuth'].map((t) => (
-            <span key={t} style={{ fontSize: 11, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ color: '#10b981', fontWeight: 700 }}>✓</span>{t.toUpperCase()}
-            </span>
-          ))}
-        </div>
-
-        {/* Live feed card — centered below CTAs */}
-        <div style={{ width: '100%', maxWidth: 700, position: 'relative', zIndex: 1 }}>
-          {/* Gradient border wrapper */}
-          <div style={{ padding: 1, borderRadius: 'var(--radius-2xl)', background: 'linear-gradient(135deg, rgba(99,102,241,0.5), rgba(168,85,247,0.3), rgba(99,102,241,0.1))' }}>
-            <div style={{ background: 'var(--card)', borderRadius: 'calc(var(--radius-2xl) - 1px)', overflow: 'hidden' }}>
-              {/* Card header */}
-              <div style={{ padding: '14px 22px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(99,102,241,0.05)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ef4444' }} />
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#f59e0b' }} />
-                  <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }} />
-                </div>
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#a5b4fc', fontFamily: 'var(--font-mono)', letterSpacing: '0.04em' }}>
-                  Live Verifications
-                </span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px rgba(16,185,129,0.8)', animation: 'pulseDot 2.2s ease-in-out infinite' }} />
-                  <span style={{ fontSize: 9, color: '#10b981', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em' }}>LIVE</span>
-                </div>
-              </div>
-              {/* Work rows */}
-              {WORKS.map((w, i) => (
-                <div key={i} style={{ padding: '14px 22px', borderBottom: i < WORKS.length - 1 ? '1px solid var(--border)' : 'none', display: 'flex', alignItems: 'center', gap: 12, transition: 'background 0.15s' }} className="hover-row">
-                  <span style={{ fontSize: 9, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', flexShrink: 0, width: 20 }}>{String(i + 1).padStart(2, '0')}</span>
-                  <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.01em', marginBottom: 2 }}>{w.title}</p>
-                    <p style={{ fontSize: 11, color: 'var(--text-3)' }}>{w.role} · {w.company}</p>
-                  </div>
-                  <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
-                    {w.tags.slice(0, 2).map(t => (
-                      <span key={t} style={{ fontSize: 9, padding: '2px 8px', border: '1px solid var(--border)', color: 'var(--text-3)', fontFamily: 'var(--font-mono)', borderRadius: 'var(--radius-full)', background: 'rgba(255,255,255,0.02)' }}>{t}</span>
-                    ))}
-                  </div>
-                  {w.verifiedBy ? (
-                    <span style={{ fontSize: 9, fontWeight: 700, color: '#10b981', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em', border: '1px solid rgba(16,185,129,0.3)', padding: '3px 10px', borderRadius: 'var(--radius-full)', background: 'rgba(16,185,129,0.08)', flexShrink: 0 }}>
-                      ✓ {w.verifiedBy}
-                    </span>
-                  ) : (
-                    <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em', border: '1px solid var(--border-2)', padding: '3px 10px', borderRadius: 'var(--radius-full)', flexShrink: 0 }}>
-                      PEER
-                    </span>
-                  )}
-                </div>
-              ))}
             </div>
+
+            <h1 style={{ fontSize: 'clamp(44px, 5.5vw, 72px)', fontWeight: 900, letterSpacing: '-0.05em', lineHeight: 0.97, marginBottom: 24, color: 'var(--text)' }}>
+              Discover<br />
+              Verified Work<br />
+              and Collect<br />
+              <span style={{ color: 'var(--text-3)' }}>Credentials</span>
+            </h1>
+
+            <p style={{ fontSize: 15, color: 'var(--text-2)', lineHeight: 1.75, maxWidth: 400, marginBottom: 36 }}>
+              The proof-of-work platform for professionals. Connect your GitHub, get company-verified, and build a credible record that speaks louder than a résumé.
+            </p>
+
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <Link href="/signup" id="hero-explore" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 28px', background: '#0a0a12', color: '#fff', fontSize: 14, fontWeight: 700, textDecoration: 'none', borderRadius: 'var(--radius-full)' }}>
+                Explore
+              </Link>
+              <Link href="/signup" id="hero-verify" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 26px', background: 'transparent', color: 'var(--text)', fontSize: 14, fontWeight: 600, textDecoration: 'none', border: '1.5px solid var(--border-2)', borderRadius: 'var(--radius-full)' }}>
+                Get Verified
+              </Link>
+            </div>
+          </div>
+
+          {/* Right column — credential card */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <HeroCard />
           </div>
         </div>
       </section>
 
-      {/* ══════════════════════════ STATS ══════════════════════════ */}
-      <section style={{ padding: '80px 24px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
-          {STATS.map(({ v, l, icon }) => (
-            <div key={l} style={{ padding: '32px 24px', textAlign: 'center', background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)', position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s, box-shadow 0.2s, transform 0.2s' }} className="hover-card">
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, #6366f1, #a855f7, transparent)' }} />
-              <p style={{ fontSize: 28, marginBottom: 6 }}>{icon}</p>
-              <p style={{ fontSize: 'clamp(28px, 3vw, 42px)', fontWeight: 900, background: 'linear-gradient(135deg, #eeeeff, #a5b4fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', letterSpacing: '-0.04em', lineHeight: 1, marginBottom: 8 }}>{v}</p>
-              <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', letterSpacing: '0.07em', textTransform: 'uppercase' }}>{l}</p>
-            </div>
+      {/* ══════════════════════════ WORK CATEGORIES ══════════════════════════ */}
+      <section style={{ padding: '72px 28px 0', maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 28 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.03em' }}>Work Collections</h2>
+        </div>
+
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 10 }}>
+          {CATEGORIES.map((c) => (
+            <a key={c.label} href="/signup" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '8px 18px', fontSize: 13, fontWeight: 500, borderRadius: 'var(--radius-full)', border: '1.5px solid var(--border-2)', color: 'var(--text-2)', background: 'var(--card)', cursor: 'pointer', textDecoration: 'none', transition: 'all 0.15s' }} className="cat-pill">
+              <span style={{ fontSize: 15 }}>{c.icon}</span>
+              {c.label}
+            </a>
           ))}
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 24, marginBottom: 72 }}>
+          <Link href="/signup" id="all-collections" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 24px', background: '#0a0a12', color: '#fff', fontSize: 13, fontWeight: 700, textDecoration: 'none', borderRadius: 'var(--radius-full)' }}>
+            All Collections ▸
+          </Link>
         </div>
       </section>
 
       {/* ══════════════════════════ HOW IT WORKS ══════════════════════════ */}
-      <section id="how" style={{ padding: '80px 24px 96px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 60 }}>
-            <span className="section-label" style={{ marginBottom: 20, display: 'inline-flex' }}>Process</span>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1.05 }}>
-              Three tiers,{' '}
-              <span style={{ background: 'linear-gradient(135deg, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>compounding trust.</span>
-            </h2>
+      <section id="how" style={{ padding: '72px 28px', background: 'var(--surface)', borderTop: '1px solid var(--border)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 52 }}>
+            <h2 style={{ fontSize: 36, fontWeight: 900, letterSpacing: '-0.04em', marginBottom: 12 }}>How it works</h2>
+            <p style={{ fontSize: 15, color: 'var(--text-2)', maxWidth: 440, margin: '0 auto' }}>Three tiers of verification, compounding your professional credibility.</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
-            {STEPS.map((step, i) => (
-              <div key={step.n} style={{ padding: '36px 32px', background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)', position: 'relative', overflow: 'hidden', transition: 'border-color 0.2s, box-shadow 0.2s' }} className="hover-card">
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg, ${step.color}, transparent)` }} />
-                <div style={{ position: 'absolute', top: -20, right: -10, fontSize: 120, fontWeight: 900, color: `${step.color}08`, fontFamily: 'var(--font-mono)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none' }}>{step.n}</div>
-                <div style={{ width: 40, height: 40, borderRadius: 'var(--radius-md)', background: `${step.color}15`, border: `1px solid ${step.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
-                  <span style={{ fontSize: 18, fontWeight: 800, color: step.color, fontFamily: 'var(--font-mono)' }}>{step.n}</span>
+            {[
+              { n: '01', title: 'Upload Evidence',  body: 'Submit commits, designs, case studies, or any proof of contribution. Connect GitHub or Figma to import automatically.' },
+              { n: '02', title: 'Peer Co-signing',  body: 'Invite colleagues to co-sign your work. Their cryptographic signature adds a layer of trusted human verification.' },
+              { n: '03', title: 'Company Seal',     body: 'Partner companies officially verify and endorse. Their seal carries the highest evidentiary weight in any hiring decision.' },
+            ].map((step) => (
+              <div key={step.n} style={{ padding: '36px 32px', background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)', position: 'relative', overflow: 'hidden' }} className="hover-card">
+                <div style={{ position: 'absolute', top: -12, right: 16, fontSize: 100, fontWeight: 900, color: 'rgba(0,0,0,0.03)', fontFamily: 'var(--font-mono)', lineHeight: 1, userSelect: 'none' }}>{step.n}</div>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: '#0a0a12', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: '#fff', fontFamily: 'var(--font-mono)' }}>{step.n}</span>
                 </div>
-                <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12, letterSpacing: '-0.02em' }}>{step.title}</h3>
-                <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.75 }}>{step.body}</p>
+                <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 12, letterSpacing: '-0.02em' }}>{step.title}</h3>
+                <p style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.75 }}>{step.body}</p>
               </div>
             ))}
-          </div>
-          <div style={{ textAlign: 'center', marginTop: 48 }}>
-            <Link href="/signup" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 32px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: '#fff', fontSize: 14, fontWeight: 700, textDecoration: 'none', borderRadius: 'var(--radius-full)', boxShadow: '0 4px 24px rgba(99,102,241,0.4)' }}>
-              Start building your record →
-            </Link>
           </div>
         </div>
       </section>
 
       {/* ══════════════════════════ FEATURES ══════════════════════════ */}
-      <section id="features" style={{ padding: '80px 24px 96px', background: 'rgba(8,8,15,0.8)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 60 }}>
-            <span className="section-label" style={{ marginBottom: 20, display: 'inline-flex' }}>Platform Features</span>
-            <h2 style={{ fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1.05 }}>
-              Evidence{' '}
-              <span style={{ background: 'linear-gradient(135deg, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>over claims.</span>
-            </h2>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
-            {FEATURES.map((f, i) => (<FeatureCard key={f.title} {...f} index={i} />))}
-          </div>
+      <section id="features" style={{ padding: '72px 28px', maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 900, letterSpacing: '-0.04em', marginBottom: 12 }}>Built for real proof</h2>
+          <p style={{ fontSize: 15, color: 'var(--text-2)', maxWidth: 440, margin: '0 auto' }}>Every claim backed by cryptographic evidence, peer signatures, and company seals.</p>
         </div>
-      </section>
-
-      {/* ══════════════════════════ WORK SHOWCASE ══════════════════════════ */}
-      <section id="work" style={{ padding: '80px 24px 96px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 40, flexWrap: 'wrap' }}>
-            <div>
-              <span className="section-label" style={{ marginBottom: 16, display: 'inline-flex' }}>Verified Work</span>
-              <h2 style={{ fontSize: 'clamp(28px, 3.5vw, 48px)', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1.05 }}>
-                Real{' '}
-                <span style={{ background: 'linear-gradient(135deg, #818cf8, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>contributions.</span>
-              </h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+          {[
+            { icon: '⌥', title: 'GitHub Contributions', body: 'Connect your GitHub to auto-import and timestamp your real commits, PRs, and reviews.', color: '#0a0a12' },
+            { icon: '◈', title: 'Design Work',           body: 'Sync Figma files and design systems. Show the actual craft behind every pixel.', color: '#6366f1' },
+            { icon: '◎', title: 'Project Ownership',     body: 'Claim ownership with evidence: scope docs, metrics, team acknowledgment.', color: '#8b5cf6' },
+            { icon: '⊕', title: 'Open Source Impact',    body: 'Automatically attribute your open source contributions with maintainer co-signing.', color: '#10b981' },
+            { icon: '◑', title: 'ML & AI Research',      body: 'Document model runs, datasets, benchmarks, and paper citations in one place.', color: '#f59e0b' },
+            { icon: '⊞', title: 'Infra & DevOps',        body: 'Prove you shipped the infra — runbooks, incident responses, uptime records included.', color: '#ef4444' },
+          ].map((f) => (
+            <div key={f.title} style={{ padding: '28px', background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)' }} className="hover-card">
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: f.color === '#0a0a12' ? '#0a0a12' : `${f.color}12`, border: `1px solid ${f.color === '#0a0a12' ? 'transparent' : f.color + '25'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                <span style={{ fontSize: 20, color: f.color === '#0a0a12' ? '#fff' : f.color }}>{f.icon}</span>
+              </div>
+              <h3 style={{ fontSize: 15, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 10 }}>{f.title}</h3>
+              <p style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.7 }}>{f.body}</p>
             </div>
-            <Link href="/signup" id="browse-all" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 22px', border: '1px solid var(--border-2)', background: 'rgba(255,255,255,0.04)', color: 'var(--text-2)', fontSize: 13, fontWeight: 600, textDecoration: 'none', borderRadius: 'var(--radius-full)', backdropFilter: 'blur(8px)' }}>
-              Browse all →
-            </Link>
-          </div>
-          {/* Gradient border card */}
-          <div style={{ padding: 1, borderRadius: 'var(--radius-xl)', background: 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(168,85,247,0.15), rgba(99,102,241,0.05))' }}>
-            <div style={{ background: 'var(--card)', borderRadius: 'calc(var(--radius-xl) - 1px)', overflow: 'hidden' }}>
-              {WORKS.map((w, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', borderBottom: i < WORKS.length - 1 ? '1px solid var(--border)' : 'none', transition: 'background 0.15s', position: 'relative' }} className="hover-row">
-                  {w.verifiedBy && (<div style={{ width: 3, alignSelf: 'stretch', background: 'linear-gradient(180deg, #10b981, #059669)', flexShrink: 0 }} />)}
-                  <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 0, padding: '20px 28px' }}>
-                    <span style={{ fontSize: 9, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', flexShrink: 0, width: 32 }}>{String(i + 1).padStart(2, '0')}</span>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.02em', marginBottom: 3 }}>{w.title}</p>
-                      <p style={{ fontSize: 11, color: 'var(--text-3)' }}>{w.role} · {w.company}</p>
-                    </div>
-                    <div style={{ display: 'flex', gap: 6, flexShrink: 0, marginRight: 24 }}>
-                      {w.tags.slice(0, 2).map(t => (
-                        <span key={t} style={{ fontSize: 9, padding: '2px 9px', border: '1px solid var(--border)', color: 'var(--text-3)', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em', textTransform: 'uppercase', borderRadius: 'var(--radius-full)' }}>{t}</span>
-                      ))}
-                    </div>
-                    <div style={{ width: 120, display: 'flex', justifyContent: 'flex-end', flexShrink: 0 }}>
-                      {w.verifiedBy ? (
-                        <span style={{ fontSize: 9, fontWeight: 700, color: '#10b981', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em', textTransform: 'uppercase', border: '1px solid rgba(16,185,129,0.3)', padding: '3px 10px', borderRadius: 'var(--radius-full)', background: 'rgba(16,185,129,0.08)' }}>✓ {w.verifiedBy}</span>
-                      ) : (
-                        <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', letterSpacing: '0.06em', textTransform: 'uppercase', border: '1px solid var(--border-2)', padding: '3px 10px', borderRadius: 'var(--radius-full)' }}>Peer</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
       {/* ══════════════════════════ CTA ══════════════════════════ */}
-      <section style={{ padding: '0 24px 100px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          {/* Gradient border CTA box */}
-          <div style={{ padding: 1, borderRadius: 'var(--radius-2xl)', background: 'linear-gradient(135deg, rgba(99,102,241,0.5), rgba(168,85,247,0.4), rgba(99,102,241,0.2))' }}>
-            <div style={{ padding: '80px 64px', background: 'linear-gradient(135deg, rgba(14,14,26,0.97), rgba(18,18,36,0.95))', borderRadius: 'calc(var(--radius-2xl) - 1px)', position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
-              {/* Orb */}
-              <div style={{ position: 'absolute', top: '-30%', left: '50%', transform: 'translateX(-50%)', width: 600, height: 300, background: 'radial-gradient(ellipse, rgba(99,102,241,0.2) 0%, transparent 65%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
-
-              <div style={{ position: 'relative', zIndex: 1 }}>
-                <span className="section-label" style={{ marginBottom: 28, display: 'inline-flex' }}>Get started today</span>
-                <h2 style={{ fontSize: 'clamp(36px, 5vw, 64px)', fontWeight: 900, letterSpacing: '-0.05em', lineHeight: 1, marginBottom: 20 }}>
-                  Your career in
-                  <br />
-                  <span style={{ background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>provable facts.</span>
-                </h2>
-                <p style={{ fontSize: 16, color: 'var(--text-2)', lineHeight: 1.75, maxWidth: 480, margin: '0 auto 40px', letterSpacing: '-0.01em' }}>
-                  Stop writing &ldquo;led initiative&rdquo; and hoping they believe you. Upload the PR, the design, the metrics. Let the evidence speak.
-                </p>
-                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 24 }}>
-                  <Link href="/signup" id="cta-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '15px 36px', background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7)', color: '#fff', fontSize: 15, fontWeight: 700, textDecoration: 'none', borderRadius: 'var(--radius-full)', boxShadow: '0 6px 32px rgba(99,102,241,0.5)' }}>
-                    Get started for free
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                  </Link>
-                  <Link href="/login" id="cta-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '15px 28px', background: 'rgba(255,255,255,0.05)', color: 'var(--text-2)', border: '1px solid var(--border-2)', fontSize: 15, fontWeight: 600, textDecoration: 'none', borderRadius: 'var(--radius-full)', backdropFilter: 'blur(8px)' }}>
-                    Sign in
-                  </Link>
-                </div>
-                <span style={{ fontSize: 10, color: 'var(--text-3)', fontFamily: 'var(--font-mono)', letterSpacing: '0.08em' }}>
-                  FREE FOREVER FOR INDIVIDUALS · NO CREDIT CARD REQUIRED
-                </span>
+      <section style={{ padding: '0 28px 80px' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ background: '#0a0a12', borderRadius: 'var(--radius-2xl)', padding: '80px 64px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 600, height: 300, background: 'radial-gradient(ellipse, rgba(99,102,241,0.25) 0%, transparent 65%)', filter: 'blur(50px)', pointerEvents: 'none' }} />
+            <svg style={{ position: 'absolute', top: 32, right: 48 }} width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 9 20 10.5 13.5 12 12 19 10.5 12 4 10.5 10.5 9 12 2z" fill="white" opacity="0.15" /></svg>
+            <svg style={{ position: 'absolute', bottom: 40, left: 52 }} width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L13.5 9 20 10.5 13.5 12 12 19 10.5 12 4 10.5 10.5 9 12 2z" fill="white" opacity="0.1" /></svg>
+            <div style={{ position: 'relative', zIndex: 1 }}>
+              <h2 style={{ fontSize: 'clamp(36px, 4.5vw, 60px)', fontWeight: 900, color: '#fff', letterSpacing: '-0.05em', lineHeight: 1, marginBottom: 18 }}>
+                Your career in<br />provable facts.
+              </h2>
+              <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, maxWidth: 420, margin: '0 auto 36px' }}>
+                Stop writing &ldquo;led initiative&rdquo; and hoping they believe you. Upload the PR, the design, the metrics. Let the evidence speak.
+              </p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+                <Link href="/signup" id="cta-main" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 32px', background: '#fff', color: '#0a0a12', fontSize: 14, fontWeight: 700, textDecoration: 'none', borderRadius: 'var(--radius-full)' }}>
+                  Get started for free →
+                </Link>
+                <Link href="/login" id="cta-login" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '13px 24px', background: 'transparent', color: 'rgba(255,255,255,0.7)', fontSize: 14, fontWeight: 600, textDecoration: 'none', border: '1.5px solid rgba(255,255,255,0.2)', borderRadius: 'var(--radius-full)' }}>
+                  Sign in
+                </Link>
               </div>
             </div>
           </div>
@@ -322,14 +262,11 @@ export default function LandingPage() {
       </section>
 
       {/* ══════════════════════════ FOOTER ══════════════════════════ */}
-      <footer style={{ borderTop: '1px solid var(--border)', background: 'rgba(8,8,15,0.9)', backdropFilter: 'blur(12px)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+      <footer style={{ borderTop: '1px solid var(--border)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 26, height: 26, background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5"><path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-2)', letterSpacing: '-0.01em' }}>ProofForge</span>
-            <span style={{ fontSize: 11, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>© 2026</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.01em' }}>ProofForge</span>
+            <span style={{ fontSize: 11, color: 'var(--text-3)' }}>© 2026</span>
           </div>
           <div style={{ display: 'flex', gap: 4 }}>
             {[{ label: 'Privacy', href: '/terms#privacy' }, { label: 'Terms', href: '/terms' }, { label: 'Security', href: '#' }, { label: 'Docs', href: '#' }].map((l) => (

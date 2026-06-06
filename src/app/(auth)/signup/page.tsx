@@ -12,23 +12,9 @@ export default function SignupPage() {
   const [googlePending, setGooglePending] = useState(false)
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--bg)', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', fontFamily: 'var(--font)' }}>
 
-      {/* Background orbs */}
-      <div style={{
-        position: 'absolute', top: '10%', left: '5%',
-        width: 500, height: 500,
-        background: 'radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 65%)',
-        filter: 'blur(70px)', pointerEvents: 'none', zIndex: 0,
-      }} />
-      <div style={{
-        position: 'absolute', bottom: '5%', right: '10%',
-        width: 350, height: 350,
-        background: 'radial-gradient(ellipse, rgba(139,92,246,0.1) 0%, transparent 65%)',
-        filter: 'blur(55px)', pointerEvents: 'none', zIndex: 0,
-      }} />
-
-      {/* ── Left panel — branding ─────────────────────────────── */}
+      {/* ── LEFT PANEL ─────────────────────────────────────────────── */}
       <div
         className="hidden lg:flex"
         style={{
@@ -36,127 +22,149 @@ export default function SignupPage() {
           flexDirection: 'column',
           justifyContent: 'space-between',
           padding: '44px 52px',
-          background: 'rgba(12,12,21,0.7)',
-          borderRight: '1px solid var(--border)',
+          background: 'linear-gradient(145deg, #0f0c29 0%, #1a1560 45%, #2d1b69 100%)',
           position: 'relative',
-          zIndex: 1,
-          backdropFilter: 'blur(20px)',
+          overflow: 'hidden',
         }}
       >
+        {/* Background glow orbs */}
+        <div style={{ position: 'absolute', top: '-10%', right: '-15%', width: 400, height: 400, background: 'radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 65%)', filter: 'blur(48px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: '10%', left: '-10%', width: 350, height: 350, background: 'radial-gradient(circle, rgba(139,92,246,0.28) 0%, transparent 65%)', filter: 'blur(56px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: '55%', right: '10%', width: 200, height: 200, background: 'radial-gradient(circle, rgba(168,85,247,0.2) 0%, transparent 65%)', filter: 'blur(32px)', pointerEvents: 'none' }} />
+
+        {/* Grid overlay */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          backgroundImage: 'linear-gradient(rgba(129,140,248,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(129,140,248,0.05) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        }} />
+
         {/* Logo */}
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <Link href="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 11,
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 16px rgba(99,102,241,0.4)',
-            }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
-                <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <span style={{ fontSize: 17, fontWeight: 700, color: '#f0f0ff', letterSpacing: '-0.03em' }}>
+          <Link href="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
+            <span style={{ fontSize: 17, fontWeight: 700, color: '#fff', letterSpacing: '-0.03em' }}>
               ProofForge
             </span>
           </Link>
         </div>
 
-        {/* Center */}
+        {/* Center content */}
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.05em', color: '#f0f0ff', lineHeight: 1.15, marginBottom: 16 }}>
+          {/* Heading */}
+          <h2 style={{ fontSize: 38, fontWeight: 900, letterSpacing: '-0.05em', color: '#fff', lineHeight: 1.1, marginBottom: 16 }}>
             Build a career<br />
             <span style={{
-              background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+              background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
             }}>backed by proof.</span>
           </h2>
-          <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.8, marginBottom: 40, maxWidth: 320 }}>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, marginBottom: 44, maxWidth: 320 }}>
             Upload your contributions. Get verified by peers and employers.
             Build a profile that actually proves what you can do.
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Feature steps */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             {[
-              { icon: '📂', label: 'Upload proof of work', sub: 'GitHub, Figma, live demos, case studies' },
-              { icon: '👥', label: 'Get peer verified',    sub: 'Colleagues co-sign your contributions' },
-              { icon: '🏢', label: 'Company verified',     sub: 'Official employer endorsement on your record' },
-            ].map((item) => (
-              <div key={item.label} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+              {
+                icon: (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="1.8">
+                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ),
+                label: 'Upload proof of work',
+                sub: 'GitHub, Figma, live demos, case studies',
+                color: '#6366f1',
+              },
+              {
+                icon: (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="1.8">
+                    <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ),
+                label: 'Get peer verified',
+                sub: 'Colleagues co-sign your contributions',
+                color: '#a855f7',
+              },
+              {
+                icon: (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.8">
+                    <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ),
+                label: 'Company verified',
+                sub: 'Official employer endorsement on your record',
+                color: '#10b981',
+              },
+            ].map((item, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
                 <div style={{
-                  width: 40, height: 40, borderRadius: 'var(--radius-md)', flexShrink: 0,
-                  background: 'rgba(99,102,241,0.1)',
-                  border: '1px solid rgba(99,102,241,0.2)',
+                  width: 42, height: 42, borderRadius: 12, flexShrink: 0,
+                  background: `${item.color}18`,
+                  border: `1px solid ${item.color}35`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 18,
+                  backdropFilter: 'blur(8px)',
                 }}>
                   {item.icon}
                 </div>
-                <div>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: '#d4d4d8', marginBottom: 3 }}>{item.label}</p>
-                  <p style={{ fontSize: 12, color: 'var(--text-3)' }}>{item.sub}</p>
+                <div style={{ paddingTop: 2 }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3, letterSpacing: '-0.01em' }}>{item.label}</p>
+                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>{item.sub}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Bottom */}
+        {/* Bottom — trusted by */}
         <div style={{ position: 'relative', zIndex: 1 }}>
+          <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', marginBottom: 12, fontFamily: 'var(--font-mono)' }}>
+            Trusted by teams at
+          </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {['stripe.com', 'linear.app', 'vercel.com', 'openai.com', 'figma.com'].map((c) => (
+            {['Stripe', 'Linear', 'Vercel', 'OpenAI', 'Figma'].map((c) => (
               <span key={c} style={{
-                fontSize: 10, color: 'var(--text-3)', padding: '4px 12px',
-                border: '1px solid var(--border)',
+                fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.5)',
+                padding: '5px 12px',
+                border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: 'var(--radius-full)',
-                background: 'rgba(255,255,255,0.02)',
+                background: 'rgba(255,255,255,0.04)',
+                backdropFilter: 'blur(8px)',
+                letterSpacing: '-0.01em',
               }}>
                 {c}
               </span>
             ))}
           </div>
-          <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 10 }}>
-            Verified by teams at these companies
-          </p>
         </div>
       </div>
 
-      {/* ── Right panel — signup form ──────────────────────────── */}
+      {/* ── RIGHT PANEL ────────────────────────────────────────────── */}
       <div style={{
         flex: 1,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '48px 24px',
-        position: 'relative', zIndex: 1,
+        background: '#ffffff',
       }}>
         <div style={{ width: '100%', maxWidth: 400 }}>
 
           {/* Mobile logo */}
           <div className="lg:hidden" style={{ marginBottom: 36, display: 'flex', justifyContent: 'center' }}>
-            <Link href="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-              <div style={{
-                width: 32, height: 32, borderRadius: 10,
-                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 4px 14px rgba(99,102,241,0.4)',
-              }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
-                  <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <span style={{ fontSize: 15, fontWeight: 700, color: '#f0f0ff', letterSpacing: '-0.02em' }}>ProofForge</span>
+            <Link href="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
+              <span style={{ fontSize: 15, fontWeight: 700, color: '#0a0a12', letterSpacing: '-0.02em' }}>ProofForge</span>
             </Link>
           </div>
 
           {/* Heading */}
           <div style={{ marginBottom: 28 }}>
-            <h1 style={{ fontSize: 26, fontWeight: 800, color: '#f0f0ff', letterSpacing: '-0.04em', marginBottom: 8 }}>
+            <h1 style={{ fontSize: 26, fontWeight: 800, color: '#0a0a12', letterSpacing: '-0.04em', marginBottom: 8 }}>
               Create your account
             </h1>
-            <p style={{ fontSize: 14, color: 'var(--text-2)' }}>
+            <p style={{ fontSize: 14, color: '#55556e' }}>
               Already have one?{' '}
-              <Link href="/login" style={{ color: '#818cf8', textDecoration: 'none', fontWeight: 600 }}>
+              <Link href="/login" style={{ color: '#6366f1', textDecoration: 'none', fontWeight: 600 }}>
                 Sign in
               </Link>
             </p>
@@ -172,19 +180,17 @@ export default function SignupPage() {
                 width: '100%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                 padding: '13px 20px',
-                background: githubPending
-                  ? 'rgba(99,102,241,0.15)'
-                  : 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+                background: githubPending ? 'rgba(99,102,241,0.1)' : 'linear-gradient(135deg, #4f46e5, #7c3aed)',
                 border: 'none', borderRadius: 'var(--radius-full)',
                 fontSize: 14, fontWeight: 600, color: '#fff',
                 cursor: githubPending ? 'not-allowed' : 'pointer',
-                opacity: githubPending ? 0.75 : 1,
+                opacity: githubPending ? 0.7 : 1,
                 transition: 'all 0.2s',
-                boxShadow: githubPending ? 'none' : '0 4px 20px rgba(99,102,241,0.4)',
+                boxShadow: githubPending ? 'none' : '0 4px 20px rgba(99,102,241,0.35)',
                 letterSpacing: '-0.01em',
               }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
               </svg>
               {githubPending ? 'Redirecting to GitHub…' : 'Continue with GitHub'}
@@ -201,18 +207,18 @@ export default function SignupPage() {
                 width: '100%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                 padding: '13px 20px',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid var(--border-2)',
+                background: '#fff',
+                border: '1.5px solid #e5e5e8',
                 borderRadius: 'var(--radius-full)',
-                fontSize: 14, fontWeight: 500, color: '#d4d4d8',
+                fontSize: 14, fontWeight: 500, color: '#0a0a12',
                 cursor: googlePending ? 'not-allowed' : 'pointer',
-                opacity: googlePending ? 0.75 : 1,
+                opacity: googlePending ? 0.7 : 1,
                 transition: 'all 0.2s',
                 letterSpacing: '-0.01em',
-                backdropFilter: 'blur(8px)',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.07)',
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
+              <svg width="16" height="16" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" />
@@ -224,9 +230,9 @@ export default function SignupPage() {
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
-            <span style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>or</span>
-            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+            <div style={{ flex: 1, height: 1, background: '#e5e5e8' }} />
+            <span style={{ fontSize: 11, color: '#9999b2', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>or</span>
+            <div style={{ flex: 1, height: 1, background: '#e5e5e8' }} />
           </div>
 
           {/* Email/password form */}
@@ -236,9 +242,9 @@ export default function SignupPage() {
             {state?.error && (
               <div style={{
                 padding: '12px 16px', borderRadius: 'var(--radius-md)',
-                background: 'rgba(239,68,68,0.08)',
+                background: 'rgba(239,68,68,0.06)',
                 border: '1px solid rgba(239,68,68,0.2)',
-                fontSize: 13, color: '#f87171',
+                fontSize: 13, color: '#dc2626',
                 display: 'flex', alignItems: 'center', gap: 8,
               }}>
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -250,61 +256,67 @@ export default function SignupPage() {
 
             {/* Name */}
             <div>
-              <label htmlFor="name" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 7, letterSpacing: '0.01em' }}>
+              <label htmlFor="name" style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#0a0a12', marginBottom: 7 }}>
                 Full name
               </label>
               <input
                 id="name" name="name" type="text" autoComplete="name" required
                 placeholder="Jane Smith"
                 style={{
-                  width: '100%', padding: '12px 16px',
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid var(--border-2)',
-                  borderRadius: 'var(--radius-md)', color: '#f0f0ff', fontSize: 14,
+                  width: '100%', padding: '11px 14px',
+                  background: '#f7f7f9',
+                  border: '1.5px solid #e5e5e8',
+                  borderRadius: 'var(--radius-md)',
+                  color: '#0a0a12', fontSize: 14,
                   outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
                   fontFamily: 'var(--font)',
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = '#6366f1'
-                  e.currentTarget.style.boxShadow = '0 0 0 4px rgba(99,102,241,0.12)'
+                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.1)'
+                  e.currentTarget.style.background = '#fff'
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-2)'
+                  e.currentTarget.style.borderColor = '#e5e5e8'
                   e.currentTarget.style.boxShadow = 'none'
+                  e.currentTarget.style.background = '#f7f7f9'
                 }}
               />
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="email" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 7, letterSpacing: '0.01em' }}>
+              <label htmlFor="email" style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#0a0a12', marginBottom: 7 }}>
                 Email
               </label>
               <input
                 id="email" name="email" type="email" autoComplete="email" required
                 placeholder="you@example.com"
                 style={{
-                  width: '100%', padding: '12px 16px',
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid var(--border-2)',
-                  borderRadius: 'var(--radius-md)', color: '#f0f0ff', fontSize: 14,
+                  width: '100%', padding: '11px 14px',
+                  background: '#f7f7f9',
+                  border: '1.5px solid #e5e5e8',
+                  borderRadius: 'var(--radius-md)',
+                  color: '#0a0a12', fontSize: 14,
                   outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
                   fontFamily: 'var(--font)',
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = '#6366f1'
-                  e.currentTarget.style.boxShadow = '0 0 0 4px rgba(99,102,241,0.12)'
+                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.1)'
+                  e.currentTarget.style.background = '#fff'
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-2)'
+                  e.currentTarget.style.borderColor = '#e5e5e8'
                   e.currentTarget.style.boxShadow = 'none'
+                  e.currentTarget.style.background = '#f7f7f9'
                 }}
               />
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="password" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 7, letterSpacing: '0.01em' }}>
+              <label htmlFor="password" style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#0a0a12', marginBottom: 7 }}>
                 Password
               </label>
               <input
@@ -312,20 +324,23 @@ export default function SignupPage() {
                 autoComplete="new-password" required minLength={8}
                 placeholder="Min. 8 characters"
                 style={{
-                  width: '100%', padding: '12px 16px',
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid var(--border-2)',
-                  borderRadius: 'var(--radius-md)', color: '#f0f0ff', fontSize: 14,
+                  width: '100%', padding: '11px 14px',
+                  background: '#f7f7f9',
+                  border: '1.5px solid #e5e5e8',
+                  borderRadius: 'var(--radius-md)',
+                  color: '#0a0a12', fontSize: 14,
                   outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
                   fontFamily: 'var(--font)',
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = '#6366f1'
-                  e.currentTarget.style.boxShadow = '0 0 0 4px rgba(99,102,241,0.12)'
+                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.1)'
+                  e.currentTarget.style.background = '#fff'
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-2)'
+                  e.currentTarget.style.borderColor = '#e5e5e8'
                   e.currentTarget.style.boxShadow = 'none'
+                  e.currentTarget.style.background = '#f7f7f9'
                 }}
               />
             </div>
@@ -338,16 +353,14 @@ export default function SignupPage() {
               style={{
                 width: '100%',
                 padding: '13px 20px', marginTop: 4,
-                background: pending
-                  ? 'rgba(255,255,255,0.06)'
-                  : 'linear-gradient(135deg, #4f46e5, #7c3aed)',
+                background: pending ? '#e5e5e8' : 'linear-gradient(135deg, #4f46e5, #7c3aed)',
                 border: 'none', borderRadius: 'var(--radius-full)',
                 fontSize: 14, fontWeight: 700,
-                color: pending ? 'var(--text-3)' : '#fff',
+                color: pending ? '#9999b2' : '#fff',
                 cursor: pending ? 'not-allowed' : 'pointer',
                 transition: 'all 0.2s',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                boxShadow: pending ? 'none' : '0 4px 20px rgba(99,102,241,0.4)',
+                boxShadow: pending ? 'none' : '0 4px 20px rgba(99,102,241,0.35)',
                 letterSpacing: '-0.01em',
               }}
             >
@@ -364,11 +377,11 @@ export default function SignupPage() {
           </form>
 
           {/* Fine print */}
-          <p style={{ marginTop: 22, fontSize: 11, color: 'var(--text-3)', textAlign: 'center', lineHeight: 1.7 }}>
+          <p style={{ marginTop: 22, fontSize: 11, color: '#9999b2', textAlign: 'center', lineHeight: 1.7 }}>
             By signing up you agree to our{' '}
-            <Link href="/terms" style={{ color: 'var(--text-2)', textDecoration: 'underline' }}>Terms</Link>
+            <Link href="/terms" style={{ color: '#55556e', textDecoration: 'underline' }}>Terms</Link>
             {' '}and{' '}
-            <Link href="/privacy" style={{ color: 'var(--text-2)', textDecoration: 'underline' }}>Privacy Policy</Link>.
+            <Link href="/privacy" style={{ color: '#55556e', textDecoration: 'underline' }}>Privacy Policy</Link>.
           </p>
         </div>
       </div>
