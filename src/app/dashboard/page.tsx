@@ -32,18 +32,18 @@ export default async function DashboardPage() {
     .order('created_at', { ascending: false })
 
   const list = works ?? []
-  const total     = list.length
-  const selfClaimed = list.filter(w => w.status === 'self_claimed').length
-  const peerVer   = list.filter(w => w.status === 'peer_verified').length
-  const compVer   = list.filter(w => w.status === 'company_verified').length
+  const total        = list.length
+  const selfClaimed  = list.filter(w => w.status === 'self_claimed').length
+  const peerVer      = list.filter(w => w.status === 'peer_verified').length
+  const compVer      = list.filter(w => w.status === 'company_verified').length
   const nextovateVer = list.filter(w => w.verified_by_company === 'Nextovate').length
   const axVer        = list.filter(w => w.verified_by_company === 'AX Ventures').length
-  const recent    = list.slice(0, 6)
+  const recent       = list.slice(0, 6)
 
   const stats = [
-    { label: 'Total', val: total,   accent: '#fff' },
-    { label: 'Peer Verified',  val: peerVer, accent: '#818cf8' },
-    { label: 'Company Verified', val: compVer, accent: '#10b981' },
+    { label: 'Total Proofs',      val: total,   accent: 'var(--text)',  sub: 'All submissions' },
+    { label: 'Peer Verified',     val: peerVer, accent: '#818cf8',      sub: 'Co-signed by peers' },
+    { label: 'Company Verified',  val: compVer, accent: '#10b981',      sub: 'Official endorsements' },
   ]
 
   const breakdown = [
@@ -63,97 +63,138 @@ export default async function DashboardPage() {
     <div style={{ maxWidth: 1080, fontFamily: 'var(--font)' }}>
 
       {/* ── Header ────────────────────────────────── */}
-      <div style={{ marginBottom: 48, borderBottom: '1px solid var(--border)', paddingBottom: 32 }}>
-        <p style={{
-          fontSize: 9, fontWeight: 700, letterSpacing: '0.14em',
-          textTransform: 'uppercase', color: 'var(--text-3)',
-          fontFamily: 'var(--font-mono)', marginBottom: 12,
+      <div style={{ marginBottom: 40 }}>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6,
+          padding: '4px 12px',
+          background: 'rgba(16,185,129,0.08)',
+          border: '1px solid rgba(16,185,129,0.2)',
+          borderRadius: 'var(--radius-full)',
+          marginBottom: 20,
         }}>
-          {greeting}
-        </p>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
+          <span style={{ fontSize: 10, fontWeight: 600, color: '#10b981', fontFamily: 'var(--font-mono)', letterSpacing: '0.04em' }}>
+            {greeting}
+          </span>
+        </div>
         <h1 style={{
-          fontSize: 42, fontWeight: 800, color: 'var(--text)',
-          letterSpacing: '-0.04em', lineHeight: 1, margin: '0 0 10px',
+          fontSize: 44, fontWeight: 800, color: 'var(--text)',
+          letterSpacing: '-0.05em', lineHeight: 1, margin: '0 0 10px',
         }}>
           {firstName}
         </h1>
         <p style={{ fontSize: 14, color: 'var(--text-3)', letterSpacing: '-0.01em' }}>
-          Proof-of-work record at a glance.
+          Your proof-of-work record at a glance.
         </p>
       </div>
 
-      {/* ── Stat strip ────────────────────────────── */}
+      {/* ── Stat cards ─────────────────────────────── */}
       <div style={{
         display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-        borderBottom: '1px solid var(--border)',
-        marginBottom: 48,
+        gap: 14, marginBottom: 40,
       }}>
-        {stats.map(({ label, val, accent }, i) => (
+        {stats.map(({ label, val, accent, sub }) => (
           <div key={label} style={{
-            padding: '28px 0',
-            borderRight: i < 2 ? '1px solid var(--border)' : 'none',
-            paddingLeft: i > 0 ? 32 : 0,
-          }}>
+            padding: '28px 24px',
+            background: 'var(--card)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-xl)',
+            position: 'relative', overflow: 'hidden',
+            transition: 'border-color 0.2s, box-shadow 0.2s',
+          }}
+          className="hover-card"
+          >
+            {/* Top accent line */}
+            <div style={{
+              position: 'absolute', top: 0, left: 0, right: 0, height: 2,
+              background: `linear-gradient(90deg, ${accent === 'var(--text)' ? '#6366f1' : accent}, transparent)`,
+            }} />
             <p style={{
               fontSize: 9, fontWeight: 700, letterSpacing: '0.12em',
               textTransform: 'uppercase', color: 'var(--text-3)',
-              fontFamily: 'var(--font-mono)', marginBottom: 10,
+              fontFamily: 'var(--font-mono)', marginBottom: 12,
             }}>
               {label}
             </p>
             <p style={{
               fontSize: 52, fontWeight: 800, color: accent,
-              letterSpacing: '-0.06em', lineHeight: 1,
+              letterSpacing: '-0.06em', lineHeight: 1, marginBottom: 6,
             }}>
               {val < 10 ? `0${val}` : val}
             </p>
+            <p style={{ fontSize: 11, color: 'var(--text-3)' }}>{sub}</p>
           </div>
         ))}
       </div>
 
       {/* ── Main grid ─────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 20 }}>
 
         {/* LEFT — recent works */}
         <div>
           {/* Section header */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            marginBottom: 20,
+            marginBottom: 14,
           }}>
             <p style={{
-              fontSize: 9, fontWeight: 700, letterSpacing: '0.12em',
+              fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
               textTransform: 'uppercase', color: 'var(--text-3)',
               fontFamily: 'var(--font-mono)',
             }}>
               Recent Work
             </p>
             <Link href="/dashboard/works" style={{
-              fontSize: 9, fontWeight: 700, letterSpacing: '0.1em',
-              textTransform: 'uppercase', color: 'var(--text-3)',
-              textDecoration: 'none', fontFamily: 'var(--font-mono)',
-              transition: 'color 0.15s',
+              fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
+              color: '#818cf8', textDecoration: 'none',
+              fontFamily: 'var(--font-mono)',
+              padding: '4px 10px',
+              border: '1px solid rgba(129,140,248,0.2)',
+              borderRadius: 'var(--radius-full)',
+              background: 'rgba(99,102,241,0.06)',
+              transition: 'all 0.15s',
             }}>
               View all ↗
             </Link>
           </div>
 
           {/* Work rows */}
-          <div style={{ border: '1px solid var(--border)' }}>
+          <div style={{
+            background: 'var(--card)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius-xl)',
+            overflow: 'hidden',
+          }}>
             {list.length === 0 ? (
-              <div style={{ padding: '52px 28px', textAlign: 'center' }}>
-                <p style={{
-                  fontSize: 9, fontWeight: 700, letterSpacing: '0.12em',
-                  textTransform: 'uppercase', color: 'var(--text-3)',
-                  fontFamily: 'var(--font-mono)', marginBottom: 16,
+              <div style={{ padding: '60px 28px', textAlign: 'center' }}>
+                <div style={{
+                  width: 48, height: 48, borderRadius: 'var(--radius-md)',
+                  background: 'var(--indigo-dim)',
+                  border: '1px solid rgba(99,102,241,0.2)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 16px',
                 }}>
-                  No submissions
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818cf8" strokeWidth="1.5">
+                    <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <p style={{
+                  fontSize: 13, fontWeight: 600, color: 'var(--text-2)',
+                  marginBottom: 6,
+                }}>
+                  No submissions yet
+                </p>
+                <p style={{ fontSize: 12, color: 'var(--text-3)', marginBottom: 20 }}>
+                  Add your first proof of work to get started
                 </p>
                 <Link href="/dashboard/upload" style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8,
-                  padding: '9px 18px',
-                  background: '#fff', color: '#000',
-                  fontSize: 12, fontWeight: 600, textDecoration: 'none',
+                  padding: '10px 22px',
+                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  color: '#fff',
+                  fontSize: 13, fontWeight: 600, textDecoration: 'none',
+                  borderRadius: 'var(--radius-full)',
+                  boxShadow: '0 4px 16px rgba(99,102,241,0.35)',
                   letterSpacing: '-0.01em',
                 }}>
                   Upload first work →
@@ -166,11 +207,11 @@ export default async function DashboardPage() {
                 return (
                   <div key={w.id} style={{
                     display: 'flex', alignItems: 'center', gap: 16,
-                    padding: '14px 20px',
+                    padding: '16px 22px',
                     borderBottom: i < recent.length - 1 ? '1px solid var(--border)' : 'none',
-                    transition: 'background 0.1s',
+                    transition: 'background 0.15s',
                   }}
-                    className="hover-row"
+                  className="hover-row"
                   >
                     {/* Index */}
                     <span style={{
@@ -183,13 +224,13 @@ export default async function DashboardPage() {
                     {/* Content */}
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{
-                        fontSize: 13, fontWeight: 500, color: 'var(--text)',
+                        fontSize: 13, fontWeight: 600, color: 'var(--text)',
                         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                         letterSpacing: '-0.015em',
                       }}>
                         {w.title}
                       </p>
-                      <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 1 }}>
+                      <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 2 }}>
                         {w.role}
                       </p>
                     </div>
@@ -214,38 +255,44 @@ export default async function DashboardPage() {
         </div>
 
         {/* RIGHT — sidebar panels */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
           {/* Verification breakdown */}
           <div>
             <p style={{
-              fontSize: 9, fontWeight: 700, letterSpacing: '0.12em',
+              fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
               textTransform: 'uppercase', color: 'var(--text-3)',
-              fontFamily: 'var(--font-mono)', marginBottom: 16,
+              fontFamily: 'var(--font-mono)', marginBottom: 14,
             }}>
               Breakdown
             </p>
-            <div style={{ border: '1px solid var(--border)' }}>
+            <div style={{
+              background: 'var(--card)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-xl)',
+              overflow: 'hidden',
+            }}>
               {breakdown.map(({ label, count, color }, i) => (
                 <div key={label} style={{
-                  padding: '12px 16px',
+                  padding: '14px 18px',
                   borderBottom: i < breakdown.length - 1 ? '1px solid var(--border)' : 'none',
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                    <span style={{ fontSize: 11, color: 'var(--text-2)', letterSpacing: '-0.01em' }}>{label}</span>
-                    <span style={{ fontSize: 11, fontWeight: 700, color, fontFamily: 'var(--font-mono)' }}>{count}</span>
+                    <span style={{ fontSize: 12, color: 'var(--text-2)', letterSpacing: '-0.01em' }}>{label}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color, fontFamily: 'var(--font-mono)' }}>{count}</span>
                   </div>
-                  <div style={{ height: 1, background: 'var(--border-2)' }}>
-                    <div style={{
-                      height: 1, background: color,
+                  <div className="progress">
+                    <div className="progress-fill" style={{
+                      background: color,
                       width: total > 0 ? `${Math.round((count / total) * 100)}%` : '0%',
-                      transition: 'width 0.6s ease',
                     }} />
                   </div>
                 </div>
               ))}
               {total === 0 && (
-                <p style={{ fontSize: 11, color: 'var(--text-3)', textAlign: 'center', padding: 20 }}>No data</p>
+                <p style={{ fontSize: 12, color: 'var(--text-3)', textAlign: 'center', padding: '24px 20px' }}>
+                  No data yet
+                </p>
               )}
             </div>
           </div>
@@ -253,38 +300,47 @@ export default async function DashboardPage() {
           {/* Quick actions */}
           <div>
             <p style={{
-              fontSize: 9, fontWeight: 700, letterSpacing: '0.12em',
+              fontSize: 11, fontWeight: 600, letterSpacing: '0.06em',
               textTransform: 'uppercase', color: 'var(--text-3)',
-              fontFamily: 'var(--font-mono)', marginBottom: 16,
+              fontFamily: 'var(--font-mono)', marginBottom: 14,
             }}>
-              Actions
+              Quick Actions
             </p>
-            <div style={{ border: '1px solid var(--border)' }}>
+            <div style={{
+              background: 'var(--card)',
+              border: '1px solid var(--border)',
+              borderRadius: 'var(--radius-xl)',
+              overflow: 'hidden',
+            }}>
               {[
-                { label: 'Upload new work',  href: '/dashboard/upload', sub: 'Add a proof',       num: '01' },
-                { label: 'View my works',    href: '/dashboard/works',  sub: 'Manage portfolio',  num: '02' },
-                { label: 'Connect GitHub',   href: '/dashboard/github', sub: 'Import repos',      num: '03' },
+                { label: 'Upload new work',  href: '/dashboard/upload', sub: 'Add a proof',       icon: '↑' },
+                { label: 'View my works',    href: '/dashboard/works',  sub: 'Manage portfolio',  icon: '◎' },
+                { label: 'Connect GitHub',   href: '/dashboard/github', sub: 'Import repos',      icon: '⌥' },
               ].map((a, i) => (
                 <Link key={a.label} href={a.href} style={{
-                  display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
+                  display: 'flex', alignItems: 'center', gap: 12, padding: '14px 18px',
                   borderBottom: i < 2 ? '1px solid var(--border)' : 'none',
-                  textDecoration: 'none', transition: 'background 0.1s',
+                  textDecoration: 'none', transition: 'background 0.15s',
                 }}
-                  className="hover-row"
+                className="hover-row"
                 >
                   <span style={{
-                    fontSize: 9, color: 'var(--text-3)',
-                    fontFamily: 'var(--font-mono)', flexShrink: 0,
+                    width: 30, height: 30, flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(99,102,241,0.08)',
+                    border: '1px solid rgba(99,102,241,0.15)',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: 13, color: '#818cf8',
                   }}>
-                    {a.num}
+                    {a.icon}
                   </span>
                   <div style={{ flex: 1 }}>
-                    <p style={{ fontSize: 12, fontWeight: 500, color: 'var(--text)', letterSpacing: '-0.01em' }}>
+                    <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)', letterSpacing: '-0.01em' }}>
                       {a.label}
                     </p>
                     <p style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 1 }}>{a.sub}</p>
                   </div>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="1.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" strokeWidth="2">
                     <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </Link>
