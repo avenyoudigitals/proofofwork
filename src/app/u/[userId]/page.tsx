@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -8,14 +9,11 @@ interface Props { params: Promise<{ userId: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { userId } = await params
-  const supabase = await createClient()
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, username, bio')
-    .eq('id', userId)
-    .single()
-
-  const name = profile?.full_name ?? profile?.username ?? 'Professional'
+  const service = createServiceClient()
+  const { data: { user } } = await service.auth.admin.getUserById(userId)
+  const name = user?.user_metadata?.full_name
+    ?? user?.email?.split('@')[0]
+    ?? 'Professional'
   return {
     title: `${name} — ProofForge`,
     description: `View ${name}'s verified proof-of-work profile on ProofForge.`,
@@ -27,27 +25,33 @@ export const dynamic = 'force-dynamic'
 export default async function PublicProfilePage({ params }: Props) {
   const { userId } = await params
   const supabase = await createClient()
+  const service  = createServiceClient()
 
-  // Try profiles table first, fallback to auth user metadata
+  // Get auth user metadata (has full_name, avatar_url from OAuth)
+  const { data: { user: authUser } } = await service.auth.admin.getUserById(userId)
+  if (!authUser) notFound()
+
+  const displayName  = (authUser.user_metadata?.full_name ?? authUser.email?.split('@')[0] ?? 'Professional') as string
+  const avatarUrl    = (authUser.user_metadata?.avatar_url ?? null) as string | null
+  const githubUsername = (authUser.user_metadata?.user_name ?? null) as string | null
+
+  // Try profiles table for extra fields (bio, location, website, username)
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, full_name, username, bio, avatar_url, github_username, location, website')
+    .select('username, bio, location, website')
     .eq('id', userId)
-    .single()
+    .maybeSingle()
 
-  // Fetch works — only public ones (self_claimed, peer_verified, company_verified all visible)
+  // Fetch works
   const { data: works } = await supabase
     .from('works')
     .select('id, title, role, company, description, status, verified_by_company, tags, github_url, figma_url, live_url, case_study_url, created_at')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
-  if (!works && !profile) notFound()
-
-  const displayName = profile?.full_name ?? profile?.username ?? 'Anonymous'
   const workList = works ?? []
-  const companyVerified = workList.filter(w => w.status === 'company_verified')
-  const peerVerified    = workList.filter(w => w.status === 'peer_verified')
+  const companyVerifiedCount = workList.filter(w => w.status === 'company_verified').length
+  const peerVerifiedCount    = workList.filter(w => w.status === 'peer_verified').length
 
   return (
     <PublicProfileClient
@@ -55,13 +59,13 @@ export default async function PublicProfilePage({ params }: Props) {
       displayName={displayName}
       username={profile?.username ?? null}
       bio={profile?.bio ?? null}
-      avatarUrl={profile?.avatar_url ?? null}
+      avatarUrl={avatarUrl}
       location={profile?.location ?? null}
       website={profile?.website ?? null}
-      githubUsername={profile?.github_username ?? null}
+      githubUsername={githubUsername}
       works={workList}
-      companyVerifiedCount={companyVerified.length}
-      peerVerifiedCount={peerVerified.length}
+      companyVerifiedCount={companyVerifiedCount}
+      peerVerifiedCount={peerVerifiedCount}
     />
   )
 }
