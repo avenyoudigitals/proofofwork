@@ -64,8 +64,7 @@ export default async function DashboardPage() {
 
       {/* ── Header ────────────────────────────────── */}
       <div style={{ marginBottom: 40 }}>
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 6,
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6,
           padding: '4px 12px',
           background: 'rgba(16,185,129,0.08)',
           border: '1px solid rgba(16,185,129,0.2)',
@@ -77,15 +76,37 @@ export default async function DashboardPage() {
             {greeting}
           </span>
         </div>
-        <h1 style={{
-          fontSize: 44, fontWeight: 800, color: 'var(--text)',
-          letterSpacing: '-0.05em', lineHeight: 1, margin: '0 0 10px',
-        }}>
-          {firstName}
-        </h1>
-        <p style={{ fontSize: 14, color: 'var(--text-3)', letterSpacing: '-0.01em' }}>
-          Your proof-of-work record at a glance.
-        </p>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+          <div>
+            <h1 style={{ fontSize: 44, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.05em', lineHeight: 1, margin: '0 0 10px' }}>
+              {firstName}
+            </h1>
+            <p style={{ fontSize: 14, color: 'var(--text-3)', letterSpacing: '-0.01em' }}>
+              Your proof-of-work record at a glance.
+            </p>
+          </div>
+          <Link
+            href={`/u/${user.id}`}
+            target="_blank"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 7,
+              padding: '9px 18px',
+              background: 'var(--card)',
+              border: '1.5px solid var(--border-2)',
+              borderRadius: 'var(--radius-full)',
+              fontSize: 13, fontWeight: 600, color: 'var(--text-2)',
+              textDecoration: 'none',
+              transition: 'border-color 0.15s, box-shadow 0.15s',
+              flexShrink: 0,
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            View public profile
+          </Link>
+        </div>
       </div>
 
       {/* ── Stat cards ─────────────────────────────── */}
