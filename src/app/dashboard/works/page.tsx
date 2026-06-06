@@ -23,12 +23,6 @@ type Work = {
   created_at: string
 }
 
-const STATUS_MAP = {
-  self_claimed:     { label: 'Self Claimed',     color: '#94a3b8', bg: 'rgba(148,163,184,0.08)', border: 'rgba(148,163,184,0.2)'  },
-  peer_verified:    { label: 'Peer Verified',     color: '#818cf8', bg: 'rgba(129,140,248,0.08)', border: 'rgba(129,140,248,0.25)' },
-  company_verified: { label: 'Company Verified',  color: '#22c55e', bg: 'rgba(34,197,94,0.08)',   border: 'rgba(34,197,94,0.25)'   },
-}
-
 function timeAgo(dateStr: string) {
   const ms = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(ms / 60_000)
@@ -41,23 +35,29 @@ function timeAgo(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-function LinkPill({ href, label, icon }: { href: string; label: string; icon: React.ReactNode }) {
+function LinkPill({ href, label }: { href: string; label: string }) {
   return (
     <a
       href={href} target="_blank" rel="noopener noreferrer"
       style={{
-        display: 'inline-flex', alignItems: 'center', gap: 5,
-        padding: '4px 10px', borderRadius: 7,
-        background: 'rgba(255,255,255,0.04)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        fontSize: 11, color: '#94a3b8', textDecoration: 'none',
-        transition: 'color 0.1s',
+        display: 'inline-flex', alignItems: 'center', gap: 4,
+        padding: '3px 9px',
+        background: 'transparent',
+        border: '1px solid var(--border-2)',
+        fontSize: 10, color: 'var(--text-3)', textDecoration: 'none',
+        fontFamily: 'var(--font-mono)', letterSpacing: '0.04em',
+        transition: 'color 0.1s, border-color 0.1s',
       }}
     >
-      {icon}
       {label} ↗
     </a>
   )
+}
+
+const STATUS_CFG = {
+  self_claimed:     { label: 'Self Claimed',    cls: 'self' },
+  peer_verified:    { label: 'Peer Verified',   cls: 'peer' },
+  company_verified: { label: 'Company Verified',cls: 'company' },
 }
 
 export default async function WorksPage() {
@@ -72,75 +72,97 @@ export default async function WorksPage() {
     .order('created_at', { ascending: false })
 
   const list = (works ?? []) as Work[]
+  const total = list.length
+  const compVerified = list.filter(w => w.status === 'company_verified').length
 
   return (
-    <div style={{ maxWidth: 760, fontFamily: 'var(--font)' }}>
+    <div style={{ maxWidth: 860, fontFamily: 'var(--font)' }}>
 
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28, gap: 16 }}>
+      {/* ── Page header ──────────────────────────── */}
+      <div style={{
+        display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
+        marginBottom: 40, paddingBottom: 32, borderBottom: '1px solid var(--border)',
+        gap: 20,
+      }}>
         <div>
-          <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#52525b', margin: '0 0 6px' }}>
+          <p style={{
+            fontSize: 9, fontWeight: 700, letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: 'var(--text-3)',
+            fontFamily: 'var(--font-mono)', marginBottom: 12,
+          }}>
             Portfolio
           </p>
-          <h1 style={{ fontSize: 22, fontWeight: 700, color: '#f4f4f5', letterSpacing: '-0.03em', margin: '0 0 4px' }}>
-            My Works
+          <h1 style={{
+            fontSize: 48, fontWeight: 800, color: 'var(--text)',
+            letterSpacing: '-0.05em', lineHeight: 1,
+          }}>
+            My Work
           </h1>
-          <p style={{ fontSize: 13, color: '#71717a', margin: 0 }}>
-            {list.length === 0 ? 'No submissions yet.' : `${list.length} submission${list.length > 1 ? 's' : ''}`}
-          </p>
+          {total > 0 && (
+            <p style={{
+              fontSize: 11, color: 'var(--text-3)', marginTop: 10,
+              fontFamily: 'var(--font-mono)', letterSpacing: '0.04em',
+            }}>
+              {String(total).padStart(2, '0')} submissions ·{' '}
+              <span style={{ color: '#10b981' }}>{String(compVerified).padStart(2, '0')} verified</span>
+            </p>
+          )}
         </div>
+
         <Link
           href="/dashboard/upload"
           style={{
-            display: 'inline-flex', alignItems: 'center', gap: 7,
-            padding: '10px 18px', borderRadius: 10, flexShrink: 0,
-            background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-            fontSize: 13, fontWeight: 600, color: '#fff', textDecoration: 'none',
-            boxShadow: '0 4px 14px rgba(99,102,241,0.3)',
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '10px 20px', flexShrink: 0,
+            background: '#fff', color: '#000',
+            fontSize: 12, fontWeight: 700, textDecoration: 'none',
+            letterSpacing: '-0.01em',
+            transition: 'background 0.15s',
           }}
         >
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M12 5v14M5 12h14" strokeLinecap="square" />
           </svg>
-          Add work
+          Add Work
         </Link>
       </div>
 
       {/* Error */}
       {error && (
         <div style={{
-          marginBottom: 20, padding: '12px 16px', borderRadius: 10,
-          background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)',
-          fontSize: 13, color: '#f87171',
+          marginBottom: 24, padding: '12px 16px',
+          border: '1px solid rgba(239,68,68,0.2)',
+          background: 'rgba(239,68,68,0.05)',
+          fontSize: 12, color: '#f87171', fontFamily: 'var(--font-mono)',
         }}>
-          Could not load works: {error.message}
+          Error: {error.message}
         </div>
       )}
 
       {/* Empty state */}
       {list.length === 0 && !error && (
         <div style={{
-          padding: '64px 24px', textAlign: 'center', borderRadius: 20,
-          background: 'rgba(255,255,255,0.02)', border: '1px dashed rgba(255,255,255,0.1)',
+          padding: '80px 40px', textAlign: 'center',
+          border: '1px dashed var(--border-2)',
         }}>
-          <div style={{
-            width: 56, height: 56, borderRadius: 16, margin: '0 auto 18px',
-            background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24,
-          }}>⬆</div>
-          <h2 style={{ fontSize: 15, fontWeight: 600, color: '#e4e4e7', margin: '0 0 6px' }}>
+          <p style={{
+            fontSize: 9, fontWeight: 700, letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: 'var(--text-3)',
+            fontFamily: 'var(--font-mono)', marginBottom: 20,
+          }}>
             No proof submitted yet
-          </h2>
-          <p style={{ fontSize: 13, color: '#71717a', margin: '0 0 22px', maxWidth: 320, marginLeft: 'auto', marginRight: 'auto', lineHeight: 1.65 }}>
-            Upload your first contribution. It starts as self-claimed — peers and companies can verify it later.
+          </p>
+          <p style={{ fontSize: 13, color: 'var(--text-3)', marginBottom: 28, lineHeight: 1.7 }}>
+            Upload your first contribution. It starts as self-claimed —{' '}
+            peers and companies can verify it later.
           </p>
           <Link
             href="/dashboard/upload"
             style={{
-              display: 'inline-flex', alignItems: 'center', gap: 7,
-              padding: '10px 22px', borderRadius: 10,
-              background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-              fontSize: 13, fontWeight: 600, color: '#fff', textDecoration: 'none',
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '10px 22px',
+              background: '#fff', color: '#000',
+              fontSize: 12, fontWeight: 700, textDecoration: 'none',
             }}
           >
             Upload your first work →
@@ -148,84 +170,80 @@ export default async function WorksPage() {
         </div>
       )}
 
-      {/* Work cards */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {list.map((work) => {
-          const s = STATUS_MAP[work.status] ?? STATUS_MAP.self_claimed
+      {/* ── Work list ────────────────────────────── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {list.map((work, idx) => {
+          const s = STATUS_CFG[work.status] ?? STATUS_CFG.self_claimed
           const isVerified = work.status === 'company_verified' && work.verified_by_company
 
           return (
             <div
               key={work.id}
-              style={{
-                background: 'rgba(255,255,255,0.025)',
-                border: isVerified ? '1px solid rgba(34,197,94,0.2)' : '1px solid rgba(255,255,255,0.07)',
-                borderRadius: 16, overflow: 'hidden',
-                transition: 'border-color 0.15s',
-              }}
+              className={`work-card${isVerified ? ' verified' : ''}`}
             >
-              {/* Verified top bar */}
-              {isVerified && (
-                <div style={{ height: 2, background: 'linear-gradient(90deg, #059669, #10b981, #34d399)' }} />
-              )}
+              {/* Left accent bar for verified */}
+              {isVerified && <div className="work-card-accent" />}
 
-              <div style={{ padding: '20px 22px' }}>
+              <div style={{ padding: '22px 24px', paddingLeft: isVerified ? 30 : 24 }}>
 
-                {/* Title row */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 10 }}>
+                {/* Top row */}
+                <div style={{
+                  display: 'flex', alignItems: 'flex-start',
+                  justifyContent: 'space-between', gap: 16, marginBottom: 14,
+                }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <h3 style={{ fontSize: 15, fontWeight: 600, color: '#f4f4f5', letterSpacing: '-0.02em', margin: '0 0 3px', lineHeight: 1.3 }}>
+                    {/* Index + status tag row */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                      <span style={{
+                        fontSize: 9, color: 'var(--text-3)',
+                        fontFamily: 'var(--font-mono)',
+                      }}>
+                        {String(idx + 1).padStart(2, '0')}
+                      </span>
+                      {isVerified ? (
+                        <span className="status-tag company">✓ {work.verified_by_company}</span>
+                      ) : (
+                        <span className={`status-tag ${s.cls}`}>{s.label}</span>
+                      )}
+                    </div>
+
+                    <h3 style={{
+                      fontSize: 17, fontWeight: 700, color: 'var(--text)',
+                      letterSpacing: '-0.03em', lineHeight: 1.2, marginBottom: 4,
+                    }}>
                       {work.title}
                     </h3>
-                    <p style={{ fontSize: 12, color: '#71717a', margin: 0 }}>
-                      {work.role} · <span style={{ color: '#52525b' }}>{timeAgo(work.created_at)}</span>
+                    <p style={{ fontSize: 12, color: 'var(--text-3)', letterSpacing: '-0.01em' }}>
+                      {work.role}{work.company ? ` · ${work.company}` : ''}{' '}
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10 }}>
+                        · {timeAgo(work.created_at)}
+                      </span>
                     </p>
                   </div>
-
-                  {/* Status badge */}
-                  {isVerified ? (
-                    <span style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 6, flexShrink: 0,
-                      padding: '5px 11px', borderRadius: 20,
-                      background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.28)',
-                    }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5">
-                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                      <span style={{ fontSize: 10, fontWeight: 700, color: '#10b981', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-                        Verified by {work.verified_by_company}
-                      </span>
-                    </span>
-                  ) : (
-                    <span style={{
-                      display: 'inline-flex', alignItems: 'center', gap: 5, flexShrink: 0,
-                      padding: '5px 10px', borderRadius: 20,
-                      background: s.bg, border: `1px solid ${s.border}`,
-                    }}>
-                      <span style={{ width: 5, height: 5, borderRadius: '50%', background: s.color, flexShrink: 0 }} />
-                      <span style={{ fontSize: 10, fontWeight: 700, color: s.color, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-                        {s.label}
-                      </span>
-                    </span>
-                  )}
                 </div>
 
                 {/* Description */}
                 {work.description && (
-                  <p style={{ fontSize: 13, color: '#71717a', lineHeight: 1.65, margin: '0 0 14px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  <p style={{
+                    fontSize: 13, color: 'var(--text-2)', lineHeight: 1.7,
+                    marginBottom: 16,
+                    display: '-webkit-box', WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                  }}>
                     {work.description}
                   </p>
                 )}
 
                 {/* Tags */}
                 {work.tags?.length > 0 && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 16 }}>
                     {work.tags.map((tag) => (
                       <span key={tag} style={{
-                        fontSize: 10, padding: '3px 9px', borderRadius: 6,
-                        background: 'rgba(255,255,255,0.05)',
-                        border: '1px solid rgba(255,255,255,0.08)',
-                        color: '#94a3b8',
+                        fontSize: 9, padding: '2px 7px',
+                        border: '1px solid var(--border)',
+                        color: 'var(--text-3)',
+                        fontFamily: 'var(--font-mono)', letterSpacing: '0.06em',
+                        textTransform: 'uppercase',
                       }}>
                         {tag}
                       </span>
@@ -235,56 +253,47 @@ export default async function WorksPage() {
 
                 {/* Links */}
                 {(work.github_url || work.figma_url || work.live_url || work.case_study_url) && (
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
-                    {work.github_url && (
-                      <LinkPill href={work.github_url} label="GitHub" icon={
-                        <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-                        </svg>
-                      } />
-                    )}
-                    {work.figma_url && (
-                      <LinkPill href={work.figma_url} label="Figma" icon={
-                        <svg width="11" height="11" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 24c2.208 0 4-1.792 4-4v-4H8c-2.208 0-4 1.792-4 4s1.792 4 4 4zm0-12h4V4H8c-2.208 0-4 1.792-4 4s1.792 4 4 4zm4 0h4c2.208 0 4-1.792 4-4s-1.792-4-4-4h-4v8zm4-8h-4V0h4c2.208 0 4 1.792 4 4s-1.792 4-4 4zm-4 12c0 2.208 1.792 4 4 4s4-1.792 4-4-1.792-4-4-4h-4v4z" />
-                        </svg>
-                      } />
-                    )}
-                    {work.live_url && (
-                      <LinkPill href={work.live_url} label="Live" icon={
-                        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                      } />
-                    )}
-                    {work.case_study_url && (
-                      <LinkPill href={work.case_study_url} label="Case Study" icon={
-                        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                      } />
-                    )}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+                    {work.github_url && <LinkPill href={work.github_url} label="GitHub" />}
+                    {work.figma_url && <LinkPill href={work.figma_url} label="Figma" />}
+                    {work.live_url && <LinkPill href={work.live_url} label="Live" />}
+                    {work.case_study_url && <LinkPill href={work.case_study_url} label="Case Study" />}
                   </div>
                 )}
 
                 {/* Footer */}
                 <div style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8,
-                  paddingTop: 14, borderTop: '1px solid rgba(255,255,255,0.05)',
-                  marginTop: 2,
+                  display: 'flex', alignItems: 'center',
+                  justifyContent: 'space-between', gap: 8,
+                  paddingTop: 14, borderTop: '1px solid var(--border)',
                 }}>
-                  <RequestVerificationButton
-                    workId={work.id}
-                    workTitle={work.title}
-                    company={work.company}
-                  />
+                  {isVerified ? (
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      fontSize: 10, color: '#10b981',
+                      fontFamily: 'var(--font-mono)', letterSpacing: '0.06em',
+                    }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      VERIFIED · {work.verified_by_company?.toUpperCase()}
+                    </span>
+                  ) : (
+                    <RequestVerificationButton
+                      workId={work.id}
+                      workTitle={work.title}
+                      company={work.company}
+                    />
+                  )}
                   <DeleteButton workId={work.id} />
                 </div>
+
               </div>
             </div>
           )
         })}
       </div>
+
     </div>
   )
 }

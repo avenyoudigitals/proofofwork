@@ -12,49 +12,51 @@ export default function SignupPage() {
   const [googlePending, setGooglePending] = useState(false)
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--bg)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--bg)', position: 'relative', overflow: 'hidden' }}>
 
-      {/* ── Left panel — branding ────────────────────────────────── */}
+      {/* Background orbs */}
+      <div style={{
+        position: 'absolute', top: '10%', left: '5%',
+        width: 500, height: 500,
+        background: 'radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 65%)',
+        filter: 'blur(70px)', pointerEvents: 'none', zIndex: 0,
+      }} />
+      <div style={{
+        position: 'absolute', bottom: '5%', right: '10%',
+        width: 350, height: 350,
+        background: 'radial-gradient(ellipse, rgba(139,92,246,0.1) 0%, transparent 65%)',
+        filter: 'blur(55px)', pointerEvents: 'none', zIndex: 0,
+      }} />
+
+      {/* ── Left panel — branding ─────────────────────────────── */}
       <div
         className="hidden lg:flex"
         style={{
           flex: '0 0 44%',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: '40px 52px',
-          background: 'var(--surface)',
-          borderRight: '1px solid rgba(255,255,255,0.06)',
+          padding: '44px 52px',
+          background: 'rgba(12,12,21,0.7)',
+          borderRight: '1px solid var(--border)',
           position: 'relative',
-          overflow: 'hidden',
+          zIndex: 1,
+          backdropFilter: 'blur(20px)',
         }}
       >
-        {/* Gradient orb */}
-        <div style={{
-          position: 'absolute', top: '25%', left: '15%',
-          width: 420, height: 420,
-          background: 'radial-gradient(ellipse, rgba(99,102,241,0.13) 0%, transparent 65%)',
-          filter: 'blur(40px)', pointerEvents: 'none',
-        }} />
-        <div style={{
-          position: 'absolute', bottom: '10%', right: '5%',
-          width: 280, height: 280,
-          background: 'radial-gradient(ellipse, rgba(139,92,246,0.08) 0%, transparent 65%)',
-          filter: 'blur(32px)', pointerEvents: 'none',
-        }} />
-
         {/* Logo */}
         <div style={{ position: 'relative', zIndex: 1 }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
             <div style={{
-              width: 32, height: 32, borderRadius: 10,
+              width: 36, height: 36, borderRadius: 11,
               background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 4px 16px rgba(99,102,241,0.4)',
             }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
                 <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <span style={{ fontSize: 16, fontWeight: 600, color: '#f4f4f5', letterSpacing: '-0.02em' }}>
+            <span style={{ fontSize: 17, fontWeight: 700, color: '#f0f0ff', letterSpacing: '-0.03em' }}>
               ProofForge
             </span>
           </Link>
@@ -62,15 +64,21 @@ export default function SignupPage() {
 
         {/* Center */}
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <h2 style={{ fontSize: 30, fontWeight: 700, letterSpacing: '-0.04em', color: '#f4f4f5', lineHeight: 1.2, marginBottom: 14 }}>
-            Build a career<br />backed by proof.
+          <h2 style={{ fontSize: 32, fontWeight: 800, letterSpacing: '-0.05em', color: '#f0f0ff', lineHeight: 1.15, marginBottom: 16 }}>
+            Build a career<br />
+            <span style={{
+              background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>backed by proof.</span>
           </h2>
-          <p style={{ fontSize: 14, color: '#71717a', lineHeight: 1.75, marginBottom: 36, maxWidth: 320 }}>
+          <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.8, marginBottom: 40, maxWidth: 320 }}>
             Upload your contributions. Get verified by peers and employers.
             Build a profile that actually proves what you can do.
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {[
               { icon: '📂', label: 'Upload proof of work', sub: 'GitHub, Figma, live demos, case studies' },
               { icon: '👥', label: 'Get peer verified',    sub: 'Colleagues co-sign your contributions' },
@@ -78,17 +86,17 @@ export default function SignupPage() {
             ].map((item) => (
               <div key={item.label} style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
                 <div style={{
-                  width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                  width: 40, height: 40, borderRadius: 'var(--radius-md)', flexShrink: 0,
                   background: 'rgba(99,102,241,0.1)',
                   border: '1px solid rgba(99,102,241,0.2)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 16,
+                  fontSize: 18,
                 }}>
                   {item.icon}
                 </div>
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: '#d4d4d8', marginBottom: 2 }}>{item.label}</p>
-                  <p style={{ fontSize: 12, color: '#71717a' }}>{item.sub}</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: '#d4d4d8', marginBottom: 3 }}>{item.label}</p>
+                  <p style={{ fontSize: 12, color: 'var(--text-3)' }}>{item.sub}</p>
                 </div>
               </div>
             ))}
@@ -100,61 +108,55 @@ export default function SignupPage() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
             {['stripe.com', 'linear.app', 'vercel.com', 'openai.com', 'figma.com'].map((c) => (
               <span key={c} style={{
-                fontSize: 10, color: '#52525b', padding: '3px 10px',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderRadius: 20, background: 'rgba(255,255,255,0.03)',
+                fontSize: 10, color: 'var(--text-3)', padding: '4px 12px',
+                border: '1px solid var(--border)',
+                borderRadius: 'var(--radius-full)',
+                background: 'rgba(255,255,255,0.02)',
               }}>
                 {c}
               </span>
             ))}
           </div>
-          <p style={{ fontSize: 11, color: '#3f3f46', marginTop: 10 }}>
+          <p style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 10 }}>
             Verified by teams at these companies
           </p>
         </div>
       </div>
 
-      {/* ── Right panel — signup form ────────────────────────────── */}
+      {/* ── Right panel — signup form ──────────────────────────── */}
       <div style={{
         flex: 1,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '48px 24px',
-        position: 'relative', overflow: 'hidden',
+        position: 'relative', zIndex: 1,
       }}>
-        {/* Subtle bg orb */}
-        <div style={{
-          position: 'absolute', top: '20%', right: '5%',
-          width: 320, height: 320,
-          background: 'radial-gradient(ellipse, rgba(99,102,241,0.06) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }} />
-
-        <div style={{ width: '100%', maxWidth: 390, position: 'relative', zIndex: 1 }}>
+        <div style={{ width: '100%', maxWidth: 400 }}>
 
           {/* Mobile logo */}
           <div className="lg:hidden" style={{ marginBottom: 36, display: 'flex', justifyContent: 'center' }}>
             <Link href="/" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
               <div style={{
-                width: 30, height: 30, borderRadius: 9,
+                width: 32, height: 32, borderRadius: 10,
                 background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 4px 14px rgba(99,102,241,0.4)',
               }}>
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
                   <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <span style={{ fontSize: 15, fontWeight: 600, color: '#f4f4f5', letterSpacing: '-0.02em' }}>ProofForge</span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: '#f0f0ff', letterSpacing: '-0.02em' }}>ProofForge</span>
             </Link>
           </div>
 
           {/* Heading */}
           <div style={{ marginBottom: 28 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 700, color: '#f4f4f5', letterSpacing: '-0.03em', marginBottom: 6 }}>
+            <h1 style={{ fontSize: 26, fontWeight: 800, color: '#f0f0ff', letterSpacing: '-0.04em', marginBottom: 8 }}>
               Create your account
             </h1>
-            <p style={{ fontSize: 14, color: '#71717a' }}>
+            <p style={{ fontSize: 14, color: 'var(--text-2)' }}>
               Already have one?{' '}
-              <Link href="/login" style={{ color: '#818cf8', textDecoration: 'none', fontWeight: 500 }}>
+              <Link href="/login" style={{ color: '#818cf8', textDecoration: 'none', fontWeight: 600 }}>
                 Sign in
               </Link>
             </p>
@@ -169,16 +171,16 @@ export default function SignupPage() {
               style={{
                 width: '100%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                padding: '12px 20px',
+                padding: '13px 20px',
                 background: githubPending
                   ? 'rgba(99,102,241,0.15)'
                   : 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                border: 'none', borderRadius: 11,
+                border: 'none', borderRadius: 'var(--radius-full)',
                 fontSize: 14, fontWeight: 600, color: '#fff',
                 cursor: githubPending ? 'not-allowed' : 'pointer',
                 opacity: githubPending ? 0.75 : 1,
-                transition: 'all 0.15s',
-                boxShadow: githubPending ? 'none' : '0 4px 16px rgba(99,102,241,0.35)',
+                transition: 'all 0.2s',
+                boxShadow: githubPending ? 'none' : '0 4px 20px rgba(99,102,241,0.4)',
                 letterSpacing: '-0.01em',
               }}
             >
@@ -190,7 +192,7 @@ export default function SignupPage() {
           </form>
 
           {/* Google */}
-          <form action={loginWithGoogle} onSubmit={() => setGooglePending(true)} style={{ marginBottom: 20 }}>
+          <form action={loginWithGoogle} onSubmit={() => setGooglePending(true)} style={{ marginBottom: 24 }}>
             <button
               id="google-signup-btn"
               type="submit"
@@ -198,15 +200,16 @@ export default function SignupPage() {
               style={{
                 width: '100%',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                padding: '12px 20px',
+                padding: '13px 20px',
                 background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: 11,
+                border: '1px solid var(--border-2)',
+                borderRadius: 'var(--radius-full)',
                 fontSize: 14, fontWeight: 500, color: '#d4d4d8',
                 cursor: googlePending ? 'not-allowed' : 'pointer',
                 opacity: googlePending ? 0.75 : 1,
-                transition: 'all 0.15s',
+                transition: 'all 0.2s',
                 letterSpacing: '-0.01em',
+                backdropFilter: 'blur(8px)',
               }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
@@ -220,19 +223,19 @@ export default function SignupPage() {
           </form>
 
           {/* Divider */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
-            <span style={{ fontSize: 11, color: '#52525b', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase' }}>or</span>
-            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.07)' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+            <span style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>or</span>
+            <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
           </div>
 
           {/* Email/password form */}
-          <form action={formAction} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          <form action={formAction} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
             {/* Error */}
             {state?.error && (
               <div style={{
-                padding: '11px 14px', borderRadius: 9,
+                padding: '12px 16px', borderRadius: 'var(--radius-md)',
                 background: 'rgba(239,68,68,0.08)',
                 border: '1px solid rgba(239,68,68,0.2)',
                 fontSize: 13, color: '#f87171',
@@ -247,26 +250,26 @@ export default function SignupPage() {
 
             {/* Name */}
             <div>
-              <label htmlFor="name" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#a1a1aa', marginBottom: 6, letterSpacing: '0.01em' }}>
+              <label htmlFor="name" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 7, letterSpacing: '0.01em' }}>
                 Full name
               </label>
               <input
                 id="name" name="name" type="text" autoComplete="name" required
                 placeholder="Jane Smith"
                 style={{
-                  width: '100%', padding: '11px 14px',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 9, color: '#f4f4f5', fontSize: 14,
-                  outline: 'none', transition: 'border-color 0.15s, box-shadow 0.15s',
+                  width: '100%', padding: '12px 16px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid var(--border-2)',
+                  borderRadius: 'var(--radius-md)', color: '#f0f0ff', fontSize: 14,
+                  outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
                   fontFamily: 'var(--font)',
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = '#6366f1'
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.15)'
+                  e.currentTarget.style.boxShadow = '0 0 0 4px rgba(99,102,241,0.12)'
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                  e.currentTarget.style.borderColor = 'var(--border-2)'
                   e.currentTarget.style.boxShadow = 'none'
                 }}
               />
@@ -274,26 +277,26 @@ export default function SignupPage() {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#a1a1aa', marginBottom: 6, letterSpacing: '0.01em' }}>
+              <label htmlFor="email" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 7, letterSpacing: '0.01em' }}>
                 Email
               </label>
               <input
                 id="email" name="email" type="email" autoComplete="email" required
                 placeholder="you@example.com"
                 style={{
-                  width: '100%', padding: '11px 14px',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 9, color: '#f4f4f5', fontSize: 14,
-                  outline: 'none', transition: 'border-color 0.15s, box-shadow 0.15s',
+                  width: '100%', padding: '12px 16px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid var(--border-2)',
+                  borderRadius: 'var(--radius-md)', color: '#f0f0ff', fontSize: 14,
+                  outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
                   fontFamily: 'var(--font)',
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = '#6366f1'
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.15)'
+                  e.currentTarget.style.boxShadow = '0 0 0 4px rgba(99,102,241,0.12)'
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                  e.currentTarget.style.borderColor = 'var(--border-2)'
                   e.currentTarget.style.boxShadow = 'none'
                 }}
               />
@@ -301,7 +304,7 @@ export default function SignupPage() {
 
             {/* Password */}
             <div>
-              <label htmlFor="password" style={{ display: 'block', fontSize: 12, fontWeight: 500, color: '#a1a1aa', marginBottom: 6, letterSpacing: '0.01em' }}>
+              <label htmlFor="password" style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--text-2)', marginBottom: 7, letterSpacing: '0.01em' }}>
                 Password
               </label>
               <input
@@ -309,19 +312,19 @@ export default function SignupPage() {
                 autoComplete="new-password" required minLength={8}
                 placeholder="Min. 8 characters"
                 style={{
-                  width: '100%', padding: '11px 14px',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: 9, color: '#f4f4f5', fontSize: 14,
-                  outline: 'none', transition: 'border-color 0.15s, box-shadow 0.15s',
+                  width: '100%', padding: '12px 16px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid var(--border-2)',
+                  borderRadius: 'var(--radius-md)', color: '#f0f0ff', fontSize: 14,
+                  outline: 'none', transition: 'border-color 0.2s, box-shadow 0.2s',
                   fontFamily: 'var(--font)',
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = '#6366f1'
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(99,102,241,0.15)'
+                  e.currentTarget.style.boxShadow = '0 0 0 4px rgba(99,102,241,0.12)'
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                  e.currentTarget.style.borderColor = 'var(--border-2)'
                   e.currentTarget.style.boxShadow = 'none'
                 }}
               />
@@ -334,17 +337,17 @@ export default function SignupPage() {
               disabled={pending}
               style={{
                 width: '100%',
-                padding: '12px 20px', marginTop: 2,
+                padding: '13px 20px', marginTop: 4,
                 background: pending
                   ? 'rgba(255,255,255,0.06)'
                   : 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                border: 'none', borderRadius: 10,
-                fontSize: 14, fontWeight: 600,
-                color: pending ? '#71717a' : '#fff',
+                border: 'none', borderRadius: 'var(--radius-full)',
+                fontSize: 14, fontWeight: 700,
+                color: pending ? 'var(--text-3)' : '#fff',
                 cursor: pending ? 'not-allowed' : 'pointer',
-                transition: 'all 0.15s',
+                transition: 'all 0.2s',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                boxShadow: pending ? 'none' : '0 4px 16px rgba(99,102,241,0.35)',
+                boxShadow: pending ? 'none' : '0 4px 20px rgba(99,102,241,0.4)',
                 letterSpacing: '-0.01em',
               }}
             >
@@ -361,11 +364,11 @@ export default function SignupPage() {
           </form>
 
           {/* Fine print */}
-          <p style={{ marginTop: 20, fontSize: 11, color: '#52525b', textAlign: 'center', lineHeight: 1.7 }}>
+          <p style={{ marginTop: 22, fontSize: 11, color: 'var(--text-3)', textAlign: 'center', lineHeight: 1.7 }}>
             By signing up you agree to our{' '}
-            <Link href="/terms" style={{ color: '#71717a', textDecoration: 'underline' }}>Terms</Link>
+            <Link href="/terms" style={{ color: 'var(--text-2)', textDecoration: 'underline' }}>Terms</Link>
             {' '}and{' '}
-            <Link href="/privacy" style={{ color: '#71717a', textDecoration: 'underline' }}>Privacy Policy</Link>.
+            <Link href="/privacy" style={{ color: 'var(--text-2)', textDecoration: 'underline' }}>Privacy Policy</Link>.
           </p>
         </div>
       </div>
