@@ -86,7 +86,7 @@ export default async function DashboardPage() {
             </p>
           </div>
           <Link
-            href={`/u/${user.id}`}
+            href={`/u/${user.user_metadata?.user_name ?? user.email?.split('@')[0] ?? user.id}`}
             target="_blank"
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 7,
