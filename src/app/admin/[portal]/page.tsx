@@ -56,10 +56,12 @@ export default async function AdminPortalPage({ params }: Props) {
     .eq('portal_slug', cfg.slug)
     .order('rejected_at', { ascending: false })
 
-  const rejectionMap = new Map(
+  type RejectionMeta = { adminNote: string | null; rejectedAt: string }
+
+  const rejectionMap = new Map<string, RejectionMeta>(
     (rejectionRows ?? []).map((r: { work_id: string; admin_note: string | null; rejected_at: string }) => [
       r.work_id,
-      { adminNote: r.admin_note, rejectedAt: r.rejected_at },
+      { adminNote: r.admin_note, rejectedAt: r.rejected_at } satisfies RejectionMeta,
     ])
   )
 
