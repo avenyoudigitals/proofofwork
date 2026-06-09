@@ -48,8 +48,19 @@ export default async function AdminPortalPage({ params }: Props) {
 
   const works = allWorks ?? []
 
-  // Pending = assigned to us and not yet company_verified by anyone
-  const pending = works.filter((w) => w.status !== 'company_verified')
+  // Fetch rejections this portal has already recorded
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rejections } = await (service as any)
+    .from('admin_rejections')
+    .select('work_id')
+    .eq('portal_slug', cfg.slug)
+
+  const rejectedIds = new Set((rejections ?? []).map((r: { work_id: string }) => r.work_id))
+
+  // Pending = assigned to us, not yet company_verified by anyone, and not already rejected by us
+  const pending = works.filter(
+    (w) => w.status !== 'company_verified' && !rejectedIds.has(w.id)
+  )
   // Approved = verified specifically by this portal
   const approved = works.filter(
     (w) => w.status === 'company_verified' && w.verified_by_company === cfg.displayName
