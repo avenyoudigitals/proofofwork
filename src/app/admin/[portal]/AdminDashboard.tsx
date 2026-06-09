@@ -200,41 +200,69 @@ function WorkCard({
           </div>
         ) : showReject ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{
+              padding: '10px 14px',
+              background: 'rgba(239,68,68,0.06)',
+              border: '1px solid rgba(239,68,68,0.2)',
+              borderRadius: 8,
+              fontSize: 12, color: '#fca5a5',
+              display: 'flex', alignItems: 'center', gap: 8,
+            }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Rejecting this submission — the student will be notified.
+            </div>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Optional note for the student (shown in their notification email)…"
-              rows={2}
+              placeholder="Reason for rejection (optional — shown in notification email)…"
+              rows={3}
+              autoFocus
               style={{
                 width: '100%', padding: '10px 12px',
-                background: 'rgba(239,68,68,0.05)',
-                border: '1px solid rgba(239,68,68,0.25)',
+                background: 'rgba(239,68,68,0.04)',
+                border: '1px solid rgba(239,68,68,0.3)',
                 borderRadius: 8, color: '#f4f4f5', fontSize: 13,
                 resize: 'vertical', fontFamily: 'inherit', outline: 'none',
+                boxSizing: 'border-box',
               }}
             />
             <div style={{ display: 'flex', gap: 8 }}>
               <button
                 id={`reject-confirm-${work.id}`}
+                type="button"
                 disabled={isActioning}
-                onClick={() => { onReject(work.id, note || undefined); setShowReject(false) }}
+                onClick={() => {
+                  onReject(work.id, note.trim() || undefined)
+                  setShowReject(false)
+                  setNote('')
+                }}
                 style={{
                   flex: 1, padding: '10px 16px',
-                  background: 'rgba(239,68,68,0.1)',
-                  border: '1px solid rgba(239,68,68,0.3)',
+                  background: isActioning ? 'rgba(239,68,68,0.05)' : 'rgba(239,68,68,0.12)',
+                  border: '1px solid rgba(239,68,68,0.35)',
                   borderRadius: 8, fontSize: 13, fontWeight: 600,
-                  color: '#f87171', cursor: 'pointer', opacity: isActioning ? 0.5 : 1,
+                  color: '#f87171', cursor: isActioning ? 'not-allowed' : 'pointer',
+                  opacity: isActioning ? 0.5 : 1,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  transition: 'all 0.15s',
                 }}
               >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
                 Confirm Reject
               </button>
               <button
+                type="button"
                 onClick={() => { setShowReject(false); setNote('') }}
                 style={{
                   padding: '10px 16px',
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: 8, fontSize: 13, color: '#71717a', cursor: 'pointer',
+                  transition: 'all 0.15s',
                 }}
               >
                 Cancel
@@ -368,19 +396,22 @@ export default function AdminDashboard({ cfg, pending, approved, stats }: AdminD
     })
   }
 
-  const handleReject = (id: string, note?: string) => {
+  const handleReject = async (id: string, note?: string) => {
     setActioningId(id)
     setFeedback(null)
-    startTransition(async () => {
+    try {
       const res = await adminRejectWork(cfg.slug, id, note)
-      setActioningId(null)
       if (res.error) {
         setFeedback({ type: 'error', msg: res.error })
       } else {
         setDismissed((prev) => [...prev, id])
-        setFeedback({ type: 'success', msg: 'Rejected. Student has been notified.' })
+        setFeedback({ type: 'success', msg: '✕ Rejected. Student has been notified.' })
       }
-    })
+    } catch {
+      setFeedback({ type: 'error', msg: 'Something went wrong. Please try again.' })
+    } finally {
+      setActioningId(null)
+    }
   }
 
   return (
