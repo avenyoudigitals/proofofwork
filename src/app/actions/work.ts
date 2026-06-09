@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 
@@ -42,17 +43,16 @@ export async function createWork(
   if (title.length > 120) return { error: 'Title must be under 120 characters.' }
   if (description.length > 2000) return { error: 'Description must be under 2000 characters.' }
 
-  // ── Round-robin assignment ──────────────────────────────────────
-  // Use a monotonic DB counter so deletions never skew parity.
-  const { data: serialData, error: serialError } = await supabase
-    .rpc('next_work_serial')
-
-  if (serialError) {
-    console.error('next_work_serial error:', serialError)
-    return { error: 'Failed to assign work. Please try again.' }
-  }
-
-  const assigned_to = (serialData as number) % 2 === 1 ? 'nextovate' : 'ax-ventures'
+  // ── Self-balancing assignment ───────────────────────────────────
+  // Use the service client (bypasses RLS) to count works globally.
+  // Always assigns to whichever portal has fewer — stays balanced
+  // even after deletions, no DB migration needed.
+  const service = createServiceClient()
+  const [{ count: nCount }, { count: axCount }] = await Promise.all([
+    service.from('works').select('*', { count: 'exact', head: true }).eq('assigned_to', 'nextovate'),
+    service.from('works').select('*', { count: 'exact', head: true }).eq('assigned_to', 'ax-ventures'),
+  ])
+  const assigned_to = (nCount ?? 0) <= (axCount ?? 0) ? 'nextovate' : 'ax-ventures'
   // ───────────────────────────────────────────────────────────────
 
   const { data, error } = await supabase
