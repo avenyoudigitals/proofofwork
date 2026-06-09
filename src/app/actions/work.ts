@@ -43,12 +43,16 @@ export async function createWork(
   if (description.length > 2000) return { error: 'Description must be under 2000 characters.' }
 
   // ── Round-robin assignment ──────────────────────────────────────
-  // Count all works globally; alternate assignment based on parity.
-  const { count: totalWorks } = await supabase
-    .from('works')
-    .select('*', { count: 'exact', head: true })
+  // Use a monotonic DB counter so deletions never skew parity.
+  const { data: serialData, error: serialError } = await supabase
+    .rpc('next_work_serial')
 
-  const assigned_to = (totalWorks ?? 0) % 2 === 0 ? 'nextovate' : 'ax-ventures'
+  if (serialError) {
+    console.error('next_work_serial error:', serialError)
+    return { error: 'Failed to assign work. Please try again.' }
+  }
+
+  const assigned_to = (serialData as number) % 2 === 1 ? 'nextovate' : 'ax-ventures'
   // ───────────────────────────────────────────────────────────────
 
   const { data, error } = await supabase
