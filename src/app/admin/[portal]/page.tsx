@@ -48,14 +48,22 @@ export default async function AdminPortalPage({ params }: Props) {
 
   const works = allWorks ?? []
 
-  // Fetch rejections this portal has already recorded
+  // Fetch rejections this portal has already recorded (with notes + timestamps)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: rejections } = await (service as any)
+  const { data: rejectionRows } = await (service as any)
     .from('admin_rejections')
-    .select('work_id')
+    .select('work_id, admin_note, rejected_at')
     .eq('portal_slug', cfg.slug)
+    .order('rejected_at', { ascending: false })
 
-  const rejectedIds = new Set((rejections ?? []).map((r: { work_id: string }) => r.work_id))
+  const rejectionMap = new Map(
+    (rejectionRows ?? []).map((r: { work_id: string; admin_note: string | null; rejected_at: string }) => [
+      r.work_id,
+      { adminNote: r.admin_note, rejectedAt: r.rejected_at },
+    ])
+  )
+
+  const rejectedIds = new Set(rejectionMap.keys())
 
   // Pending = assigned to us, not yet company_verified by anyone, and not already rejected by us
   const pending = works.filter(
@@ -65,6 +73,14 @@ export default async function AdminPortalPage({ params }: Props) {
   const approved = works.filter(
     (w) => w.status === 'company_verified' && w.verified_by_company === cfg.displayName
   )
+  // Rejected by this portal
+  const rejected = works
+    .filter((w) => rejectedIds.has(w.id))
+    .map((w) => ({
+      ...w,
+      adminNote: rejectionMap.get(w.id)?.adminNote ?? null,
+      rejectedAt: rejectionMap.get(w.id)?.rejectedAt ?? w.updated_at,
+    }))
 
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -72,16 +88,17 @@ export default async function AdminPortalPage({ params }: Props) {
     (w) => w.updated_at && new Date(w.updated_at) >= today
   ).length
 
-
   return (
     <AdminDashboard
       cfg={cfg}
       pending={pending}
       approved={approved}
+      rejected={rejected}
       stats={{
         totalPending:  pending.length,
         approvedToday,
         totalApproved: approved.length,
+        totalRejected: rejected.length,
       }}
     />
   )

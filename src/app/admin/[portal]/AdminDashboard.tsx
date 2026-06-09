@@ -28,16 +28,23 @@ export interface Work {
   updated_at: string
 }
 
+export interface RejectedWork extends Work {
+  adminNote: string | null
+  rejectedAt: string
+}
+
 interface Stats {
   totalPending: number
   approvedToday: number
   totalApproved: number
+  totalRejected: number
 }
 
 interface AdminDashboardProps {
   cfg: PortalConfig
   pending: Work[]
   approved: Work[]
+  rejected: RejectedWork[]
   stats: Stats
 }
 
@@ -366,11 +373,59 @@ function ApprovedRow({ work, cfg }: { work: Work; cfg: PortalConfig }) {
 }
 
 /* ────────────────────────────────────────────────────────────────
+   RejectedRow — shown in rejected tab
+──────────────────────────────────────────────────────────────── */
+
+function RejectedRow({ work }: { work: RejectedWork }) {
+  return (
+    <div style={{
+      padding: '16px 20px',
+      borderBottom: '1px solid rgba(255,255,255,0.04)',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{
+          width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+          background: '#ef4444', boxShadow: '0 0 6px rgba(239,68,68,0.4)',
+        }} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ fontSize: 13, fontWeight: 500, color: '#e4e4e7', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {work.title}
+          </p>
+          <p style={{ fontSize: 11, color: '#52525b', margin: '2px 0 0' }}>
+            {work.role}{work.company ? ` · ${work.company}` : ''} · rejected {timeAgo(work.rejectedAt)}
+          </p>
+        </div>
+        <span style={{
+          fontSize: 10, fontWeight: 700, color: '#f87171',
+          letterSpacing: '0.05em', textTransform: 'uppercase', flexShrink: 0,
+        }}>
+          ✕ Declined
+        </span>
+      </div>
+      {work.adminNote && (
+        <div style={{
+          marginTop: 10, marginLeft: 22,
+          padding: '8px 12px',
+          background: 'rgba(239,68,68,0.06)',
+          border: '1px solid rgba(239,68,68,0.15)',
+          borderRadius: 8,
+        }}>
+          <p style={{ fontSize: 11, color: '#94a3b8', margin: 0, lineHeight: 1.6 }}>
+            <span style={{ color: '#71717a', fontWeight: 600 }}>Note: </span>
+            {work.adminNote}
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ────────────────────────────────────────────────────────────────
    Main Dashboard
 ──────────────────────────────────────────────────────────────── */
 
-export default function AdminDashboard({ cfg, pending, approved, stats }: AdminDashboardProps) {
-  const [tab, setTab] = useState<'pending' | 'approved'>('pending')
+export default function AdminDashboard({ cfg, pending, approved, rejected, stats }: AdminDashboardProps) {
+  const [tab, setTab] = useState<'pending' | 'approved' | 'rejected'>('pending')
   const [actioningId, setActioningId] = useState<string | null>(null)
   const [dismissed, setDismissed] = useState<string[]>([])
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
@@ -498,11 +553,12 @@ export default function AdminDashboard({ cfg, pending, approved, stats }: AdminD
         </div>
 
         {/* Stat cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 28 }}>
           {[
             { label: 'Awaiting Review', val: stats.totalPending,  color: cfg.accentColor },
             { label: 'Verified Today',  val: stats.approvedToday, color: '#22c55e' },
             { label: 'Total Verified',  val: stats.totalApproved, color: '#10b981' },
+            { label: 'Total Rejected',  val: stats.totalRejected, color: '#f87171' },
           ].map(({ label, val, color }) => (
             <div key={label} style={{
               padding: '20px 22px',
@@ -529,7 +585,8 @@ export default function AdminDashboard({ cfg, pending, approved, stats }: AdminD
         }}>
           {([
             { key: 'pending',  label: `Pending (${stats.totalPending})` },
-            { key: 'approved', label: `Verified by us (${stats.totalApproved})` },
+            { key: 'approved', label: `Verified (${stats.totalApproved})` },
+            { key: 'rejected', label: `Rejected (${stats.totalRejected})` },
           ] as const).map(({ key, label }) => (
             <button
               key={key}
@@ -539,7 +596,9 @@ export default function AdminDashboard({ cfg, pending, approved, stats }: AdminD
                 padding: '7px 18px', borderRadius: 8, border: 'none', cursor: 'pointer',
                 fontSize: 13, fontWeight: 500,
                 background: tab === key
-                  ? `linear-gradient(135deg, ${cfg.gradientFrom}, ${cfg.gradientTo})`
+                  ? key === 'rejected'
+                    ? 'linear-gradient(135deg, #dc2626, #ef4444)'
+                    : `linear-gradient(135deg, ${cfg.gradientFrom}, ${cfg.gradientTo})`
                   : 'transparent',
                 color: tab === key ? '#fff' : '#71717a',
                 transition: 'all 0.15s',
@@ -625,6 +684,27 @@ export default function AdminDashboard({ cfg, pending, approved, stats }: AdminD
             ) : (
               approved.map((work) => (
                 <ApprovedRow key={work.id} work={work} cfg={cfg} />
+              ))
+            )}
+          </div>
+        )}
+
+        {/* ── Rejected tab ─────────────────────────────────────────── */}
+        {tab === 'rejected' && (
+          <div style={{
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.07)',
+            borderRadius: 16, overflow: 'hidden',
+          }}>
+            {rejected.length === 0 ? (
+              <div style={{ padding: '48px 24px', textAlign: 'center' }}>
+                <p style={{ fontSize: 13, color: '#52525b', margin: 0 }}>
+                  No submissions have been rejected by {cfg.displayName} yet.
+                </p>
+              </div>
+            ) : (
+              rejected.map((work) => (
+                <RejectedRow key={work.id} work={work} />
               ))
             )}
           </div>
