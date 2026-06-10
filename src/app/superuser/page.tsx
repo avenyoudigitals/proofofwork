@@ -188,6 +188,22 @@ export default async function SuperuserPage({
     },
   ]
 
+  // ── Day-wise submission counts ────────────────────────
+  const dayMap = new Map<string, { total: number; nextovate: number; axVentures: number }>()
+  for (const w of works) {
+    const day = new Date(w.created_at).toLocaleDateString('en-CA') // YYYY-MM-DD
+    if (!dayMap.has(day)) dayMap.set(day, { total: 0, nextovate: 0, axVentures: 0 })
+    const entry = dayMap.get(day)!
+    entry.total += 1
+    if (w.assigned_to === 'nextovate')   entry.nextovate += 1
+    if (w.assigned_to === 'ax-ventures') entry.axVentures += 1
+  }
+  // Sorted descending (newest day first)
+  const dayStats = Array.from(dayMap.entries())
+    .sort(([a], [b]) => b.localeCompare(a))
+    .map(([date, counts]) => ({ date, ...counts }))
+  const maxDayCount = Math.max(...dayStats.map(d => d.total), 1)
+
   const card: React.CSSProperties = {
     background: 'rgba(255,255,255,0.03)',
     border: '1px solid rgba(255,255,255,0.07)',
@@ -334,6 +350,106 @@ export default async function SuperuserPage({
             </div>
           ))}
         </div>
+
+        {/* ── Day-wise submissions ──────────────────────────── */}
+        {dayStats.length > 0 && (
+          <div style={{ ...card, marginBottom: 24, overflow: 'hidden' }}>
+            <div style={{ padding: '16px 22px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 600, color: '#f4f4f5', margin: '0 0 2px' }}>Submissions by Day</p>
+                <p style={{ fontSize: 12, color: '#71717a', margin: 0 }}>Total submissions per calendar day — all portals</p>
+              </div>
+              <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: 'rgba(245,158,11,0.1)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.2)' }}>
+                {dayStats.length} day{dayStats.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+
+            {/* Bar chart (oldest→newest left→right, capped at 14 days for readability) */}
+            {(() => {
+              const chartDays = [...dayStats].reverse().slice(-14)
+              return (
+                <div style={{ padding: '20px 22px 4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 80 }}>
+                    {chartDays.map((d) => {
+                      const pct = (d.total / maxDayCount) * 100
+                      const label = new Date(d.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                      return (
+                        <div key={d.date} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, height: '100%', justifyContent: 'flex-end' }}>
+                          <span style={{ fontSize: 9, color: '#f59e0b', fontWeight: 700 }}>{d.total}</span>
+                          <div
+                            title={`${label}: ${d.total} submission${d.total !== 1 ? 's' : ''}`}
+                            style={{
+                              width: '100%', borderRadius: '4px 4px 0 0',
+                              height: `${Math.max(pct, 4)}%`,
+                              background: 'linear-gradient(180deg, #f59e0b, #d97706)',
+                              boxShadow: '0 0 8px rgba(245,158,11,0.3)',
+                              transition: 'height 0.3s',
+                              minHeight: 4,
+                            }}
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {/* X-axis labels */}
+                  <div style={{ display: 'flex', gap: 6, marginTop: 6, paddingBottom: 4 }}>
+                    {chartDays.map((d) => {
+                      const label = new Date(d.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                      return (
+                        <div key={d.date} style={{ flex: 1, textAlign: 'center', fontSize: 9, color: '#52525b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {label}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* Day breakdown table */}
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', marginTop: 8 }}>
+              {/* Table header */}
+              <div style={{
+                display: 'grid', gridTemplateColumns: '1fr 80px 100px 100px',
+                padding: '8px 22px',
+                background: 'rgba(255,255,255,0.02)',
+                borderBottom: '1px solid rgba(255,255,255,0.04)',
+              }}>
+                {['Date', 'Total', 'Nextovate', 'AX Ventures'].map(h => (
+                  <span key={h} style={{ fontSize: 10, fontWeight: 700, color: '#52525b', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{h}</span>
+                ))}
+              </div>
+
+              {dayStats.map((d, i) => {
+                const isToday = d.date === new Date().toLocaleDateString('en-CA')
+                const friendlyDate = new Date(d.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+                return (
+                  <div
+                    key={d.date}
+                    style={{
+                      display: 'grid', gridTemplateColumns: '1fr 80px 100px 100px',
+                      padding: '10px 22px', alignItems: 'center',
+                      borderBottom: i < dayStats.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+                      background: isToday ? 'rgba(245,158,11,0.04)' : 'transparent',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <p style={{ fontSize: 13, color: isToday ? '#fbbf24' : '#e4e4e7', margin: 0, fontWeight: isToday ? 600 : 400 }}>
+                        {friendlyDate}
+                      </p>
+                      {isToday && (
+                        <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.3)' }}>TODAY</span>
+                      )}
+                    </div>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: '#f59e0b', margin: 0 }}>{d.total}</p>
+                    <p style={{ fontSize: 13, color: d.nextovate > 0 ? '#818cf8' : '#3f3f46', margin: 0, fontWeight: d.nextovate > 0 ? 600 : 400 }}>{d.nextovate}</p>
+                    <p style={{ fontSize: 13, color: d.axVentures > 0 ? '#38bdf8' : '#3f3f46', margin: 0, fontWeight: d.axVentures > 0 ? 600 : 400 }}>{d.axVentures}</p>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* All works table */}
         <div style={card}>
