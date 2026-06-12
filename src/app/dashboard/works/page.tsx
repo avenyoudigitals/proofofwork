@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { DeleteButton } from '@/app/_components/delete-button'
@@ -48,6 +49,7 @@ const STATUS_CONFIG = {
   company_verified: { label: 'Company Verified', color: '#059669', bg: 'rgba(5,150,105,0.08)',  border: 'rgba(5,150,105,0.22)',  dot: '#10b981'  },
   peer_verified:    { label: 'Peer Verified',    color: '#6366f1', bg: 'rgba(99,102,241,0.08)', border: 'rgba(99,102,241,0.22)', dot: '#818cf8'  },
   self_claimed:     { label: 'Self Claimed',     color: '#6b7280', bg: 'rgba(107,114,128,0.07)',border: 'rgba(107,114,128,0.18)',dot: '#9ca3af'  },
+  rejected:         { label: 'Rejected',          color: '#ef4444', bg: 'rgba(239,68,68,0.07)',  border: 'rgba(239,68,68,0.20)',  dot: '#f87171'  },
 } as const
 
 export default async function WorksPage() {
@@ -62,6 +64,20 @@ export default async function WorksPage() {
     .order('created_at', { ascending: false })
 
   const list = (works ?? []) as Work[]
+
+  // Fetch rejection records for this user's works (service client bypasses RLS)
+  const workIds = list.map(w => w.id)
+  let rejectedIds = new Set<string>()
+  if (workIds.length > 0) {
+    const service = createServiceClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: rejRows } = await (service as any)
+      .from('admin_rejections')
+      .select('work_id')
+      .in('work_id', workIds)
+    rejectedIds = new Set((rejRows ?? []).map((r: { work_id: string }) => r.work_id))
+  }
+
   const total       = list.length
   const compVerified = list.filter(w => w.status === 'company_verified').length
   const peerVerified = list.filter(w => w.status === 'peer_verified').length
@@ -146,7 +162,8 @@ export default async function WorksPage() {
       {/* ── Work cards grid ───────────────────────────── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 16 }}>
         {list.map((work, idx) => {
-          const s = STATUS_CONFIG[work.status] ?? STATUS_CONFIG.self_claimed
+          const isRejected = rejectedIds.has(work.id) && work.status !== 'company_verified'
+          const s = isRejected ? STATUS_CONFIG.rejected : (STATUS_CONFIG[work.status] ?? STATUS_CONFIG.self_claimed)
           const isVerified = work.status === 'company_verified' && work.verified_by_company
           const gradient = GRADIENTS[idx % GRADIENTS.length]
           const links = [
@@ -184,7 +201,7 @@ export default async function WorksPage() {
                 }}>
                   <span style={{ width: 6, height: 6, borderRadius: '50%', background: s.dot, boxShadow: isVerified ? `0 0 6px ${s.dot}` : 'none' }} />
                   <span style={{ fontSize: 9, fontWeight: 700, color: s.color, fontFamily: 'var(--font-mono)', letterSpacing: '0.04em' }}>
-                    {isVerified ? `✓ ${work.verified_by_company}` : s.label.toUpperCase()}
+                    {isVerified ? `✓ ${work.verified_by_company}` : isRejected ? '✕ REJECTED' : s.label.toUpperCase()}
                   </span>
                 </div>
 
