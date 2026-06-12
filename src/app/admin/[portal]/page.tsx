@@ -48,6 +48,29 @@ export default async function AdminPortalPage({ params }: Props) {
 
   const works = allWorks ?? []
 
+  // Fetch submitter names/emails for all unique user_ids
+  const uniqueUserIds = [...new Set(works.map((w) => w.user_id as string))]
+  const userMetaMap = new Map<string, { name: string; email: string }>()
+  await Promise.all(
+    uniqueUserIds.map(async (uid) => {
+      const { data } = await service.auth.admin.getUserById(uid)
+      const u = data?.user
+      if (u) {
+        userMetaMap.set(uid, {
+          name:  u.user_metadata?.full_name ?? u.email?.split('@')[0] ?? 'Unknown',
+          email: u.email ?? '',
+        })
+      }
+    })
+  )
+
+  // Attach submitter info to every work record
+  const enrichedWorks = works.map((w) => ({
+    ...w,
+    submittedByName:  userMetaMap.get(w.user_id)?.name  ?? 'Unknown',
+    submittedByEmail: userMetaMap.get(w.user_id)?.email ?? '',
+  }))
+
   // Fetch rejections this portal has already recorded (with notes + timestamps)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: rejectionRows } = await (service as any)
@@ -68,15 +91,15 @@ export default async function AdminPortalPage({ params }: Props) {
   const rejectedIds = new Set(rejectionMap.keys())
 
   // Pending = assigned to us, not yet company_verified by anyone, and not already rejected by us
-  const pending = works.filter(
+  const pending = enrichedWorks.filter(
     (w) => w.status !== 'company_verified' && !rejectedIds.has(w.id)
   )
   // Approved = verified specifically by this portal
-  const approved = works.filter(
+  const approved = enrichedWorks.filter(
     (w) => w.status === 'company_verified' && w.verified_by_company === cfg.displayName
   )
   // Rejected by this portal
-  const rejected = works
+  const rejected = enrichedWorks
     .filter((w) => rejectedIds.has(w.id))
     .map((w) => ({
       ...w,

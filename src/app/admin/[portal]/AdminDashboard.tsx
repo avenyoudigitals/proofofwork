@@ -26,6 +26,8 @@ export interface Work {
   tags: string[]
   created_at: string
   updated_at: string
+  submittedByName:  string
+  submittedByEmail: string
 }
 
 export interface RejectedWork extends Work {
@@ -129,6 +131,24 @@ function WorkCard({
             {work.company && <> · <span style={{ color: '#818cf8' }}>{work.company}</span></>}
             &nbsp;·&nbsp;{timeAgo(work.created_at)}
           </p>
+          {/* Submitter */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 7 }}>
+            <div style={{
+              width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
+              background: `${cfg.accentColor}20`,
+              border: `1px solid ${cfg.accentColor}35`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 9, fontWeight: 700, color: cfg.accentColor,
+            }}>
+              {work.submittedByName.slice(0, 1).toUpperCase()}
+            </div>
+            <span style={{ fontSize: 11, color: '#71717a' }}>
+              <span style={{ color: '#a1a1aa', fontWeight: 600 }}>{work.submittedByName}</span>
+              {work.submittedByEmail && (
+                <span style={{ color: '#52525b' }}> · {work.submittedByEmail}</span>
+              )}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -358,6 +378,12 @@ function ApprovedRow({ work, cfg }: { work: Work; cfg: PortalConfig }) {
         </p>
         <p style={{ fontSize: 11, color: '#52525b', margin: '2px 0 0' }}>
           {work.role}{work.company ? ` · ${work.company}` : ''} · {timeAgo(work.updated_at)}
+          {work.submittedByName && (
+            <> · <span style={{ color: '#71717a' }}>{work.submittedByName}</span></>
+          )}
+          {work.submittedByEmail && (
+            <> &lt;{work.submittedByEmail}&gt;</>
+          )}
         </p>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
@@ -393,6 +419,12 @@ function RejectedRow({ work }: { work: RejectedWork }) {
           </p>
           <p style={{ fontSize: 11, color: '#52525b', margin: '2px 0 0' }}>
             {work.role}{work.company ? ` · ${work.company}` : ''} · rejected {timeAgo(work.rejectedAt)}
+            {work.submittedByName && (
+              <> · <span style={{ color: '#71717a' }}>{work.submittedByName}</span></>
+            )}
+            {work.submittedByEmail && (
+              <> &lt;{work.submittedByEmail}&gt;</>
+            )}
           </p>
         </div>
         <span style={{
