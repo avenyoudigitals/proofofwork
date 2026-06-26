@@ -1,5 +1,4 @@
 import { createServiceClient } from '@/lib/supabase/service'
-import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import PublicProfileClient from './PublicProfileClient'
@@ -29,7 +28,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function PublicProfilePage({ params }: Props) {
   const { username } = await params
-  const supabase = await createClient()
+  const service = createServiceClient()
 
   const authUser = await resolveUser(username)
   if (!authUser) notFound()
@@ -39,13 +38,13 @@ export default async function PublicProfilePage({ params }: Props) {
   const avatarUrl      = (authUser.user_metadata?.avatar_url ?? null) as string | null
   const githubUsername = (authUser.user_metadata?.user_name ?? null) as string | null
 
-  const { data: profile } = await supabase
+  const { data: profile } = await service
     .from('profiles')
     .select('username, bio, location, website')
     .eq('id', userId)
     .maybeSingle()
 
-  const { data: works } = await supabase
+  const { data: works } = await service
     .from('works')
     .select('id, title, role, company, description, status, verified_by_company, tags, github_url, figma_url, live_url, case_study_url, created_at')
     .eq('user_id', userId)
